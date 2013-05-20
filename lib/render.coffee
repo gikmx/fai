@@ -3,7 +3,7 @@ FS   = require 'fs'
 
 _ = require 'underscore'
 
-Log      = Config.require('log') __filename
+Log      = Config.require 'log'
 Controls = Config.require 'controls'
 
 

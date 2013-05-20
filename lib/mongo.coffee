@@ -1,7 +1,7 @@
 MongoDB = require 'mongodb'
 _       = require 'underscore'
 
-Log = Config.require('log') __filename
+Log = Config.require 'log'
 
 Mongo =
 

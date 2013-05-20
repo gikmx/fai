@@ -14,7 +14,7 @@ Log4JS   = require 'log4js'
 Passport = require 'passport'
 _        = require 'underscore'
 
-Log     = Config.require('log') __filename
+Log     = Config.require 'log'
 API     = Config.require 'api'
 Locals  = Config.require 'locals'
 MongoDB = Config.require 'mongo'
@@ -37,13 +37,15 @@ server.set 'view engine' , 'jade'
 	Middleware
 ------------------------------------------------------------------- ###
 
-# Params
-Params.extend server
-Config.params = Config.params()
 
-_.each Config.params, (param, name)->
-	Log.debug "Setting parameter #{name} : #{param}"
-	server.param name, param
+# Params
+if _.isFunction Config.params
+	Params.extend server
+	Config.params = Config.params()
+
+	_.each Config.params, (param, name)->
+		Log.debug "Setting parameter #{name} : #{param}"
+		server.param name, param
 
 # Database
 if MongoDB.instance

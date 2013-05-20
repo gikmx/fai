@@ -2,7 +2,7 @@ HTTPS = require 'https'
 
 _ = require 'underscore'
 
-Log = Config.require('log') __filename
+Log = Config.require 'log'
 
 connect = (path, config, callback, method)->
 	config   = {} if not Config.isRealObject config

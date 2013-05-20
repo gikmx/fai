@@ -3,7 +3,7 @@ Path = require 'path'
 Passport = require 'passport'
 _        = require 'underscore'
 
-Log = Config.require('log') __filename
+Log = Config.require 'log'
 
 # Strategy factory
 # Will instantiate strategies based upon the "Config.auth" property
