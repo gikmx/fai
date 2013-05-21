@@ -33,10 +33,8 @@ self.path.static   = Path.join self.path.frontend , 'static'
 self.path.assets   = Path.join self.path.frontend , 'assets'
 self.path.controls = Path.join self.path.backend  , 'controls'
 
-
 for name of self.path
 	self.path[name] = false if not FS.existsSync(self.path[name])
-
 
 # requiring HELPERS
 self.require = (context, name)->
@@ -46,7 +44,11 @@ self.require = (context, name)->
 		name    = args[0]
 	throw new Config.error 'Missing arguments.' if not context or not name
 	throw new Config.error "Invalid context: #{context}" if not self.path[context]
-	return require Path.join self.path[context], String(name)
+	try
+		module = require Path.join self.path[context], String(name)
+	catch e
+		throw new Config.error "Could not load module #{name}"
+	return module
 
 self.requireFS = (root)->
 	result = {}
@@ -69,6 +71,9 @@ self.isRealObject = (o)-> _.isObject(o) and
 GLOBAL.Config = self
 
 self.error = require './error'
+
+throw new self.error('Frontend directory missing.') if not self.path.frontend
+throw new self.error('Backend directory missing.')  if not self.path.backend
 
 # Obtain config from Filesystem
 if self.path.config
