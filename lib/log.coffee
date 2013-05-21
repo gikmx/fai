@@ -25,10 +25,13 @@ Log.setLevel if Config.live then 'INFO' else 'TRACE'
 getCaller = ->
 	prepareStackTrace = Error.prepareStackTrace
 	Error.prepareStackTrace = (_, stack)-> return stack
-	stack = new Error().stack
-	stack.splice 0,2
+	stacks = new Error().stack
+	stacks.splice 0,2
 	Error.prepareStackTrace = prepareStackTrace
-	base = stack[3].receiver.filename.replace Config.path.root, ''
+	try
+		base = stack[3].receiver.filename.replace Config.path.root, ''
+	catch e
+		base = Config.path.core.replace Config.path.root, ''
 	base = base.replace Path.extname(base), ''
 	return base
 

@@ -10,9 +10,9 @@ Mongo =
 	instance : undefined
 
 	Mongo: (callback)->
-		throw new Error 'Expecting a callback' if not _.isFunction callback
+		throw new Config.error 'Expecting a callback' if not _.isFunction callback
 
-		Mongo.server = new MongoDB.Server 'localhost', 27017,
+		Mongo.server = new MongoDB.Server Config.host, 27017,
 			auto_reconnect : false
 			native_parser  : true
 
@@ -21,8 +21,8 @@ Mongo =
 			safe    : false
 
 		Mongo.database.open (error, db)->
-			throw new Error error if error
-			Log.debug 'Connected to MongoDB.'
+			throw new Config.error error if error
+			#Log.debug 'Connected to MongoDB.'
 			Mongo.instance = db
 			callback.call Mongo
 

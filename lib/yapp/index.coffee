@@ -7,7 +7,7 @@ Log = Config.require 'log'
 connect = (path, config, callback, method)->
 	config   = {} if not Config.isRealObject config
 
-	throw new Error 'Expecting callback.' if not _.isFunction callback
+	throw new Config.error 'Expecting callback.' if not _.isFunction callback
 
 	yConf = Config.yapp
 
@@ -55,7 +55,7 @@ connect = (path, config, callback, method)->
 	 send content if available
 	if (method is 'PUT' or method is 'POST') and not _.isUndefined(config.body)
 		if not Config.isRealObject config.body
-			throw new Error 'Expecting JSON body.'
+			throw new Config.error 'Expecting JSON body.'
 		config.body = JSON.stringify config.body
 		request.write config.body
 

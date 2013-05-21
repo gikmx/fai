@@ -47,7 +47,7 @@ module.exports = (name) ->
 		Log.debug "Rendering: #{view}"
 
 		response.render view, locals, (error, body)->
-			throw new Error error if error
+			throw new Config.error error if error
 
 			request.app.locals.flash = undefined
 
