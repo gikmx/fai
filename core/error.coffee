@@ -1,7 +1,8 @@
 # Node modules
-FS   = require 'fs'
-Util = require 'util'
-Path = require 'path'
+FS     = require 'fs'
+Util   = require 'util'
+Path   = require 'path'
+Stream = require 'stream'
 
 # NPM modules
 Colors = require 'colors'
@@ -10,7 +11,7 @@ Coffee = require 'coffee-script'
 Log = undefined
 
 Err = ->
-	Err.super_::isFi = true
+	Err.super_::fi = true
 	Err.super_.apply this, arguments
 
 Util.inherits Err, Error
@@ -18,85 +19,86 @@ Util.inherits Err, Error
 prepareStackTrace = Err.super_.prepareStackTrace
 
 Err.super_.prepareStackTrace = (error, frames)->
-	console.info '@@@@', Err.super_::.isFi
-	lines  = []
-	caller = ''
+	lines   = []
+	caller  = false
+
 	for frame in frames
-		filename = frame.getFileName()
-		continue if not filename or filename is __filename
-		caller = filename if not caller
-		lines.push(pos2log frame)
-	caller = 'unknown' if not caller
-	# if caller path isnt inside
-	if caller.indexOf ﬁ.path.root isnt 0
-		caller = Path.basename caller
-		prefix = if caller.indexOf 'node_modules' isnt -1 then "@npm/" else "@node/"
-		caller = prefix + caller
+		file = frame.getFileName()
+		continue if not file or file is __filename
+		line = pos2log frame, file
+		if not caller
+			context = if line.context is 'app' then '' else "#{line.context}/"
+			caller = context + line.file
+		lines.push line
+
+	spc = {}
+	for i in Object.keys lines[0]
+		spc[i] = ﬁ.util.max ﬁ.util.map(lines, (line)-> line[i].length)
+
+	buffer = ''
+	if this::fi
+		# capture logged.error into a string buffer
+		stdoutWrite = process.stdout.write
+		process.stdout.write = ((write)-> return (string, encoding, fd)->
+			buffer += string
+		)(process.stdout.write)
+		ﬁ.log.custom 'error', caller, error.message
+		process.stdout.write = stdoutWrite
 	else
-		caller = caller.replace(ﬁ.path.root, '').replace(ﬁ.conf.ext,'')
-	ﬁ.log.custom 'error', caller, error.message
-	return "\n" + lines.join("\n") + "\n"
+		buffer = "ERROR: #{error.message}\n"
 
-pos2log = (frame)->
-	tab  = Array(13).join ' '
-	file = frame.getFileName()
+	result = "\n#{buffer}\n"
+	for line in lines
+		for key,prop of line
+			tab = Array((spc[key]+3) - prop.length).join(' ')
+			if this::fi and line.context isnt 'app'
+				prop = prop.grey
+			else if this::fi and key is 'script'
+				prop = prop.red.bold
+			else if this::fi
+				prop = prop.red
+			result += prop + tab
+		result += "\n"
 
-	isSource = false
-	isEval   = false
+	return result
 
-	return tab + "[native]".grey if frame.isNative()
+pos2log = (frame, file)->
+
+	result = pos: '', context: '', file: '', source : '', script: ''
+	path   = file
+
+	if (i = file.lastIndexOf('node_modules')) isnt -1
+		result.context = 'npm'
+		result.file    = file.substr(i + 13).replace Path.extname(file), ''
+	else if file.indexOf(ﬁ.path.root) is -1
+		result.context = 'node'
+		result.file    = Path.basename(file).replace Path.extname(file), ''
+	else
+		result.context = 'app'
+		result.file    = file.replace(ﬁ.path.root, '').replace(ﬁ.conf.ext , '')
+
+	if frame.isNative()
+		result.context = 'native'
+		return result
 	if frame.isEval()
-		isEval = true
-		legend = '[evalued code]'
-		origin = frame.getEvalOrigin()
-		# extract parenthesis
-		origin = origin.match /\([^\)]+\)/
-		return legend if not origin.length
-		origin = origin[0].substr(1, origin[0].length - 2).split ':'
+		result.context = 'eval'
+		return result
 
-		col  = origin.splice(2,1).join('') or '?'
-		row  = origin.splice(1,1).join('') or '¿'
-		file = origin.splice(0,1).join('') + ' [eval]'.red
-	else if not file
-		return tab + "[unknown]".grey
-	else
-		path = file
-		row  = '¿' if not (row = frame.getLineNumber())
-		col  = '?' if not (col = frame.getColumnNumber())
+	row  = '¿' if not (row = frame.getLineNumber())
+	col  = '?' if not (col = frame.getColumnNumber())
 
-	pos  = "[#{row}:#{col}]"
-	spc  = Array(tab.length - pos.length).join ' '
-	file = file
-		.replace(ﬁ.path.root, '')
-		.replace(ﬁ.conf.ext,'')
+	result.pos = "[#{row}:#{col}]"
 
-	if (npm = file.lastIndexOf('node_modules')) isnt -1
-		file = ("[npm]  " + file.substr(npm + 13)).grey
-		pos  = pos.grey
-	else if file[0] isnt '/'
-		file = "[node] #{file}".grey
-		pos  = pos.grey
-	else
-		isSource = true
-		if isEval
-			pos  = pos.grey
-			file = file.grey
+	return result if result.context isnt 'app' or not FS.existsSync(path)
 
-	result =  "#{pos}#{spc}#{file}"
+	try
+		script = FS.readFileSync path, 'utf-8'
+		script = Coffee.compile(script).split('\n')[row-1]
+		script = script.substr(col-1)
+	catch e
+		return result
 
-	return result if not path
-
-	script = ''
-	if isSource
-		try
-			script = FS.readFileSync path, 'utf-8'
-			script = Coffee.compile(script).split('\n')[row-1]
-		catch e
-			console.info e
-			script = ''
-
-		script = script.substr(col-1).red.bold
-
-	return "#{pos.red}#{spc}#{file.red} #{script}"
+	result.script = script
+	return result
 
 module.exports = Err
