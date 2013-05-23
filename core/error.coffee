@@ -1,27 +1,43 @@
+# Node modules
 FS   = require 'fs'
 Util = require 'util'
+Path = require 'path'
 
+# NPM modules
 Colors = require 'colors'
 Coffee = require 'coffee-script'
 
 Log = undefined
 
 Err = ->
-	Log = Config.require 'log' if not Log
-	console.log '\n'
-	Log.error.apply null, arguments
-	return if Config.live
+	Err.super_::isFi = true
 	Err.super_.apply this, arguments
 
 Util.inherits Err, Error
 
+prepareStackTrace = Err.super_.prepareStackTrace
+
 Err.super_.prepareStackTrace = (error, frames)->
-	lines = []
-	lines.push(pos2source frame) for frame in frames
-	lines.splice 0,3
+	console.info '@@@@', Err.super_::.isFi
+	lines  = []
+	caller = ''
+	for frame in frames
+		filename = frame.getFileName()
+		continue if not filename or filename is __filename
+		caller = filename if not caller
+		lines.push(pos2log frame)
+	caller = 'unknown' if not caller
+	# if caller path isnt inside
+	if caller.indexOf ﬁ.path.root isnt 0
+		caller = Path.basename caller
+		prefix = if caller.indexOf 'node_modules' isnt -1 then "@npm/" else "@node/"
+		caller = prefix + caller
+	else
+		caller = caller.replace(ﬁ.path.root, '').replace(ﬁ.conf.ext,'')
+	ﬁ.log.custom 'error', caller, error.message
 	return "\n" + lines.join("\n") + "\n"
 
-pos2source = (frame)->
+pos2log = (frame)->
 	tab  = Array(13).join ' '
 	file = frame.getFileName()
 
@@ -51,8 +67,8 @@ pos2source = (frame)->
 	pos  = "[#{row}:#{col}]"
 	spc  = Array(tab.length - pos.length).join ' '
 	file = file
-		.replace(Config.path.root, '')
-		.replace(Config.ext,'')
+		.replace(ﬁ.path.root, '')
+		.replace(ﬁ.conf.ext,'')
 
 	if (npm = file.lastIndexOf('node_modules')) isnt -1
 		file = ("[npm]  " + file.substr(npm + 13)).grey

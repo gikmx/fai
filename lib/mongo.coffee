@@ -1,7 +1,4 @@
 MongoDB = require 'mongodb'
-_       = require 'underscore'
-
-Log = Config.require 'log'
 
 Mongo =
 
@@ -10,20 +7,22 @@ Mongo =
 	instance : undefined
 
 	Mongo: (callback)->
-		throw new Config.error 'Expecting a callback' if not _.isFunction callback
+		throw new ﬁ.error 'Expecting a callback' if not ﬁ.util.isFunction callback
 
-		Mongo.server = new MongoDB.Server Config.host, 27017,
+		Mongo.server = new MongoDB.Server ﬁ.conf.host, 27017,
 			auto_reconnect : false
 			native_parser  : true
 
-		Mongo.database = new MongoDB.Db Config.name, Mongo.server,
+		Mongo.database = new MongoDB.Db ﬁ.conf.name, Mongo.server,
 			journal : true
 			safe    : false
 
 		Mongo.database.open (error, db)->
-			throw new Config.error error if error
+			throw new ﬁ.error error if error
 			#Log.debug 'Connected to MongoDB.'
 			Mongo.instance = db
 			callback.call Mongo
+
+		return Mongo
 
 module.exports = Mongo

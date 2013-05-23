@@ -1,82 +1,55 @@
+# Node modules
+HTTP = require 'http'
+OS   = require 'os'
 Path = require 'path'
-FS   = require 'fs'
 
-Args = require 'named-argv'
+# I know, this is not recommended, but fuck it.
+GLOBAL.ﬁ = {}
 
-_ = require 'underscore'
+path = './core/'
 
-if not _.isString Args.opts.port or not parseInt(Args.opts.port)
-	throw new Config.error 'Expecting a port number.'
+# Simple error handler, will throw errors until the real module is loaded.
+ﬁ.error  = -> new String "\n" + Array::.slice.call(arguments).join('\n') + "\n"
 
-self      = {}
+# All paths used throughout ﬁ
+ﬁ.path  = require "#{path}path"
 
-self.live = process.env.NODE_ENV is 'production'
-self.env  = if self.live then 'production' else 'development'
+# Underscore, on steroids.
+ﬁ.util  = require "#{path}util"
 
-self.name  = Path.basename Path.dirname __dirname
-self.ext   = Path.extname __filename
-self.proto = 'http'
-self.host  = '127.0.0.1'
-self.port  = parseInt Args.opts.port
-self.url   = "#{self.proto}://#{self.host}:#{self.port}"
+# Core configuration
+ﬁ.conf  = require "#{path}conf"
 
-self.path          = {}
-self.path.core     = __dirname
-self.path.root     = Path.dirname self.path.core
-self.path.library  = Path.join self.path.core     , 'lib'
-self.path.app      = Path.join self.path.root     , 'app'
-self.path.config   = Path.join self.path.root     , 'config'
-self.path.frontend = Path.join self.path.app      , 'frontend'
-self.path.backend  = Path.join self.path.app      , 'backend'
-self.path.views    = Path.join self.path.frontend , 'views'
-self.path.static   = Path.join self.path.frontend , 'static'
-self.path.assets   = Path.join self.path.frontend , 'assets'
-self.path.controls = Path.join self.path.backend  , 'controls'
+# Enable logs
+ﬁ.log = require "#{path}log"
 
-for name of self.path
-	self.path[name] = false if not FS.existsSync(self.path[name])
+# Helper methods
+ﬁ[name] = helper for name,helper of require "#{path}help"
 
-# requiring HELPERS
-self.require = (context, name)->
-	args = Array.prototype.slice.call arguments
-	if args.length is 1
-		context = 'library'
-		name    = args[0]
-	throw new Config.error 'Missing arguments.' if not context or not name
-	throw new Config.error "Invalid context: #{context}" if not self.path[context]
-	try
-		module = require Path.join self.path[context], String(name)
-	catch e
-		throw new Config.error "Could not load module #{name}"
-	return module
+# Populate settings
+ﬁ.settings = require "#{path}settings"
 
-self.requireFS = (root)->
-	result = {}
-	for file in FS.readdirSync root, file
-		path = Path.join root, file
-		stat = FS.statSync path
-		if not stat.isDirectory()
-			continue if Path.extname(file) isnt self.ext
-			base = Path.basename file, self.ext
-			result[base] = require path.replace self.ext, ''
-		else result[file] = arguments.callee path
-	return result
+# Initialize middleware
+ﬁ.middleware = ﬁ.require 'core', 'middleware'
 
-self.isRealObject = (o)-> _.isObject(o) and
-	not _.isUndefined(o)                and
-	not _.isArray(o)                    and
-	not _.isFunction(o)
+# Setup server
+ﬁ.server = ﬁ.require 'core', 'server'
 
+# Enable custom error with traceback
+ﬁ.error = ﬁ.require 'core', 'error'
 
-GLOBAL.Config = self
+ﬁ.listen = ->
+	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
-self.error = require './error'
+	throw new ﬁ.error 'Middleware must be an array.' if not ﬁ.util.isArray ﬁ.middleware
+	for middleware in ﬁ.middleware.reverse()
+		if not ﬁ.util.isFunction middleware
+			throw new ﬁ.error 'Middlewares can only be functions.'
+		ﬁ.server.use middleware
 
-throw new self.error('Frontend directory missing.') if not self.path.frontend
-throw new self.error('Backend directory missing.')  if not self.path.backend
+	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
+	ﬁ.log.trace "Listening on #{ﬁ.conf.url}"
+	ﬁ.isListening = true
 
-# Obtain config from Filesystem
-if self.path.config
-	GLOBAL.Config = _.extend self, self.requireFS self.path.config
-
-module.exports = Config
+process.on 'uncaughtException', (error)->
+  console.log 'Caught exception: ', err
