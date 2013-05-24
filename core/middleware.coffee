@@ -1,6 +1,3 @@
-# ﬁ modules
-Locals = ﬁ.require 'core', 'locals'
-
 middleware = []
 
 # This is the default behaviour for ﬂ, it can be overwritten.
@@ -14,7 +11,8 @@ middleware.push (request, response, next)->
 		if ﬁ.conf.live then request.headers["user-agent"] else '',
 	].join ' '
 
-	request.locals = Locals
+	# public local variables
+	response.locals = ﬁ.locals
 
 	next()
 

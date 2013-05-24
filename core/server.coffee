@@ -1,25 +1,16 @@
 # Node modules
 HTTP = require 'http'
+Path = require 'path'
 
 # NPM modules
 Express   = require 'express'
 Params    = require 'express-params'
 Validator = require 'express-validator'
-Assets    = require 'connect-assets'
-Mongo     = require 'connect-mongo'
-Passport  = require 'passport'
 
 ### --------------------------------------------------------------------------------------
 	Initialize
 -------------------------------------------------------------------------------------- ###
 server = Express()
-
-server.set 'views'       , ﬁ.path.views
-server.set 'view engine' , 'jade'
-
-### --------------------------------------------------------------------------------------
-	Middleware
--------------------------------------------------------------------------------------- ###
 
 if ﬁ.settings.params
 	Params.extend server
@@ -29,20 +20,21 @@ if ﬁ.settings.params
 
 server.configure ->
 
-	# serve static files through the static folder
-	server.use '/static', Express.static ﬁ.path.static
+	@set 'views'       , ﬁ.path.views
+	@set 'view cache'  , ﬁ.conf.live
+	@set 'view engine' , 'jade'
 
-	# Allow the use of coffeescript files for JS / connect-assets
-	server.use Assets src: ﬁ.path.assets
+	# serve static files through the static folder
+	@use '/static', Express.static ﬁ.path.static
 
 	# parse body automagically depending on content
-	server.use Express.bodyParser()
+	@use Express.bodyParser()
 
 	# Add methods for requestbody validation
-	server.use Validator
+	@use Validator
 
 	# parse cookies
-	server.use Express.cookieParser ﬁ.settings.secret
+	@use Express.cookieParser ﬁ.settings.secret
 
 
 module.exports = server

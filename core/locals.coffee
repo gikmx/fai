@@ -8,7 +8,7 @@ locals = ﬁ.util.extend {}, ﬁ.settings.locals
 locals.pretty = not ﬁ.conf.live
 
 # Make ﬁ available for views
-locals.ﬁ = ﬁ
+#locals.ﬁ = ﬁ
 
 module.exports = locals
 

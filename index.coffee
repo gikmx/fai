@@ -26,23 +26,30 @@ path = './core/'
 # Helper methods
 ﬁ[name] = helper for name,helper of require "#{path}help"
 
+# Enable custom error with traceback
+ﬁ.error = ﬁ.require 'core', 'error'
+
 # Populate settings
-ﬁ.settings = require "#{path}settings"
+ﬁ.settings = ﬁ.require 'core', 'settings'
+
+# Populate locals
+ﬁ.locals = ﬁ.require 'core', 'locals'
 
 # Initialize middleware
 ﬁ.middleware = ﬁ.require 'core', 'middleware'
 
+# Initializae Asset managament
+ﬁ.assets = ﬁ.require 'core', 'assets'
+
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
-# Enable custom error with traceback
-ﬁ.error = ﬁ.require 'core', 'error'
 
 ﬁ.listen = ->
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
 	throw new ﬁ.error 'Middleware must be an array.' if not ﬁ.util.isArray ﬁ.middleware
-	for middleware in ﬁ.middleware.reverse()
+	for middleware in ﬁ.middleware
 		if not ﬁ.util.isFunction middleware
 			throw new ﬁ.error 'Middlewares can only be functions.'
 		ﬁ.server.use middleware
