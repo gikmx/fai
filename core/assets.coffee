@@ -2,13 +2,15 @@
 OS   = require 'os'
 FS   = require 'fs'
 Path = require 'path'
+Zlib = require 'zlib'
 
 # NPM modules
-Coffee = require 'coffee-script'
-Stylus = require 'stylus'
-Nib    = require 'nib'
-Uglify = require 'uglify-js'
-CSSo   = require 'csso'
+Coffee  = require 'coffee-script'
+Stylus  = require 'stylus'
+Nib     = require 'nib'
+Uglify  = require 'uglify-js'
+CSSo    = require 'csso'
+Express = require 'express'
 
 options = {}
 
@@ -41,13 +43,11 @@ store = (type)->
 	for name, content of type.file
 		try
 			name    = name.replace(/\//g,'_')
-			path    = Path.join options.tmpdir, "#{name}#{type.ext}"
 			content = type.run(content)
 			content = type.min(content) if ﬁ.conf.live
-			type.file[name] = content
-			ﬁ.log.trace "Stored asset in memory: #{name}#{type.ext}"
-			#ﬁ.log.debug "Compiled and stored asset: #{name}#{type.ext}"
-			#FS.writeFileSync type.file[name], content
+			type.file[name] = Path.join options.tmpdir, "#{name}#{type.ext}"
+			FS.writeFileSync type.file[name], content
+			ﬁ.log.trace "Compiled and stored asset: #{name}#{type.ext}"
 		catch e
 			throw new ﬁ.error "[#{name}] #{e.message}"
 
@@ -66,16 +66,28 @@ store(type) for name,type of types
 
 	return next() if ﬁ.util.isUndefined file[name]
 
-	response.end file[name]
+	accepts = request.headers['accept-encoding']
+	accepts = '' if not ﬁ.util.isString accepts
 
-	###
-	try
-		data = FS.readFileSync 'hola.txt'
-	catch e
-		ﬁ.log.error e.message
-		return next()
-	###
+	stream = FS.createReadStream file[name]
 
+	response.setHeader 'Vary'          , 'Accept-Encoding'
+
+	type = Express.mime.lookup(request.url) + '; charset=utf-8'
+	response.setHeader 'Content-Type'  , type
+
+	if accepts.match /\bgzip\b/
+		ﬁ.log.debug 'Encoding response with GZIP.'
+		response.setHeader 'Content-Encoding', 'gzip'
+		out = stream.pipe Zlib.createGzip()
+	else if accepts.match /\bdeflate\b/
+		ﬁ.log.debug 'Encoding response with Deflate.'
+		response.setHeader 'Content-Encoding', 'deflate'
+		out = stream.pipe Zlib.createDeflate()
+	else
+		out = stream
+
+	out.pipe response
 
 module.exports =
 

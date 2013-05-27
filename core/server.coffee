@@ -24,8 +24,12 @@ server.configure ->
 	@set 'view cache'  , ﬁ.conf.live
 	@set 'view engine' , 'jade'
 
-	# serve static files through the static folder
+	# serve gziped files through the static folder
+	@use Express.compress()
 	@use '/static', Express.static ﬁ.path.static
+
+	# allow PUT and DELETE methods
+	@use Express.methodOverride()
 
 	# parse body automagically depending on content
 	@use Express.bodyParser()

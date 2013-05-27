@@ -14,6 +14,8 @@ middleware.push (request, response, next)->
 	# public local variables
 	response.locals = ﬁ.locals
 
+	response.removeHeader 'X-Powered-By'
+
 	next()
 
 module.exports = middleware
