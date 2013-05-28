@@ -1,5 +1,7 @@
 Path   = require 'path'
+
 Log4JS = require 'log4js'
+Parser = require 'ua-parser'
 
 pattern = if ﬁ.conf.live then "%[%p [%d] %] %m" else "%[%p [%d] %x{mem} [%c] %] %m"
 
@@ -46,9 +48,27 @@ module.exports =
 	info : -> logger 'info' , arguments
 	warn : -> logger 'warn' , arguments
 	error: -> logger 'error', arguments
+
 	custom: ->
 		args   = Array::.slice.call arguments
 		method = args.shift()
 		caller = args.shift()
 		Log.category = caller
 		Log[method].apply Log, args
+
+	middleware: (request, response, next)->
+		ua = ''
+		if ﬁ.conf.live
+			ua = Parser.parse request.headers["user-agent"]
+			ua = [
+				ua.ua.toString(),
+				ua.os.toString()
+			].join ' - '
+
+		ﬁ.log.custom 'info', '', [
+			if ﬁ.conf.live then request.connection.remoteAddress else '',
+			ua,
+			request.method,
+			request.url
+		].join ' - '
+		next()

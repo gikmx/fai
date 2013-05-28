@@ -3,12 +3,12 @@ extends #{template}
 block ﬁ.style
 	each asset in assets.css
 		if asset
-			!= css(asset)
+			link(rel='stylesheet', href='#{css(asset)}')
 
 block ﬁ.script
 	each asset in assets.js
 		if asset
-			!= js(asset)
+			script(src='#{js(asset)}')
 
 block ﬁ.content
 	if locals.content

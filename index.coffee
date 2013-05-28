@@ -43,6 +43,7 @@ require "#{path}defaults"
 
 # Initialize middleware
 ﬁ.middleware = ﬁ.require 'core', 'middleware'
+ﬁ.middleware.push ﬁ.log.middleware
 
 # Initializae Asset managament
 ﬁ.assets = ﬁ.require 'core', 'assets'
@@ -54,14 +55,9 @@ require "#{path}defaults"
 ﬁ.routes = ﬁ.require 'core', 'routes'
 ﬁ.require 'backend', 'routes'
 
+
 ﬁ.listen = ->
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
-
-	throw new ﬁ.error 'Middleware must be an array.' if not ﬁ.util.isArray ﬁ.middleware
-	for middleware in ﬁ.middleware
-		if not ﬁ.util.isFunction middleware
-			throw new ﬁ.error 'Middlewares can only be functions.'
-		ﬁ.server.use middleware
 
 	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
 	ﬁ.log.trace "Listening on #{ﬁ.conf.url}"
