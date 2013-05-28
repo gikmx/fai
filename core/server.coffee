@@ -40,5 +40,4 @@ server.configure ->
 	# parse cookies
 	@use Express.cookieParser ﬁ.settings.secret
 
-
 module.exports = server

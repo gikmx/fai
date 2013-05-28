@@ -29,8 +29,14 @@ path = './core/'
 # Enable custom error with traceback
 ﬁ.error = ﬁ.require 'core', 'error'
 
+# Make sure default files exist
+require "#{path}defaults"
+
 # Populate settings
 ﬁ.settings = ﬁ.require 'core', 'settings'
+
+# Populate controls
+ﬁ.controls = ﬁ.requireFS ﬁ.path.controls
 
 # Populate locals
 ﬁ.locals = ﬁ.require 'core', 'locals'
@@ -40,10 +46,13 @@ path = './core/'
 
 # Initializae Asset managament
 ﬁ.assets = ﬁ.require 'core', 'assets'
+ﬁ.locals = ﬁ.util.extend ﬁ.locals, ﬁ.assets
 
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
+ﬁ.routes = ﬁ.require 'core', 'routes'
+ﬁ.require 'backend', 'routes'
 
 ﬁ.listen = ->
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
@@ -57,6 +66,3 @@ path = './core/'
 	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
 	ﬁ.log.trace "Listening on #{ﬁ.conf.url}"
 	ﬁ.isListening = true
-
-process.on 'uncaughtException', (error)->
-  console.log 'Caught exception: ', err

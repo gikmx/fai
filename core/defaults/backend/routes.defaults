@@ -1,0 +1,6 @@
+
+# rememeber that you can use as many arguments as you like after the route name,
+# and if you pass a string as argument, it will be treated as an auto renderer.
+
+ﬁ.routes.get '/', (request, response, next)->
+	response.end "Hello World!"

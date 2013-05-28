@@ -11,9 +11,6 @@ middleware.push (request, response, next)->
 		if ﬁ.conf.live then request.headers["user-agent"] else '',
 	].join ' '
 
-	# public local variables
-	response.locals = ﬁ.locals
-
 	response.removeHeader 'X-Powered-By'
 
 	next()

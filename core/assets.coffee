@@ -90,8 +90,5 @@ store(type) for name,type of types
 	out.pipe response
 
 module.exports =
-
-	js: (name)->
-		console.info name
-	css: (name)->
-		console.info name
+	js  : (name)-> "<script src='/assets/js/#{name}.js'>"
+	css : (name)-> "<link rel='stylesheet' href='/assets/css/#{name}.css'>"

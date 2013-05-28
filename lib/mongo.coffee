@@ -1,4 +1,7 @@
-MongoDB = require 'mongodb'
+MongoDB      = require 'mongodb'
+MongoConnect = require 'connect-mongo'
+Express      = require 'express'
+
 
 Mongo =
 
@@ -18,11 +21,24 @@ Mongo =
 			safe    : false
 
 		Mongo.database.open (error, db)->
-			throw new ﬁ.error error if error
-			#Log.debug 'Connected to MongoDB.'
+			throw new ﬁ.error error.message if error
+			ﬁ.log.trace 'Connected to MongoDB.'
 			Mongo.instance = db
 			callback.call Mongo
 
 		return Mongo
+
+	store: (callback)->
+		go = ->
+			MongoStore  = MongoConnect Express
+			Mongo.store = new MongoStore db: Mongo.instance
+			ﬁ.server.use Express.session
+				key    : ﬁ.conf.name
+				secret : ﬁ.settings.app.secret
+				cookie :
+					maxAge: new Date(Date.now() + (3600 * 1000 * 24 * 365))
+			callback.call Mongo, Mongo.store
+
+		if not Mongo.instance then return Mongo.Mongo(go) else go()
 
 module.exports = Mongo

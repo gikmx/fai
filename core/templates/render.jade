@@ -1,0 +1,15 @@
+extends #{template}
+
+block ﬁ.style
+	each asset in assets.css
+		if asset
+			!= css(asset)
+
+block ﬁ.script
+	each asset in assets.js
+		if asset
+			!= js(asset)
+
+block ﬁ.content
+	if locals.content
+		!= content
