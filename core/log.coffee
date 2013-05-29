@@ -1,27 +1,23 @@
+FS     = require 'fs'
 Path   = require 'path'
 
-Log4JS = require 'log4js'
 Parser = require 'ua-parser'
+Colors = require 'colors'
+console.info Colors
 
-pattern = if ﬁ.conf.live then "%[%p [%d] %] %m" else "%[%p [%d] %x{mem} [%c] %] %m"
+LEVEL = if ﬁ.conf.live then 'info' else 'trace'
 
-Log4JS.configure appenders: [
-	type: "console",
-	layout:
-		type: "pattern",
-		pattern: pattern,
-		tokens:
-			mem : ()->
-				mem = Math.ceil(process.memoryUsage().heapUsed / 1048576)
-				return "[#{mem}MB]"
-]
+getMemory  = ->
+	readable = (bytes)->
+		sz = ['B', 'KB', 'MB', 'GB','TB']
+		return 'N/A' if not ﬁ.util.isNumber bytes
+		i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+		return Math.round(bytes / Math.pow(1024, i), 2) + sz[i]
 
-Log4JS.loadAppender 'file'
-appender = Log4JS.appenders.file Path.join(ﬁ.path.root, 'output.log')
+	mem = []
+	mem.push readable(v) for k,v of process.memoryUsage()
+	return mem[0]
 
-Log4JS.addAppender appender, ﬁ.conf.name
-Log = Log4JS.getLogger ﬁ.conf.name
-Log.setLevel if ﬁ.conf.live then 'INFO' else 'TRACE'
 
 getCaller = ->
 	prepareStackTrace = Error.prepareStackTrace
@@ -37,10 +33,39 @@ getCaller = ->
 		break
 	return if not path then 'unknown' else path
 
+getDate = ->
+	d  = new Date()
+	to =  d.getTimezoneOffset()
+	hr = Math.floor(Math.abs(to)/60)
+	tz = d.getTime() + ((hr * (if to < 0 then 1 else -1)) * 3600000)
+	return  new Date(tz).toISOString().replace(/[TZ]/g, ' ').trim()
 
-logger = (method, args, caller)->
-	Log.category = getCaller() if not ﬁ.conf.live
-	Log[method].apply Log, Array.prototype.slice.call args
+logger = (method, args)->
+	args = Array::slice.call(args).join ' '
+
+	if not ﬁ.util.isString method
+		throw new ﬁ.error 'Invalid method.' if not ﬁ.util.isDictionary method
+		caller = method.caller
+		method = method.method
+
+	levels = ['trace', 'debug', 'info', 'warn', 'error']
+	colors = [Colors.cyan, Colors.blue, Colors.green, Colors.yellow, Colors.red]
+	index  = levels.indexOf method
+	allow  = levels.indexOf LEVEL
+	level  = levels[index][0].toUpperCase()
+	caller = (getCaller() or '') if not ﬁ.util.isString caller
+	caller = if caller.length > 0 then "[#{caller}]" else ''
+	throw new ﬁ.error "Invalid log method." if index is -1
+	return if index < allow
+
+	if ﬁ.conf.live
+		head = [level, getDate(), caller].join ' '
+		path  = Path.join(ﬁ.path.root,"#{ﬁ.conf.name}.log")
+		FS.appendFile path, "#{head} #{args}\n", (e)-> throw new ﬁ.error e.message if e
+	else
+		head = [level, getDate(), "[#{getMemory()}]", caller].join ' '
+		head = colors[index] head
+		process.stdout.write "#{head} #{args}\n"
 
 module.exports =
 	trace: -> logger 'trace', arguments
@@ -52,23 +77,15 @@ module.exports =
 	custom: ->
 		args   = Array::.slice.call arguments
 		method = args.shift()
-		caller = args.shift()
-		Log.category = caller
-		Log[method].apply Log, args
+		logger method, args
 
 	middleware: (request, response, next)->
-		ua = ''
+		parts = []
 		if ﬁ.conf.live
 			ua = Parser.parse request.headers["user-agent"]
-			ua = [
-				ua.ua.toString(),
-				ua.os.toString()
-			].join ' - '
+			parts.push request.connection.remoteAddress
+			parts.push [ua.ua.toString(), ua.os.toString()].join ', '
+		parts.push request.url
 
-		ﬁ.log.custom 'info', '', [
-			if ﬁ.conf.live then request.connection.remoteAddress else '',
-			ua,
-			request.method,
-			request.url
-		].join ' - '
+		ﬁ.log.custom (method: 'info', caller:request.method), parts.join ' - '
 		next()

@@ -1,6 +1,7 @@
 # Node modules
 FS   = require 'fs'
 Path = require 'path'
+Util = require 'util'
 
 # NPM modules
 Underscore = require 'underscore'
@@ -28,6 +29,5 @@ util.getDirContent = (root, ext)->
 		continue if Path.extname(file) isnt ext
 		result[Path.basename(file,ext)] = FS.readFileSync path, 'utf-8'
 	return result
-
 
 module.exports = util

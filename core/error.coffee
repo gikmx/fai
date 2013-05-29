@@ -42,7 +42,7 @@ Err.super_.prepareStackTrace = (error, frames)->
 		process.stdout.write = ((write)-> return (string, encoding, fd)->
 			buffer += string
 		)(process.stdout.write)
-		ﬁ.log.custom 'error', caller, error.message
+		ﬁ.log.custom (method: 'error', caller:caller), error.message
 		process.stdout.write = stdoutWrite
 	else
 		buffer = "ERROR: #{error.message}\n"

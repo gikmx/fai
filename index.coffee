@@ -55,10 +55,9 @@ require "#{path}defaults"
 ﬁ.routes = ﬁ.require 'core', 'routes'
 ﬁ.require 'backend', 'routes'
 
-
 ﬁ.listen = ->
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
 	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
-	ﬁ.log.trace "Listening on #{ﬁ.conf.url}"
+	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
 	ﬁ.isListening = true
