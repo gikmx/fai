@@ -40,9 +40,4 @@ server.configure ->
 	# parse cookies
 	@use Express.cookieParser ﬁ.settings.secret
 
-	for middleware in ﬁ.middleware
-		if not ﬁ.util.isFunction middleware
-			throw new ﬁ.error 'Expecting a Middleware function.'
-		@use middleware
-
 module.exports = server

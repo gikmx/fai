@@ -2,7 +2,6 @@ MongoDB      = require 'mongodb'
 MongoConnect = require 'connect-mongo'
 Express      = require 'express'
 
-
 Mongo =
 
 	server   : undefined
@@ -28,11 +27,11 @@ Mongo =
 
 		return Mongo
 
-	store: (callback)->
+	session: (callback)->
 		go = ->
 			MongoStore  = MongoConnect Express
 			Mongo.store = new MongoStore db: Mongo.instance
-			ﬁ.server.use Express.session
+			ﬁ.middleware Express.session
 				key    : ﬁ.conf.name
 				secret : ﬁ.settings.app.secret
 				cookie :

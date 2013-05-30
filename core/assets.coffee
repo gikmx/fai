@@ -3,7 +3,6 @@ OS   = require 'os'
 FS   = require 'fs'
 Path = require 'path'
 Zlib = require 'zlib'
-
 # NPM modules
 Coffee  = require 'coffee-script'
 Stylus  = require 'stylus'
@@ -52,23 +51,20 @@ store = (type)->
 			Zlib.gzip content, (error, content)->
 				throw new ﬁ.error error.message if error
 				FS.writeFileSync type.file[name] + '.gzip', content
-				ﬁ.log.trace "#{name}#{type.ext} gzipped and stored."
 
 			Zlib.deflate content, (error, content)->
 				throw new ﬁ.error error.message if error
 				FS.writeFileSync type.file[name] + '.deflate', content
-				ﬁ.log.trace "#{name}#{type.ext} deflated and stored."
 
-			FS.writeFile type.file[name], content, (error)->
-				throw new ﬁ.error error.message if error
-				ﬁ.log.trace "#{name}#{type.ext} stored."
+			FS.writeFileSync type.file[name]
+			ﬁ.log.trace "#{name}#{type.ext} stored."
 		catch e
 			throw new ﬁ.error "[#{name}] #{e.message}"
 
 store(type) for name,type of types
 regx = new RegExp ///^#{options.route}/(js|css)/(\S+\.\1)$///
 
-ﬁ.middleware.push (request, response, next)->
+ﬁ.middleware (request, response, next)->
 	match = regx.exec request.url
 
 	# continue if not a valid url.

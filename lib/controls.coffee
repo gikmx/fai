@@ -1,1 +1,0 @@
-module.exports = Config.requireFS Config.path.controls

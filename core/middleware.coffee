@@ -1,13 +1,17 @@
-middleware = []
+Colors = require 'colors'
 
-# This is the default behaviour for ﬂ, it can be overwritten.
-middleware.push (request, response, next)->
-	response.removeHeader 'X-Powered-By'
-	s = if request.url is '/' then 'root' else request.url
-		.replace(/[^a-z0-9]/g,'-')
-		.substr(1)
-	ﬁ.debug(s)
+middleware = ->
 
-	next()
+	middleware.all = [] if not middleware.all
+
+	for ware in Array::slice.call arguments
+		throw ﬁ.error 'Expecting a middleware function.' if not ﬁ.util.isFunction ware
+		middleware.all.push ware
+		f = ware.toString()
+			.replace(/^[^\{]+\{/,'')
+			.replace(/\s+/g,' ')
+			.substring(0, 33)
+
+		ﬁ.log.trace "Queued middleware.", Colors.grey("\"#{f}… \"")
 
 module.exports = middleware
