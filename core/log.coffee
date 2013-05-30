@@ -3,21 +3,13 @@ Path   = require 'path'
 
 Parser = require 'ua-parser'
 Colors = require 'colors'
-console.info Colors
 
 LEVEL = if ﬁ.conf.live then 'info' else 'trace'
 
 getMemory  = ->
-	readable = (bytes)->
-		sz = ['B', 'KB', 'MB', 'GB','TB']
-		return 'N/A' if not ﬁ.util.isNumber bytes
-		i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
-		return Math.round(bytes / Math.pow(1024, i), 2) + sz[i]
-
 	mem = []
-	mem.push readable(v) for k,v of process.memoryUsage()
+	mem.push ﬁ.util.bytes(v) for k,v of process.memoryUsage()
 	return mem[0]
-
 
 getCaller = ->
 	prepareStackTrace = Error.prepareStackTrace
@@ -66,6 +58,7 @@ logger = (method, args)->
 		head = [level, getDate(), "[#{getMemory()}]", caller].join ' '
 		head = colors[index] head
 		process.stdout.write "#{head} #{args}\n"
+
 
 module.exports =
 	trace: -> logger 'trace', arguments

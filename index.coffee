@@ -2,23 +2,24 @@
 HTTP = require 'http'
 OS   = require 'os'
 Path = require 'path'
+FS   = require 'fs'
 
 # I know, this is not recommended, but fuck it.
 GLOBAL.ﬁ = {}
 
 path = './core/'
 
-# Simple error handler, will throw errors until the real module is loaded.
-ﬁ.error  = -> new String "\n" + Array::.slice.call(arguments).join('\n') + "\n"
-
 # All paths used throughout ﬁ
 ﬁ.path  = require "#{path}path"
 
-# Underscore, on steroids.
-ﬁ.util  = require "#{path}util"
-
 # Core configuration
 ﬁ.conf  = require "#{path}conf"
+
+# Debugging methods
+ﬁ.debug = require "#{path}debug"
+
+# Underscore, on steroids.
+ﬁ.util  = require "#{path}util"
 
 # Enable logs
 ﬁ.log = require "#{path}log"
@@ -61,3 +62,4 @@ require "#{path}defaults"
 	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
 	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
 	ﬁ.isListening = true
+	ﬁ.debug('listen')

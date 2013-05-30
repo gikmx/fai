@@ -37,6 +37,7 @@ types =
 			str.figure_out_scope()
 			str.compute_char_frequency()
 			str.mangle_names()
+			code = undefined
 			return str.print_to_string()
 
 store = (type)->
@@ -45,17 +46,31 @@ store = (type)->
 			name    = name.replace(/\//g,'_')
 			content = type.run(content)
 			content = type.min(content) if ﬁ.conf.live
+			content = new Buffer(content, 'utf-8')
 			type.file[name] = Path.join options.tmpdir, "#{name}#{type.ext}"
-			FS.writeFileSync type.file[name], content
-			ﬁ.log.trace "Compiled and stored asset: #{name}#{type.ext}"
+
+			Zlib.gzip content, (error, content)->
+				throw new ﬁ.error error.message if error
+				FS.writeFileSync type.file[name] + '.gzip', content
+				ﬁ.log.trace "#{name}#{type.ext} gzipped and stored."
+
+			Zlib.deflate content, (error, content)->
+				throw new ﬁ.error error.message if error
+				FS.writeFileSync type.file[name] + '.deflate', content
+				ﬁ.log.trace "#{name}#{type.ext} deflated and stored."
+
+			FS.writeFile type.file[name], content, (error)->
+				throw new ﬁ.error error.message if error
+				ﬁ.log.trace "#{name}#{type.ext} stored."
 		catch e
 			throw new ﬁ.error "[#{name}] #{e.message}"
 
 store(type) for name,type of types
+regx = new RegExp ///^#{options.route}/(js|css)/(\S+\.\1)$///
 
 ﬁ.middleware.push (request, response, next)->
-	regx = new RegExp ///^#{options.route}/(js|css)/(\S+\.\1)$///
-	match = regx.exec(request.url)
+	match = regx.exec request.url
+
 	# continue if not a valid url.
 	return next() if not match
 
@@ -63,31 +78,33 @@ store(type) for name,type of types
 	ext  = match[1]
 	file = types[ext].file
 	name = match[2].replace(".#{ext}", '').replace(/\//g,'_')
-
 	return next() if ﬁ.util.isUndefined file[name]
 
 	accepts = request.headers['accept-encoding']
 	accepts = '' if not ﬁ.util.isString accepts
 
-	stream = FS.createReadStream file[name]
+	type = Express.mime.lookup(request.url) + '; charset=utf-8'
 
 	response.setHeader 'Vary'          , 'Accept-Encoding'
-
-	type = Express.mime.lookup(request.url) + '; charset=utf-8'
 	response.setHeader 'Content-Type'  , type
 
-	if accepts.match /\bgzip\b/
-		ﬁ.log.debug 'Encoding response with GZIP.'
-		response.setHeader 'Content-Encoding', 'gzip'
-		out = stream.pipe Zlib.createGzip()
-	else if accepts.match /\bdeflate\b/
-		ﬁ.log.debug 'Encoding response with Deflate.'
-		response.setHeader 'Content-Encoding', 'deflate'
-		out = stream.pipe Zlib.createDeflate()
-	else
-		out = stream
+	file   = file[name]
+	encode = ''
 
-	out.pipe response
+	if accepts.match /\bgzip\b/ then encode = 'gzip'
+	else if accepts.match /\bdeflate\b/ then encode = 'deflate'
+
+	if encode
+		response.setHeader 'Content-Encoding', encode
+		ext = '.' + encode
+	else
+		ext = ''
+
+	FS.readFile file + ext, (err, data)->
+		throw new ﬁ.error err.message if err
+		response.send data
+
+		ext = file = name = accepts = type = encode = request = undefined
 
 module.exports =
 	js  : (name)-> "/assets/js/#{name}.js"

@@ -30,4 +30,10 @@ util.getDirContent = (root, ext)->
 		result[Path.basename(file,ext)] = FS.readFileSync path, 'utf-8'
 	return result
 
+util.bytes = (bytes)->
+	sz = ['B', 'KB', 'MB', 'GB','TB']
+	return 0 if not bytes
+	i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+	return Math.round(bytes / Math.pow(1024, i), 2) + sz[i]
+
 module.exports = util

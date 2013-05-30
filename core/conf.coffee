@@ -5,7 +5,7 @@ Path = require 'path'
 Args = require 'named-argv'
 
 # a port number must be provided
-if not ﬁ.util.isString Args.opts.port or not parseInt(Args.opts.port)
+if typeof Args.opts.port isnt 'string' or not parseInt(Args.opts.port)
 	throw new ﬁ.error 'Expecting a port number.'
 
 conf      = {}
@@ -19,5 +19,7 @@ conf.proto = 'http'
 conf.host  = '127.0.0.1'
 conf.port  = parseInt Args.opts.port
 conf.url   = "#{conf.proto}://#{conf.host}:#{conf.port}"
+
+conf.debug = typeof __DEBUG__ isnt 'undefined'
 
 module.exports = conf

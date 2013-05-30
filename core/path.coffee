@@ -13,6 +13,7 @@ path.core_defaults  = Path.join path.core , 'defaults'
 
 path.lib      = Path.join path.self , 'lib'
 path.app      = Path.join path.root , 'app'
+path.debug    = Path.join path.root , 'debug'
 
 path.frontend = Path.join path.app , 'frontend'
 path.backend  = Path.join path.app , 'backend'
