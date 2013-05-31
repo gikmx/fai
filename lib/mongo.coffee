@@ -29,13 +29,16 @@ Mongo =
 
 	session: (callback)->
 		go = ->
+
 			MongoStore  = MongoConnect Express
 			Mongo.store = new MongoStore db: Mongo.instance
-			ﬁ.middleware Express.session
+			session = Express.session
 				key    : ﬁ.conf.name
 				secret : ﬁ.settings.app.secret
+				store  : Mongo.store
 				cookie :
 					maxAge: new Date(Date.now() + (3600 * 1000 * 24 * 365))
+			ﬁ.server.use session
 			callback.call Mongo, Mongo.store
 
 		if not Mongo.instance then return Mongo.Mongo(go) else go()
