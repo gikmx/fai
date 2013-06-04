@@ -1,12 +1,13 @@
 extends #{template}
 
 block ﬁ.style
-	link(rel='stylesheet', href='#{css('template/template')}')
+	link(rel='stylesheet', href='#{css("template/template")}')
 	each asset in assets.css
 		if asset
 			link(rel='stylesheet', href='#{css(asset)}')
 
 block ﬁ.script
+	script(src='#{js("template/template")}')
 	each asset in assets.js
 		if asset
 			script(src='#{js(asset)}')

@@ -25,7 +25,12 @@ files = {}
 props =
 	css:
 		ext  : '.css'
-		run  : (str)-> Stylus(str).use(do Nib).render()
+		run  : (str, path)->
+			paths = [ﬁ.path.assets_css]
+			paths.push path if ﬁ.util.isString path
+			Stylus(str)
+				.set('paths', paths)
+				.use(do Nib).render()
 		min  : (str)-> CSSo.justDoIt str
 
 	js:
@@ -66,13 +71,15 @@ for type, ext of (css:'.styl', js:'.coffee')
 	prop = props[type]
 	ﬁ.util.dirwalk path, (filename)->
 		return if Path.extname(filename) isnt ext
+		context  = Path.join path, Path.dirname(filename.replace(path,'')).substring(1)
 		content  = FS.readFileSync filename, 'utf-8'
-		filename = filename.replace(path, '')
+		filename = filename
+			.replace(path, '')
 			.substring(1)
 			.replace(/\//g,'_')
 			.replace(ext, prop.ext)
 		# parse and obtain result
-		content  = prop.run(content)
+		content  = prop.run(content, context)
 		# minify content
 		content  = prop.min(content) if ﬁ.conf.live
 		# replace original content, with a pathname.
