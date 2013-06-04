@@ -33,7 +33,7 @@ Err.super_.prepareStackTrace = (error, frames)->
 
 	spc = {}
 	for i in Object.keys lines[0]
-		spc[i] = ﬁ.util.max ﬁ.util.map(lines, (line)-> line[i].length)
+		spc[i] = Math.max.apply null, lines.map (line)-> line[i].length
 
 	buffer = ''
 	if this::fi

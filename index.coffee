@@ -9,6 +9,8 @@ GLOBAL.ﬁ = {}
 
 path = './core/'
 
+ﬁ.about = require './package'
+
 # All paths used throughout ﬁ
 ﬁ.path  = require "#{path}path"
 
@@ -59,6 +61,7 @@ require "#{path}defaults"
 
 # Initializae Asset managament
 ﬁ.assets = ﬁ.require 'core', 'assets'
+
 ﬁ.locals = ﬁ.util.extend ﬁ.locals, ﬁ.assets
 
 # Setup server

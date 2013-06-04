@@ -79,6 +79,5 @@ module.exports =
 			parts.push request.connection.remoteAddress
 			parts.push [ua.ua.toString(), ua.os.toString()].join ', '
 		parts.push request.url
-
 		ﬁ.log.custom (method: 'info', caller:request.method), parts.join ' - '
 		next()

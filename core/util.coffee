@@ -6,7 +6,16 @@ Util = require 'util'
 # NPM modules
 Underscore = require 'underscore'
 
-util = Underscore.extend {}, Underscore
+util = {}
+
+util.extend = Underscore.extend
+
+util.isObject    = Underscore.isObject
+util.isArray     = Underscore.isArray
+util.isFunction  = Underscore.isFunction
+util.isString    = Underscore.isString
+util.isNumber    = Underscore.isNumber
+util.isUndefined = Underscore.isUndefined
 
 util.isDictionary = (o)->
 	util.isObject(o)    and not
@@ -15,20 +24,16 @@ util.isDictionary = (o)->
 	util.isString(o)    and not
 	util.isNumber(o)
 
-# get files from specified directory and retrieve their content
-util.getDirContent = (root, ext)->
-	ext    = ﬁ.conf.ext if not ext
-	result = {}
-	try
-		dir = FS.readdirSync root
-	catch e
-		throw new ﬁ.error e.message
-	return result if not util.isString root
-	for file in dir
-		path = Path.join root, file
-		continue if Path.extname(file) isnt ext
-		result[Path.basename(file,ext)] = FS.readFileSync path, 'utf-8'
-	return result
+util.dirwalk = (path, callback)->
+	throw new ﬂ.error "Expecting a callback function" if not util.isFunction(callback)
+	if not FS.existsSync path or not FS.statSync(path).isDirectory()
+		throw new ﬁ.error "Invalid Directory. #{path.replace(ﬁ.path.root, '')}"
+	for nodeName in FS.readdirSync path
+		nodePath = Path.join path, nodeName
+		if FS.statSync(nodePath).isDirectory()
+			util.dirwalk(nodePath, callback)
+			continue
+		callback.call null, nodePath
 
 util.bytes = (bytes)->
 	sz = ['B', 'KB', 'MB', 'GB','TB']
