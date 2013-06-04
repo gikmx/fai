@@ -5,15 +5,16 @@ OS   = require 'os'
 Routes   = {}
 template = {}
 
-template.root = Path.join ﬁ.path.frontend, 'template.jade'
+path = Path.join ﬁ.path.views, 'template'
+
+template.root = Path.join path,'template.jade'
 throw new ﬁ.error "Missing template." if not FS.existsSync template.root
 
-# This horrible hack exist, because Jade does not support dynamic include
+# This horrible hack exists, because Jade does not support dynamic includes
 template.render = Path.join ﬁ.path.core_templates, 'render.jade'
 throw new ﬁ.error "Missing Render template." if not FS.existsSync template.render
-
 cont = FS.readFileSync template.render, 'utf-8'
-path = Path.relative(OS.tmpDir(), ﬁ.path.frontend) + Path.sep + 'template'
+path = Path.join Path.relative(OS.tmpDir(), path), 'template'
 cont = cont.replace '#{template}', path
 template.render = Path.join OS.tmpDir(), 'render.jade'
 try

@@ -1,6 +1,7 @@
 extends #{template}
 
 block ﬁ.style
+	link(rel='stylesheet', href='#{css('template/template')}')
 	each asset in assets.css
 		if asset
 			link(rel='stylesheet', href='#{css(asset)}')

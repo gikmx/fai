@@ -42,19 +42,19 @@ props =
 			return str.print_to_string()
 
 store = (path, filename, content)->
-	logs = "Stored #{filename}"
+	logs = "Written #{filename}"
 
 	Zlib.deflate content, (error, buffer)->
 		throw new ﬁ.error error.message if error
 		FS.writeFile path + '.deflate', buffer, (error)->
 			throw new ﬂ.erro error.message if error
-			ﬁ.log.trace logs + " [deflate]"
+			ﬁ.log.trace logs + ".deflate"
 
 	Zlib.gzip content, (error, buffer)->
 		throw new ﬁ.error error.message if error
 		FS.writeFile path + '.gzip', buffer, (error)->
 			throw new ﬁ.error error.message if error
-			ﬁ.log.trace logs + " [gzip]"
+			ﬁ.log.trace logs + ".gzip"
 	try
 		FS.writeFileSync path, content, encoding:'utf8'
 	catch e
@@ -67,7 +67,10 @@ for type, ext of (css:'.styl', js:'.coffee')
 	ﬁ.util.dirwalk path, (filename)->
 		return if Path.extname(filename) isnt ext
 		content  = FS.readFileSync filename, 'utf-8'
-		filename = filename.replace(path, '').substring(1).replace(/\//g,'_')
+		filename = filename.replace(path, '')
+			.substring(1)
+			.replace(/\//g,'_')
+			.replace(ext, prop.ext)
 		# parse and obtain result
 		content  = prop.run(content)
 		# minify content
@@ -83,6 +86,7 @@ content = props = null
 ﬁ.middleware (request, response, next)->
 	# continue if not a valid url.
 	return next() if not (match = options.regex.exec request.url)
+
 
 	# houston we have a match, but, does the file exist?
 	ext  = match[1]
