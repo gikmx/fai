@@ -5,6 +5,7 @@ Util = require 'util'
 
 # NPM modules
 Underscore = require 'underscore'
+UUID       = require 'node-uuid'
 
 util = {}
 
@@ -40,5 +41,7 @@ util.bytes = (bytes)->
 	return 0 if not bytes
 	i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
 	return Math.round(bytes / Math.pow(1024, i), 2) + sz[i]
+
+util.uuid = UUID.v4
 
 module.exports = util
