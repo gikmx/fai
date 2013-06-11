@@ -12,6 +12,7 @@ GLOBAL.ﬁ = {}
 path     = './core/'
 
 ﬁ.about = require './package'
+ﬁ.about.hector = "Héctor Menéndez Rivera"
 
 # All paths used throughout ﬁ
 ﬁ.path  = require "#{path}path"
