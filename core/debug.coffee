@@ -18,7 +18,7 @@ try
 	{write} = require Path.join(ﬁ.path.lib, 'debug')
 	memer   = require 'memwatch'
 catch e
-	throw ﬁ.error 'Debug modules are not available.'
+	throw new Error 'Debug modules are not available: ' + e.message
 
 memer.on 'leak', (info)->
 	infos = []

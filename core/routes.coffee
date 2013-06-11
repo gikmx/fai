@@ -33,12 +33,12 @@ auto = (name)->
 		break
 	if not ﬁ.util.isFunction control
 		throw new ﬁ.error "Expecting a control function for #{name}."
-	ﬁ.log.trace "Loaded #{name} control."
+	ﬁ.log.trace "Control: #{name}."
 
 	# if no view is found, return control only
 	view = (Path.join ﬁ.path.views, name) + '.jade'
 	if not FS.existsSync view
-		ﬁ.log.warn "No view defined for #{name}."
+		ﬁ.log.warn "No view for #{name}."
 		return control
 
 	# View exists, check if there are assets related to it
@@ -52,19 +52,28 @@ auto = (name)->
 		part = parts.join Path.sep
 		if FS.existsSync Path.join(ﬁ.path.assets_css,part) + '.styl'
 			assets.css.push part
-			ﬁ.log.trace "Appended #{name} style asset."
+			ﬁ.log.trace "Style: #{name}."
 		if FS.existsSync Path.join(ﬁ.path.assets_js,part) + ﬁ.conf.ext
 			assets.js.push part
-			ﬁ.log.trace "Appended #{name} script asset."
+			ﬁ.log.trace "Script: #{name}."
 
 	return (request, response, next)->
-		control.call ﬁ.server, request, response, ->
-			response.render view, ﬁ.locals, (error, content)->
+		render = response.render
+		response.render = (locals)->
+
+			locals = {} if not ﬁ.util.isDictionary(locals)
+			locals = ﬁ.util.extend {}, ﬁ.locals, locals
+
+			render.call response, view, locals, (error, content)->
 				throw new ﬁ.error error.message if error
-				ﬁ.log.trace "Loaded #{name} view."
-				response.render template.render, ﬁ.util.extend {}, ﬁ.locals,
+				ﬁ.log.trace "View: #{name}."
+				render.call response, template.render,
+					css     : ﬁ.locals.css
+					js      : ﬁ.locals.js
 					content : content
 					assets  : assets
+
+		control.call ﬁ.server, request, response, next
 
 
 render = ->
@@ -89,7 +98,7 @@ render = ->
 
 	controls.unshift(route)
 	ﬁ.server[method].apply ﬁ.server, controls
-	ﬁ.log.trace "Route: #{method.toUpperCase()} #{route}"
+	ﬁ.log.trace "#{method.toUpperCase()} #{route}"
 
 module.exports =
 	get    : -> render.apply this, ['get'].concat Array::slice.call arguments

@@ -1,3 +1,5 @@
+"use strict"
+
 # Node modules
 HTTP = require 'http'
 OS   = require 'os'
@@ -6,8 +8,8 @@ FS   = require 'fs'
 
 # I know, this is not recommended, but fuck it.
 GLOBAL.ﬁ = {}
-
-path = './core/'
+ﬁ.error  = -> new String "\n" + Array::slice.call(arguments).join('\n') + "\n"
+path     = './core/'
 
 ﬁ.about = require './package'
 
@@ -47,21 +49,22 @@ require "#{path}defaults"
 # Initialize middleware
 ﬁ.middleware = ﬁ.require 'core', 'middleware'
 ﬁ.middleware (request, response, next)->
-	response.removeHeader 'X-Powered-By'
+    response.removeHeader 'X-Powered-By'
 
-	if not ﬁ.conf.live
-		s = if request.url is '/' then 'root' else request.url
-			.replace(/[^a-z0-9]/g,'-')
-			.substr(1)
-		ﬁ.debug(s)
+    if not ﬁ.conf.live
+        s = if request.url is '/' then 'root' else request.url
+            .replace(/[^a-z0-9]/g,'-')
+            .substr(1)
+        ﬁ.debug(s)
 
-	next()
+    next()
 
 ﬁ.middleware ﬁ.log.middleware
 
 # Initializae Asset managament
 ﬁ.assets = ﬁ.require 'core', 'assets'
 
+# Locals handling
 ﬁ.locals = ﬁ.util.extend ﬁ.locals, ﬁ.assets
 
 # Setup server
@@ -69,21 +72,21 @@ require "#{path}defaults"
 
 # Main
 ﬁ.listen = ->
-	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
+    throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
-	for middleware in ﬁ.middleware.all
-		if not ﬁ.util.isFunction middleware
-			throw new ﬁ.error 'Expecting a Middleware function.'
-		ﬁ.server.use middleware
+    for middleware in ﬁ.middleware.all
+        if not ﬁ.util.isFunction middleware
+            throw new ﬁ.error 'Expecting a Middleware function.'
+        ﬁ.server.use middleware
 
-	ﬁ.routes = ﬁ.require 'core', 'routes'
-	ﬁ.require 'backend', 'routes'
+    ﬁ.routes = ﬁ.require 'core', 'routes'
+    ﬁ.require 'backend', 'routes'
 
-	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
-	ﬁ.isListening = true
-	ﬁ.debug('listen')
-	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
+    HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
+    ﬁ.isListening = true
+    ﬁ.debug('listen')
+    ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
 
-	ﬁ.middleware = undefined
-	ﬁ.routes     = undefined
-	ﬁ.server     = undefined
+    ﬁ.middleware = undefined
+    ﬁ.routes     = undefined
+    ﬁ.server     = undefined

@@ -47,7 +47,7 @@ props =
 			return str.print_to_string()
 
 store = (path, filename, content)->
-	logs = "Written #{filename}"
+	logs = "#{filename}"
 
 	Zlib.deflate content, (error, buffer)->
 		throw new ﬁ.error error.message if error

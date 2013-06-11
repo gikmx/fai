@@ -10,8 +10,8 @@ middleware = ->
 		f = ware.toString()
 			.replace(/^[^\{]+\{/,'')
 			.replace(/\s+/g,' ')
-			.substring(0, 33)
+			.substring(0, 50)
 
-		ﬁ.log.trace "Queued middleware.", Colors.grey("\"#{f}… \"")
+		ﬁ.log.trace Colors.grey("\"#{f}… \"")
 
 module.exports = middleware
