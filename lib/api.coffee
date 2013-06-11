@@ -115,12 +115,17 @@ request = (method, url, options, callback)->
 	url     = [ﬁ.conf.url, ﬁ.conf.api.substring(1), url].join('/')
 		
 	onResponse = (error, response, body)->
-		return callback.call(response, error, null) if error
-
-		body = JSON.parse body
-
-		return callback.call(response, body , null) if response.statusCode isnt 200
-		return callback.call(response, null , body)
+		return callback.call(response, error) if error
+		if not ﬁ.util.isString(body) and not ﬁ.util.isArray(body)
+			return callback.call response, 'Invalid response body'
+		if ﬁ.util.isString(body)
+			try
+				body = JSON.parse body
+			catch e
+				ﬁ.log.warn "Response body was not parsed."
+		body = [body] if not ﬁ.util.isArray(body)
+		return callback.call(response, body) if response.statusCode isnt 200
+		return callback.call(response, null, body)
 
 	if method is 'GET' or method is 'DELETE'
 		challenge = [method, url].join(';')
