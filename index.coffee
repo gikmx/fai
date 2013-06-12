@@ -87,6 +87,7 @@ require "#{path}defaults"
     ﬁ.debug('listen')
     ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
 
+    ﬁ.routes = ﬁ.routes.uri
+
     ﬁ.middleware = undefined
-    ﬁ.routes     = undefined
     ﬁ.server     = undefined

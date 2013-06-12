@@ -123,9 +123,11 @@ request = (method, url, options, callback)->
 				body = JSON.parse body
 			catch e
 				ﬁ.log.warn "Response body was not parsed."
-		body = [body] if not ﬁ.util.isArray(body)
-		return callback.call(response, body) if response.statusCode isnt 200
-		return callback.call(response, null, body)
+		if response.statusCode isnt 200
+			body = [body] if not ﬁ.util.isArray(body)
+			callback.call(response, body)
+		else
+			callback.call(response, null, body.response)
 
 	if method is 'GET' or method is 'DELETE'
 		challenge = [method, url].join(';')

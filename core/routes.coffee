@@ -4,6 +4,7 @@ OS   = require 'os'
 
 Routes   = {}
 template = {}
+URIs     = {}
 
 path = Path.join ﬁ.path.views, 'template'
 
@@ -92,7 +93,9 @@ render = ->
 
 	# convert each remaining argument
 	for handle in handles
-		handle = auto(handle) if ﬁ.util.isString handle
+		if ﬁ.util.isString handle
+			URIs[handle] = route if not ﬁ.util.isString URIs[handle]
+			handle = auto(handle) 
 		throw new ﬁ.error 'Invalid handle.' if not ﬁ.util.isFunction handle
 		controls.push handle
 
@@ -101,6 +104,7 @@ render = ->
 	ﬁ.log.trace "#{method.toUpperCase()} #{route}"
 
 module.exports =
+	uri    : URIs
 	get    : -> render.apply this, ['get'].concat Array::slice.call arguments
 	post   : -> render.apply this, ['post'].concat Array::slice.call arguments
 	put    : -> render.apply this, ['put'].concat Array::slice.call arguments
