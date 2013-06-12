@@ -13,7 +13,7 @@ conf      = {}
 conf.live = process.env.NODE_ENV is 'production'
 conf.env  = if conf.live then 'production' else 'development'
 
-conf.name  = Path.basename ﬁ.path.root
+conf.name  = Path.basename(ﬁ.path.root).replace /[^a-zA-Z0-9]/g,'_'
 conf.ext   = Path.extname __filename
 conf.proto = 'http'
 conf.host  = '127.0.0.1'
