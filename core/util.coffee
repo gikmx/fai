@@ -36,6 +36,22 @@ util.array = {}
 
 util.array.unique = Underscore.uniq
 
+util.dirRemove = (path) ->
+	try
+		files = FS.readdirSync(path)
+	catch e
+		throw new ﬁ.error e.message
+	if files.length > 0
+		i = 0
+		while i < files.length
+			file = path + "/" + files[i]
+			if FS.statSync(file).isFile()
+				FS.unlinkSync file
+			else
+				rmRf file
+			i++
+	FS.rmdirSync path
+
 util.dirwalk = (path, callback)->
 	throw new ﬂ.error "Expecting a callback function" if not util.isFunction(callback)
 	if not FS.existsSync path or not FS.statSync(path).isDirectory()

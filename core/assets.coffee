@@ -15,10 +15,12 @@ Express = require 'express'
 options = {}
 
 options.route  = '/assets'
-options.tmpdir = OS.tmpDir() + options.route.substr 1
+options.tmpdir = Path.join OS.tmpDir(), 'fi-assets'
 options.regex  = new RegExp ///^#{options.route}/(js|css)/(\S+\.\1)$///
 
-FS.mkdirSync options.tmpdir if not FS.existsSync options.tmpdir
+ﬁ.util.dirRemove options.tmpdir if FS.existsSync options.tmpdir
+FS.mkdirSync options.tmpdir
+ﬁ.log.trace "Using #{options.tmpdir}"
 
 files = {}
 
@@ -52,7 +54,7 @@ store = (path, filename, content)->
 	Zlib.deflate content, (error, buffer)->
 		throw new ﬁ.error error.message if error
 		FS.writeFile path + '.deflate', buffer, (error)->
-			throw new ﬂ.erro error.message if error
+			throw new ﬂ.error error.message if error
 			ﬁ.log.trace logs + ".deflate"
 
 	Zlib.gzip content, (error, buffer)->
@@ -61,7 +63,7 @@ store = (path, filename, content)->
 			throw new ﬁ.error error.message if error
 			ﬁ.log.trace logs + ".gzip"
 	try
-		FS.writeFileSync path, content, encoding:'utf8'
+		FS.writeFileSync path, content
 	catch e
 		throw new ﬁ.error e.message
 	ﬁ.log.trace logs
