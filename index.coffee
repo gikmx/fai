@@ -40,54 +40,65 @@ require "#{path}defaults"
 # Populate settings
 ﬁ.settings = ﬁ.require 'core', 'settings'
 
-# Populate controls
-ﬁ.controls = ﬁ.requireFS ﬁ.path.controls
-
 # Populate locals
 ﬁ.locals = ﬁ.require 'core', 'locals'
 
 # Initialize middleware
 ﬁ.middleware = ﬁ.require 'core', 'middleware'
 ﬁ.middleware (request, response, next)->
-    response.removeHeader 'X-Powered-By'
+	response.removeHeader 'X-Powered-By'
 
-    if not ﬁ.conf.live
-        s = if request.url is '/' then 'root' else request.url
-            .replace(/[^a-z0-9]/g,'-')
-            .substr(1)
-        ﬁ.debug(s)
+	return next() if ﬁ.conf.live
 
-    next()
+	s = if request.url is '/' then 'root' else request.url
+		.replace(/[^a-z0-9]/g,'-')
+		.substr(1)
+	ﬁ.debug(s)
 
+	next()
+
+# Enable logs on every request
 ﬁ.middleware ﬁ.log.middleware
 
 # Initializae Asset managament
 ﬁ.assets = ﬁ.require 'core', 'assets'
 
-# Locals handling
-ﬁ.locals = ﬁ.util.extend ﬁ.locals, ﬁ.assets
+# Add assets handling functions to locals
+ﬁ.locals.css = ﬁ.assets.uri 'css'
+ﬁ.locals.js  = ﬁ.assets.uri 'js'
 
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
+# Setup routes
+ﬁ.routes = ﬁ.require 'core', 'routes'
+
+ﬁ.bundles = {}
+
 # Main
 ﬁ.listen = ->
-    throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
+	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
-    for middleware in ﬁ.middleware.all
-        if not ﬁ.util.isFunction middleware
-            throw new ﬁ.error 'Expecting a Middleware function.'
-        ﬁ.server.use middleware
+	for middleware in ﬁ.middleware.all
+		if not ﬁ.util.isFunction middleware
+			throw new ﬁ.error 'Expecting a Middleware function.'
+		ﬁ.server.use middleware
 
-    ﬁ.routes = ﬁ.require 'core', 'routes'
-    ﬁ.require 'backend', 'routes'
+	for route in ﬁ.routes
+		bundle = "[function]"
+		if route.bundle
+			bundle = route.bundle
+			ﬁ.bundles[bundle] = route.route
+		route.controls.unshift route.route
+		ﬁ.server[route.method].apply ﬁ.server, route.controls
+		ﬁ.log.custom (method:'info', caller:'fi'),
+			route.method.toUpperCase(), "\"#{route.route}\" > #{bundle}"
 
-    HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
-    ﬁ.isListening = true
-    ﬁ.debug('listen')
-    ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
+	ﬁ.middleware = undefined
+	ﬁ.routes     = undefined
 
-    ﬁ.routes = ﬁ.routes.uri
+	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
+	ﬁ.isListening = true
+	ﬁ.debug('listen')
 
-    ﬁ.middleware = undefined
-    ﬁ.server     = undefined
+	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"

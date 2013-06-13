@@ -2,110 +2,50 @@ Path = require 'path'
 FS   = require 'fs'
 OS   = require 'os'
 
-Routes   = {}
-template = {}
-URIs     = {}
+Routes   = []
 
-path = Path.join ﬁ.path.views, 'template'
+Bundles = ﬁ.require 'core', 'bundles'
 
-template.root = Path.join path,'template.jade'
-throw new ﬁ.error "Missing template." if not FS.existsSync template.root
+enable = ->
 
-# This horrible hack exists, because Jade does not support dynamic includes
-template.render = Path.join ﬁ.path.core_templates, 'render.jade'
-throw new ﬁ.error "Missing Render template." if not FS.existsSync template.render
-cont = FS.readFileSync template.render, 'utf-8'
-path = Path.join Path.relative(OS.tmpDir(), path), 'template'
-cont = cont.replace '#{template}', path
-template.render = Path.join OS.tmpDir(), 'render.jade'
-try
-	FS.writeFileSync template.render, cont
-catch e
-	throw new ﬁ.error e.message
-ﬁ.log.warn 'Saved render template into tmpdir, due to ugly bug.'
+	controls = Array::slice.call arguments
+	method  = controls.shift()
+	route   = controls.shift()
 
-auto = (name)->
-	# Get control name from path
-	control = ﬁ.controls
-	for part in name.split Path.sep
-		control = control[part]
-		continue if not ﬁ.util.isUndefined control
-		control = false
-		break
-	if not ﬁ.util.isFunction control
-		throw new ﬁ.error "Expecting a control function for #{name}."
-	ﬁ.log.trace "Control: #{name}."
-
-	# if no view is found, return control only
-	view = (Path.join ﬁ.path.views, name) + '.jade'
-	if not FS.existsSync view
-		ﬁ.log.warn "No view for #{name}."
-		return control
-
-	# View exists, check if there are assets related to it
-	assets =
-		css : []
-		js  : []
-
-	parts = []
-	for part in name.split Path.sep
-		parts.push part
-		part = parts.join Path.sep
-		if FS.existsSync Path.join(ﬁ.path.assets_css,part) + '.styl'
-			assets.css.push part
-			ﬁ.log.trace "Style: #{name}."
-		if FS.existsSync Path.join(ﬁ.path.assets_js,part) + ﬁ.conf.ext
-			assets.js.push part
-			ﬁ.log.trace "Script: #{name}."
-
-	return (request, response, next)->
-		render = response.render
-		response.render = (locals)->
-
-			locals = {} if not ﬁ.util.isDictionary(locals)
-			locals = ﬁ.util.extend {}, ﬁ.locals, locals
-
-			render.call response, view, locals, (error, content)->
-				throw new ﬁ.error error.message if error
-				ﬁ.log.trace "View: #{name}."
-				render.call response, template.render,
-					css     : ﬁ.locals.css
-					js      : ﬁ.locals.js
-					content : content
-					assets  : assets
-
-		control.call ﬁ.server, request, response, next
-
-
-render = ->
-	handles = Array::slice.call arguments
-	method  = handles.shift()
-	route   = handles.shift()
+	bundle = null
 
 	throw new ﬁ.error 'Expecting a method.' if not ﬁ.util.isString method
 	throw new ﬁ.error 'Expecting a route.' if not ﬁ.util.isString route
-	throw new ﬁ.error 'Expecting at least one handle.' if handles.length < 1
+	throw new ﬁ.error 'Expecting at least one controller.' if controls.length < 1
 
 	throw new ﬁ.error 'Invalid method.' if not ﬁ.util.isFunction ﬁ.server[method]
 	throw new ﬁ.error 'Invalid route.' if route[0] isnt '/'
 
-	controls = []
+	result = []
 
-	# convert each remaining argument
-	for handle in handles
-		if ﬁ.util.isString handle
-			URIs[handle] = route if not ﬁ.util.isString URIs[handle]
-			handle = auto(handle) 
-		throw new ﬁ.error 'Invalid handle.' if not ﬁ.util.isFunction handle
-		controls.push handle
+	# remaining arguments are controllers or strings pointing to bundles.
+	for control in controls
+		if ﬁ.util.isString control
+			bundle  = control
+			control = Bundles(control) 
+		throw new ﬁ.error 'Invalid bundle.' if not ﬁ.util.isFunction control
+		result.push control
 
-	controls.unshift(route)
-	ﬁ.server[method].apply ﬁ.server, controls
-	ﬁ.log.trace "#{method.toUpperCase()} #{route}"
+	Routes.push
+		route    : route
+		bundle   : bundle
+		method   : method
+		controls : result
 
-module.exports =
-	uri    : URIs
-	get    : -> render.apply this, ['get'].concat Array::slice.call arguments
-	post   : -> render.apply this, ['post'].concat Array::slice.call arguments
-	put    : -> render.apply this, ['put'].concat Array::slice.call arguments
-	delete : -> render.apply this, ['delete'].concat Array::slice.call arguments
+# Enable routing methods for routing file temporarily.
+ﬁ.routes =
+	all    : -> enable.apply enable, ['all'].concat Array::slice.call arguments
+	get    : -> enable.apply enable, ['get'].concat Array::slice.call arguments
+	post   : -> enable.apply enable, ['post'].concat Array::slice.call arguments
+	put    : -> enable.apply enable, ['put'].concat Array::slice.call arguments
+	delete : -> enable.apply enable, ['delete'].concat Array::slice.call arguments
+
+# set routes in file.
+ﬁ.require 'backend', 'routes'
+
+module.exports = Routes

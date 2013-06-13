@@ -2,7 +2,7 @@
 Path = require 'path'
 
 # Local modules
-Middleware = require './middleware'
+Handler = require './handler'
 
 traverse = (controls, root)->
 	root = ﬁ.conf.api + '/' if not root
@@ -17,7 +17,7 @@ traverse = (controls, root)->
 		methods = ['get','put','post','delete']
 		for method,i in methods
 			if ﬁ.util.isFunction(control[method])
-				ﬁ.server[method] path, Middleware(control[method])
+				ﬁ.server[method] path, Handler(control[method])
 				ﬁ.log.trace "#{method.toUpperCase()} #{path}"
 			else
 				methods.splice(methods.indexOf(method), 1)

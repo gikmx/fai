@@ -20,7 +20,7 @@ options.regex  = new RegExp ///^#{options.route}/(js|css)/(\S+\.\1)$///
 
 ﬁ.util.dirRemove options.tmpdir if FS.existsSync options.tmpdir
 FS.mkdirSync options.tmpdir
-ﬁ.log.trace "Using #{options.tmpdir}"
+ﬁ.log.warn "#{options.tmpdir}"
 
 files = {}
 
@@ -129,6 +129,28 @@ content = props = null
 
 		ext = file = name = accepts = type = encode = request = undefined
 
+
+
 module.exports =
-	js  : (name)-> "/assets/js/#{name}.js"
-	css : (name)-> "/assets/css/#{name}.css"
+	# return the uri for given asset
+	uri : (type)-> (name)-> Path.join options.route, type, "#{name}.#{type}"
+
+	# determines if assets exist with given name, if so returns names in array
+	has : (name)->
+		throw new ﬁ.error "Invalid name." if not ﬁ.util.isString name
+		assets = 
+			css: []
+			js : []
+
+		parts = []
+		for part in name.split Path.sep
+			parts.push part
+			part = parts.join Path.sep
+
+			if FS.existsSync Path.join ﬁ.path.assets_css, "#{part}.styl"
+				assets.css.push part
+
+			if FS.existsSync Path.join ﬁ.path.assets_js, "#{part}#{ﬁ.conf.ext}"
+				assets.js.push part
+		parts = part = undefined
+		return assets
