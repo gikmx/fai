@@ -86,7 +86,7 @@ require "#{path}defaults"
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
 		ﬁ.log.custom (method:'info', caller:'fi'),
-			route.method.toUpperCase(), "\"#{route.route}\" > #{bundle}"
+			route.method.toUpperCase(), "#{route.route}  →  #{bundle}"
 
 	ﬁ.middleware = undefined
 	ﬁ.routes     = undefined
