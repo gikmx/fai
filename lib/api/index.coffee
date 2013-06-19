@@ -3,7 +3,7 @@ Path   = require 'path'
 FS     = require 'fs'
 
 # make sure the path exists
-ﬁ.path.api = Path.join ﬁ.path.backend, 'api'
+ﬁ.path.api = Path.join ﬁ.path.app, 'api'
 FS.mkdirSync(ﬁ.path.api, '0700') if not FS.existsSync ﬁ.path.api
 
 # determine base path for API calls

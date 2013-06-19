@@ -1,0 +1,5 @@
+module.exports = (request, response)->
+
+	ﬁ.log.warn 'Hola desde el controlador!'
+
+	response.render()

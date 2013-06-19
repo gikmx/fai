@@ -60,13 +60,6 @@ require "#{path}defaults"
 # Enable logs on every request
 ﬁ.middleware ﬁ.log.middleware
 
-# Initializae Asset managament
-ﬁ.assets = ﬁ.require 'core', 'assets'
-
-# Add assets handling functions to locals
-ﬁ.locals.css = ﬁ.assets.uri 'css'
-ﬁ.locals.js  = ﬁ.assets.uri 'js'
-
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
@@ -77,6 +70,7 @@ require "#{path}defaults"
 
 # Main
 ﬁ.listen = ->
+
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
 	for middleware in ﬁ.middleware.all

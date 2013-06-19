@@ -52,16 +52,18 @@ util.dirRemove = (path) ->
 			i++
 	FS.rmdirSync path
 
-util.dirwalk = (path, callback)->
-	throw new ﬂ.error "Expecting a callback function" if not util.isFunction(callback)
+# traverse recursively the bundles dir
+util.dirwalk = (path, callback, isRecursive)->
+	throw new ﬁ.error('Expecting callback.') if not ﬁ.util.isFunction callback
+	path = String path
 	if not FS.existsSync path or not FS.statSync(path).isDirectory()
-		throw new ﬁ.error "Invalid Directory. #{path.replace(ﬁ.path.root, '')}"
-	for nodeName in FS.readdirSync path
-		nodePath = Path.join path, nodeName
-		if FS.statSync(nodePath).isDirectory()
-			util.dirwalk(nodePath, callback)
-			continue
-		callback.call null, nodePath
+		throw new ﬂ.error 'Invalid directory.' 
+	callback.call(null, path) if not isRecursive
+	for node in FS.readdirSync path
+		node = Path.join path, node
+		continue if not FS.statSync(node).isDirectory()
+		callback.call null, node
+		util.dirwalk node, callback, true
 
 util.bytes = (bytes)->
 	sz = ['B', 'KB', 'MB', 'GB','TB']

@@ -6,8 +6,8 @@ fsmkdir = require('node-fs').mkdirSync
 ext = '.defaults'
 
 defaults = (parentPath)->
-	parentPathRelative = parentPath.replace ﬁ.path.core_defaults, ''
-	parentPath = Path.join ﬁ.path.core_defaults, parentPathRelative
+	parentPathRelative = parentPath.replace ﬁ.path.defaults, ''
+	parentPath = Path.join ﬁ.path.defaults, parentPathRelative
 
 	for nodeName in FS.readdirSync parentPath
 		nodePath = Path.join(parentPath, nodeName)
@@ -27,4 +27,4 @@ defaults = (parentPath)->
 		FS.writeFileSync appName, FS.readFileSync nodePath,'utf-8'
 		ﬁ.log.trace "Written #{appName.replace(ﬁ.path.root,'')}"
 
-defaults ﬁ.path.core_defaults
+defaults ﬁ.path.defaults

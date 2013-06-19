@@ -2,12 +2,10 @@ Path = require 'path'
 FS   = require 'fs'
 OS   = require 'os'
 
-Routes   = []
-
+Routes  = []
 Bundles = ﬁ.require 'core', 'bundles'
 
 enable = ->
-
 	controls = Array::slice.call arguments
 	method  = controls.shift()
 	route   = controls.shift()
@@ -46,6 +44,6 @@ enable = ->
 	delete : -> enable.apply enable, ['delete'].concat Array::slice.call arguments
 
 # set routes in file.
-ﬁ.require 'backend', 'routes'
+ﬁ.require 'app', 'routes'
 
 module.exports = Routes
