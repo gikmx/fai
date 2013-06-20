@@ -7,9 +7,6 @@ Express   = require 'express'
 Params    = require 'express-params'
 Validator = require 'express-validator'
 
-### --------------------------------------------------------------------------------------
-	Initialize
--------------------------------------------------------------------------------------- ###
 server = Express()
 
 if ﬁ.settings.params
@@ -39,5 +36,21 @@ server.configure ->
 
 	# parse cookies
 	@use Express.cookieParser ﬁ.settings.secret
+
+	# remove express header and enable debug middleware (if needed)
+	@use (request, response, next)->
+		ﬁ.log.trace 'Removing X-Powered-By header.'
+		response.removeHeader 'X-Powered-By'
+
+		return next() if ﬁ.conf.live
+
+		ﬁ.debug if request.url is '/' then 'root' else request.url
+			.replace(/[^a-z0-9]/g,'-')
+			.substr(1)
+
+		next()
+
+	# Enable logs on every request
+	@use ﬁ.log.middleware
 
 module.exports = server

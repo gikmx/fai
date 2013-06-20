@@ -1,13 +1,6 @@
-"use strict"
-
-# Node modules
-HTTP = require 'http'
-OS   = require 'os'
-Path = require 'path'
-FS   = require 'fs'
-
 # I know, this is not recommended, but fuck it.
 GLOBAL.ﬁ = {}
+
 ﬁ.error  = -> new String "\n" + Array::slice.call(arguments).join('\n') + "\n"
 path     = './core/'
 
@@ -43,23 +36,6 @@ require "#{path}defaults"
 # Populate locals
 ﬁ.locals = ﬁ.require 'core', 'locals'
 
-# Initialize middleware
-ﬁ.middleware = ﬁ.require 'core', 'middleware'
-ﬁ.middleware (request, response, next)->
-	response.removeHeader 'X-Powered-By'
-
-	return next() if ﬁ.conf.live
-
-	s = if request.url is '/' then 'root' else request.url
-		.replace(/[^a-z0-9]/g,'-')
-		.substr(1)
-	ﬁ.debug(s)
-
-	next()
-
-# Enable logs on every request
-ﬁ.middleware ﬁ.log.middleware
-
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
@@ -73,11 +49,6 @@ require "#{path}defaults"
 
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
-	for middleware in ﬁ.middleware.all
-		if not ﬁ.util.isFunction middleware
-			throw new ﬁ.error 'Expecting a Middleware function.'
-		ﬁ.server.use middleware
-
 	for route in ﬁ.routes
 		bundle = "[function]"
 		if route.bundle
@@ -88,11 +59,10 @@ require "#{path}defaults"
 		ﬁ.log.custom (method:'info', caller:'fi'),
 			route.method.toUpperCase(), "#{route.route}  →  #{bundle}"
 
-	ﬁ.middleware = undefined
-	ﬁ.routes     = undefined
+	ﬁ.server.listen(ﬁ.conf.port)
 
-	HTTP.createServer(ﬁ.server).listen ﬁ.conf.port
 	ﬁ.isListening = true
-	ﬁ.debug('listen')
+	ﬁ.routes      = undefined
 
+	ﬁ.debug('listen')
 	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
