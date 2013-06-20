@@ -17,7 +17,6 @@ enable = ->
 	throw new ﬁ.error 'Expecting at least one controller.' if controls.length < 1
 
 	throw new ﬁ.error 'Invalid method.' if not ﬁ.util.isFunction ﬁ.server[method]
-	throw new ﬁ.error 'Invalid route.' if route[0] isnt '/'
 
 	result = []
 
