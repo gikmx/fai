@@ -1,16 +1,16 @@
 # Node modules
 QueryS = require 'querystring'
 
-
 # This method will respond a JSON whenever a request finishes.
 module.exports = (control)-> return (request, response, next)->
 	validationErrors = request.validationErrors
 
-	request.hasErrors = ->
+	request.hasErrors = (omit)->
+		omit = not ﬁ.util.isUndefined(omit)
 		return false if not (errors = validationErrors.call request)
-		errors = errors.map (error)-> error.msg
-		response.render 400, ﬁ.util.array.unique errors
-		return true
+		errors = ﬁ.util.array.unique errors.map (error)-> error.msg
+		response.render(400, errors) if not omit
+		return errors
 
 	response.render = (status, body)->
 		status = 0 if not status
@@ -48,14 +48,10 @@ module.exports = (control)-> return (request, response, next)->
 		not ﬁ.util.isString(challenge) or
 		API isnt (challenge = ﬁ.util.hmac challenge,'hex')
 	)
-		return response.render 403, 'Sin autorización.'
+		return response.render 403, ['Sin autorización.']
 
 	# sanitize request body
 	request.sanitize(k).xss() for k,v of request.body
 
-	# log request 
-	#opts = (method:'info', caller:'API:' + request.method)
-	#ﬁ.log.custom opts, url, QueryS.stringify(request.body)
-
-	# callback time
+	# Everything ready to be parsed by the controller.
 	control.call control, request, response

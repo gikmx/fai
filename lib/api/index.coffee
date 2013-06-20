@@ -12,6 +12,7 @@ FS.mkdirSync(ﬁ.path.api, '0700') if not FS.existsSync ﬁ.path.api
 Request = require './request'
 Handler = require './handler'
 
+# enabling routing for existing controls automatically
 methods = ['get','put','post','delete','all']
 
 ﬁ.util.dirwalk ﬁ.path.api, (path)->

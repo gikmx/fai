@@ -9,13 +9,14 @@ Request = require 'request'
 # generate a secure call to own API
 module.exports = (method, url, options, callback)->
 
+	args   = Array::slice.call arguments
+
 	caller = (context, error, data)->
 		opts = method:'debug', caller:'API:' + method
 		ﬁ.log.custom opts, JSON.stringify(if error then error else data)
 		opts = undefined
 		callback.call context, error, data
 
-	args = Array::slice.call arguments
 	# if no options are being sent, the user can ommit them and send the CB instead
 	if args.length is 3 and ﬁ.util.isFunction options
 		callback = options
@@ -39,19 +40,28 @@ module.exports = (method, url, options, callback)->
 	url     = [ﬁ.conf.url, ﬁ.conf.api.substring(1), url].join('/')
 		
 	onResponse = (error, response, body)->
-		return caller(response, error) if error
-		if not ﬁ.util.isString(body) and not ﬁ.util.isArray(body)
-			return caller response, 'Invalid response body'
-		if ﬁ.util.isString(body)
-			try
-				body = JSON.parse body
-			catch e
-				ﬁ.log.warn "Response body was not parsed."
+
+		return caller(response, [error]) if error
+
+		if not ﬁ.util.isString(body)
+			return caller response, ['Invalid response body']
+
+		isJSON = true
+
+		try
+			body = JSON.parse body
+		catch e
+			ﬁ.log.warn "Response body could not be parsed."
+			isJSON = false
+
+		body = if isJSON then body.response else [body]
+
 		if response.statusCode isnt 200
-			body = [body] if not ﬁ.util.isArray(body)
 			caller(response, body)
 		else
-			caller(response, null, body.response)
+			caller(response, null, body)
+
+	# validate call, by parsing it against our secret phrase.
 
 	if method is 'GET' or method is 'DELETE'
 		challenge = [method, url].join(';')
