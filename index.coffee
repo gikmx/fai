@@ -49,6 +49,15 @@ require "#{path}defaults"
 
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
+	# Enable master control
+	try
+		master  = ﬁ.require 'templates','control'
+		ﬁ.server.get '*', master
+	catch e
+		throw new ﬁ.error 'master: ' + e.message
+
+	# Enable all other routes
+
 	for route in ﬁ.routes
 		bundle = "[function]"
 		if route.bundle
