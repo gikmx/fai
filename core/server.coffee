@@ -39,7 +39,6 @@ server.configure ->
 
 	# remove express header and enable debug middleware (if needed)
 	@use (request, response, next)->
-		ﬁ.log.trace 'Removing X-Powered-By header.'
 		response.removeHeader 'X-Powered-By'
 
 		return next() if ﬁ.conf.live
