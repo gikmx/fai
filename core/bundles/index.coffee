@@ -76,19 +76,27 @@ module.exports = (name)->
 		# store original render
 		fnRender = response.render
 
-		response.render = (locals)->
+		response.render = (vars)->
 			# Expose assets methods, already defined locals, and custom locals.
 			assetsLocals = Assets.locals(name)
 			assetsRoutes = Assets.tree(name)
 
-			locals = {} if not ﬁ.util.isDictionary(locals)
-			locals = ﬁ.util.extend assetsLocals, ﬁ.locals, locals
+			locals    = {}
+			locals[k] = v for k,v of ﬁ.locals
+			locals[k] = v for k,v of assetsLocals
+			locals[k] = v for k,v of (if not ﬁ.util.isDictionary(vars) then {} else vars)
 
 			fnRender.call response, view, locals, (error, content)->
 				throw new ﬁ.error error.message if error
-				locals = ﬁ.util.extend assetsLocals,
-					content : content
-					assets  : assetsRoutes
+
+				locals[k] = v for k,v of ﬁ.locals
+				locals[k] = v for k,v of assetsLocals
+				
+				locals.content = content
+				locals.assets  = assetsRoutes
+
 				fnRender.call response, Template.render.path, locals
+
+				locals = assetsLocals = assetsRoutes = errro = content = undefined
 
 		ctrl.call ﬁ.server, request, response, next
