@@ -1,61 +1,79 @@
+# Node modules
 Path = require 'path'
 
+# NOM modules
 Passport = require 'passport'
-_        = require 'underscore'
 
-Log = ﬁ.require 'log'
+throw new ﬁ.error 'Missing Auth settings.' if ﬁ.util.isUndefined ﬁ.settings.auth
 
-# Strategy factory
-# Will instantiate strategies based upon the "Config.auth" property
-strategies = []
+Settings = {}
+URI      = undefined
 
-_.each Config.auth.strategy, (config, name)->
-	strategy    = require("passport-#{name}").Strategy
+ﬁ.server.use Passport.initialize()
+ﬁ.server.use Passport.session()
 
-	callbackURL = Config.auth.url.callback
-
-	if callbackURL.indexOf(':strategy') isnt -1
-		callbackURL = callbackURL.replace(':strategy', name)
-
-	callbackURL = "#{Config.auth.host}#{callbackURL}"
-	options     = _.extend {}, Config.auth.strategy[name],
-		callbackURL : callbackURL
-		returnURL   : callbackURL
-
-	Passport.use new strategy options,
-		(accessToken, refreshToken, user, next)->
-			Log.trace "#{name} callback",
-				user         : user
-				accessToken  : accessToken
-				refreshToken : refreshToken
-			next null, user
-	strategies.push name
-	Log.debug "#{name}", options
-
-
-# Native Serialize methods
 Passport.serializeUser (user, next)->
-	Log.trace 'serializeUser', user: user
+	ﬁ.log.trace 'serializeUser'
 	next null, user
 
 Passport.deserializeUser (user, next)->
-	Log.trace 'deserializeUser', user: user
+	ﬁ.log.trace 'deserializeUser'
 	next null, user
 
-
-module.exports =
-	regex: (-> return new RegExp '^' + strategies.join('|') + '$')
-
+Control = 
 	strategy: (request, response, next)->
-		strategy = request.param 'strategy'
-		option = {}
-		if _.isObject Config.auth.options[strategy]
-			options = Config.auth.options[strategy]
-		Log.trace 'strategy:', strategy, options
-		Passport.authenticate(strategy, options)(request, response, next)
+		strategy = request.route.path.split('/').slice(-1)[0]
+		Passport.authenticate(strategy, Settings[strategy]) request, response, next
+		ﬁ.log.trace strategy, 'strategy'
 
 	callback: (request, response, next)->
-		strategy = request.param 'strategy'
-		options  = failureRedirect: Config.auth.url.failure
-		Log.trace 'callback:', strategy, options
-		Passport.authenticate(strategy, options)(request, response, next)
+		strategy = request.route.path.split('/').slice(-2)[0]
+		settings = failureRedirect: Path.join(URI, strategy, 'failure')
+		Passport.authenticate(strategy, settings) request, response, next	
+		ﬁ.log.trace strategy, 'callback'
+
+
+module.exports = (uri, callback)->
+
+	throw new ﬁ.error 'Invalid base route.' if not ﬁ.util.isString uri
+	throw new ﬂ.error 'Invalid callback.' if not ﬁ.util.isFunction callback
+
+	URI = uri
+
+	# Strategy factory
+	for strategy, setting of ﬁ.settings.auth
+
+		throw new ﬁ.error "#{strategy}: Missing clientID." if not setting.clientID
+		throw new ﬂ.error "#{strategy}: Missing clientSecret." if not setting.clientSecret
+
+		Route =
+			strategy : Path.join uri, strategy
+			callback : Path.join uri, strategy, 'callback'
+			failure  : Path.join uri, strategy, 'failure' 
+
+		tokens = 
+			clientID     : setting.clientID
+			clientSecret : setting.clientSecret
+			callbackURL  : ﬁ.conf.url + Route.callback
+			returnURL    : ﬁ.conf.url + Route.callback
+
+		delete setting.clientID
+		delete setting.clientSecret
+
+		try
+			Strategy = require("passport-#{strategy}").Strategy
+		catch e
+			throw new ﬁ.error "Invalid Strategy: #{strategy} (#{e.message})"
+		
+		Strategy = new Strategy tokens, (accessToken, refreshToken, user, next)->
+			ﬁ.log.trace "#{strategy}:middleware"
+			next null, user
+
+		Passport.use Strategy
+
+		Settings[strategy] = setting
+
+		callback.call Strategy, Route, Control
+		ﬁ.log.trace strategy
+
+ 	return true

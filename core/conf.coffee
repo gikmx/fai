@@ -16,7 +16,7 @@ conf.env  = if conf.live then 'production' else 'development'
 conf.name  = Path.basename(ﬁ.path.root).replace /[^a-zA-Z0-9]/g,'_'
 conf.ext   = Path.extname __filename
 conf.proto = 'http'
-conf.host  = '127.0.0.1'
+conf.host  = 'localhost'
 conf.port  = parseInt Args.opts.port
 conf.url   = "#{conf.proto}://#{conf.host}:#{conf.port}"
 
