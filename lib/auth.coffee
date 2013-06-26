@@ -73,7 +73,7 @@ module.exports = (uri, callback)->
 
 		Settings[strategy] = setting
 
-		callback.call Strategy, Route, Control
+		callback.call Strategy, strategy, Route, Control
 		ﬁ.log.trace strategy
 
  	return true
