@@ -25,17 +25,17 @@ server.configure ->
 	@use Express.compress()
 	@use '/static', Express.static ﬁ.path.static
 
-	# allow PUT and DELETE methods
-	@use Express.methodOverride()
+	# parse cookies
+	@use Express.cookieParser()
 
 	# parse body automagically depending on content
 	@use Express.bodyParser()
 
+	# allow PUT and DELETE methods
+	@use Express.methodOverride()
+
 	# Add methods for requestbody validation
 	@use Validator
-
-	# parse cookies
-	@use Express.cookieParser ﬁ.settings.secret
 
 	# remove express header and enable debug middleware (if needed)
 	@use (request, response, next)->
