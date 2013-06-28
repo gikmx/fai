@@ -2,6 +2,29 @@ MongoDB      = require 'mongodb'
 MongoConnect = require 'connect-mongo'
 Express      = require 'express'
 
+middleware = (request, response, next)->
+	return next() if not request.session
+
+	request.session._flash = {} if not request.session._flash
+
+	request.flash = (key)->
+		return undefined if not key or not request.session._flash
+		key = String key
+		value = request.session._flash[key]
+		if value
+			delete request.session._flash[key]
+			ﬁ.log.custom (caller:'session:flash:get', method:'debug'), key, ':', value
+		return value
+
+	response.flash = (key, value)->
+		return -1 if not key or not value 
+		key = String key
+		ﬁ.log.custom (caller:'session:flash:set', method:'debug'), key, ':', value
+		return (request.session._flash[key] = value)
+
+	next()
+
+
 Mongo =
 
 	server   : undefined
@@ -39,6 +62,7 @@ Mongo =
 				cookie :
 					maxAge: new Date(Date.now() + (3600 * 1000 * 24 * 365))
 			ﬁ.server.use session
+			ﬁ.server.use middleware
 			callback.call Mongo, Mongo.store
 
 		if not Mongo.instance then return Mongo.Mongo(go) else go()
