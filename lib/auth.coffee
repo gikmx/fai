@@ -20,7 +20,7 @@ Passport.deserializeUser (user, next)->
 	ﬁ.log.trace 'deserializeUser'
 	next null, user
 
-Control = 
+Control =
 	strategy: (request, response, next)->
 		strategy = request.route.path.split('/').slice(-1)[0]
 		Passport.authenticate(strategy, Settings[strategy]) request, response, next
@@ -29,14 +29,14 @@ Control =
 	callback: (request, response, next)->
 		strategy = request.route.path.split('/').slice(-2)[0]
 		settings = failureRedirect: Path.join(URI, strategy, 'failure')
-		Passport.authenticate(strategy, settings) request, response, next	
+		Passport.authenticate(strategy, settings) request, response, next
 		ﬁ.log.trace strategy, 'callback'
 
 
 module.exports = (uri, callback)->
 
 	throw new ﬁ.error 'Invalid base route.' if not ﬁ.util.isString uri
-	throw new ﬂ.error 'Invalid callback.' if not ﬁ.util.isFunction callback
+	throw new ﬁ.error 'Invalid callback.' if not ﬁ.util.isFunction callback
 
 	URI = uri
 
@@ -44,14 +44,14 @@ module.exports = (uri, callback)->
 	for strategy, setting of ﬁ.settings.auth
 
 		throw new ﬁ.error "#{strategy}: Missing clientID." if not setting.clientID
-		throw new ﬂ.error "#{strategy}: Missing clientSecret." if not setting.clientSecret
+		throw new ﬁ.error "#{strategy}: Missing clientSecret." if not setting.clientSecret
 
 		Route =
 			strategy : Path.join uri, strategy
 			callback : Path.join uri, strategy, 'callback'
-			failure  : Path.join uri, strategy, 'failure' 
+			failure  : Path.join uri, strategy, 'failure'
 
-		tokens = 
+		tokens =
 			clientID     : setting.clientID
 			clientSecret : setting.clientSecret
 			callbackURL  : ﬁ.conf.url + Route.callback
@@ -64,7 +64,7 @@ module.exports = (uri, callback)->
 			Strategy = require("passport-#{strategy}").Strategy
 		catch e
 			throw new ﬁ.error "Invalid Strategy: #{strategy} (#{e.message})"
-		
+
 		Strategy = new Strategy tokens, (accessToken, refreshToken, user, next)->
 			ﬁ.log.trace "#{strategy}:middleware"
 			next null, user

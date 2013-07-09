@@ -13,6 +13,6 @@ module.exports = (callback)->
 		safe    : false
 
 	database.open (error, instance)->
-		throw new ﬂ.error error.message if error
+		throw new ﬁ.error error.message if error
 		ﬁ.log.trace 'Connected to MongoDB'
 		callback.call MongoDB, instance, server, database

@@ -41,7 +41,7 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	response.setHeader 'Vary'        , 'Accept-Encoding'
 	response.setHeader 'Content-Type', Express.mime.lookup(request.url)+ '; charset=utf-8'
 
-	if ﬁ.conf.live 
+	if ﬁ.conf.live
 		# serve content according to what browser expects
 		encode = ''
 		if accepts.match /\bgzip\b/ then encode = 'gzip'
@@ -81,11 +81,11 @@ Types =
 			return str.print_to_string()
 
 
-module.exports = 
+module.exports =
 
 	tree: (name)->
 		#diff = (a,b)-> a.filter (x)-> return (b.indexOf(x) < 0)
-		names  = name.split '/' 
+		names  = name.split '/'
 		result =
 			css:[]
 			js :[]
@@ -109,7 +109,7 @@ module.exports =
 			js : (name)-> uri('js', name)
 		)
 
-	# Check if given path contains assets with given name and stores them on tmpdir. 
+	# Check if given path contains assets with given name and stores them on tmpdir.
 	store: (path, name, context)->
 		context = ﬁ.path[context]
 		context = if context then Path.dirname(context) else ﬁ.path.bundles
@@ -141,7 +141,7 @@ module.exports =
 					path  = Path.join tmpdir, file + '.deflate'
 					throw new ﬁ.error error.message if error
 					FS.writeFile path, buffer, (error)->
-						throw new ﬂ.error error.message if error
+						throw new ﬁ.error error.message if error
 						callback.call null, file, cont
 
 			gzip = (file, cont, callback)->
@@ -158,7 +158,7 @@ module.exports =
 					throw new ﬁ.error e.message if error
 					callback.call null, file, cont
 
-			# Minification and compression when in production mode. 
+			# Minification and compression when in production mode.
 			if ﬁ.conf.live
 				# minify
 				content  = type.min content

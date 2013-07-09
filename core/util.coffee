@@ -29,7 +29,7 @@ util.isDictionary = (o)->
 util.isEmptyDictionary = (o)->
 	return false if not util.isDictionary(o)
 	for k,v of o
-		return false if Object::hasOwnProperty.call(o, k) 
+		return false if Object::hasOwnProperty.call(o, k)
 	return true
 
 util.array = {}
@@ -57,7 +57,7 @@ util.dirwalk = (path, callback, isRecursive)->
 	throw new ﬁ.error('Expecting callback.') if not ﬁ.util.isFunction callback
 	path = String path
 	if not FS.existsSync path or not FS.statSync(path).isDirectory()
-		throw new ﬂ.error 'Invalid directory.' 
+		throw new ﬁ.error 'Invalid directory.'
 	callback.call(null, path) if not isRecursive
 	for node in FS.readdirSync path
 		node = Path.join path, node
@@ -76,7 +76,7 @@ util.uuid = UUID.v4
 util.hmac = (str, type)->
 	type = 'base64' if not util.isString(type)
 	if not util.isDictionary(ﬁ.settings.app) or not util.isString(ﬁ.settings.app.secret)
-		throw new ﬁ.error 'Missing app secret setting.' 
+		throw new ﬁ.error 'Missing app secret setting.'
 	hmac = Crypto.createHmac('sha1', ﬁ.settings.app.secret)
 	return hmac.update(str).digest(type)
 
