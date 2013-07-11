@@ -1,14 +1,17 @@
 MongoDB = require 'mongodb'
 
-module.exports = (callback)->
+module.exports = (name, callback)->
 
+	throw new ﬁ.error 'Invalid database name.' if not name
 	throw new ﬁ.error 'Expecting a callback.' if not ﬁ.util.isFunction callback
+
+	name = String name
 
 	server = new MongoDB.Server ﬁ.conf.host, 27017,
 		auto_reconnect : false
 		native_parser  : true
 
-	database = new MongoDB.Db ﬁ.conf.name, server,
+	database = new MongoDB.Db name, server,
 		journal : true
 		safe    : false
 

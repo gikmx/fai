@@ -31,7 +31,7 @@ middleware = (request, response, next)->
 module.exports = (callback)->
 	throw new ﬁ.error 'Invalid callback.' if not ﬁ.util.isFunction callback
 
-	Mongo (instance, server)->
+	Mongo ﬁ.conf.name, (instance, server, database)->
 
 		MongoStore  = MongoConnect Express
 		store   = new MongoStore db: instance
@@ -43,5 +43,5 @@ module.exports = (callback)->
 		ﬁ.server.use session
 		ﬁ.server.use middleware
 
-		callback.call this, store, session, instance, server
+		callback.call this, store, session, instance, server, database
 
