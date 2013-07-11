@@ -76,6 +76,22 @@ module.exports = (name)->
 		# store original render
 		fnRender = response.render
 
+		response.renderview = ->
+
+			args = Array.prototype.slice.call arguments
+
+			path = if ﬁ.util.isString args[0] then args.shift() else view
+			vars = if ﬁ.util.isDictionary args[0] then args.shift() else {}
+			back =  if ﬁ.util.isFunction args[0] then args.shift() else undefined
+
+			locals = {}
+			locals[k] = v for k,v of ﬁ.locals
+			locals[k] = v for k,v of Assets.locals(name)
+			locals[k] = v for k,v of vars
+
+			fnRender.call response, path, locals, back
+
+
 		response.render = (vars)->
 			# Expose assets methods, already defined locals, and custom locals.
 			assetsLocals = Assets.locals(name)
