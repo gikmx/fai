@@ -15,7 +15,7 @@ Express = require 'express'
 Files = []
 
 # Set a tmp storage dir, and make sure it always starts empty.
-tmpdir = Path.join OS.tmpDir(), 'fi-assets'
+tmpdir = Path.join OS.tmpDir(), 'fi-assets', ﬁ.conf.name
 ﬁ.util.dirRemove tmpdir if FS.existsSync tmpdir
 FS.mkdirSync tmpdir
 ﬁ.log.warn "#{tmpdir}"
