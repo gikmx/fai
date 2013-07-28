@@ -1,5 +1,6 @@
 # Node modules
 Path = require 'path'
+FS   = require 'fs'
 
 # NPM modules
 Args = require 'named-argv'
@@ -13,7 +14,10 @@ conf      = {}
 conf.live = process.env.NODE_ENV is 'production'
 conf.env  = if conf.live then 'production' else 'development'
 
-conf.name  = Path.basename(ﬁ.path.root).replace /[^a-zA-Z0-9]/g,'_'
+conf.core = FS.realpathSync __dirname + '/..'
+conf.root = Path.dirname conf.core
+
+conf.name  = Path.basename(conf.root).replace /[^a-zA-Z0-9]/g,'_'
 conf.ext   = Path.extname __filename
 conf.proto = 'http'
 conf.host  = 'localhost'

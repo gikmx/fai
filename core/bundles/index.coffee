@@ -1,6 +1,5 @@
 Path = require 'path'
 FS   = require 'fs'
-OS   = require 'os'
 
 Assets = ﬁ.require 'core', Path.join 'bundles','assets'
 
@@ -10,7 +9,7 @@ Template =
 
 Bundle = {}
 
-# walk in every directory inside bundles 
+# walk in every directory inside bundles
 ﬁ.util.dirwalk ﬁ.path.bundles, (path)->
 
 	# determine if there are controls and views available
@@ -34,7 +33,7 @@ for node in FS.readdirSync ﬁ.path.templates
 	continue if Path.extname(node) isnt '.jade'
 	Assets.store ﬁ.path.templates, Path.basename(node, '.jade'), 'templates'
 
-# Jade does not support dynamic includes, so we have to create a 
+# Jade does not support dynamic includes, so we have to create a
 # hidden template that'll establish the format of every view with their assets.
 # The template will be read from core, dynamically modified and stored in a temp dir.
 Template.render.path = Path.join ﬁ.path.core, 'bundles', 'template.jade'
@@ -42,8 +41,8 @@ throw new ﬁ.error 'Missing rendering template.' if not FS.existsSync Template.
 Template.render.cont = FS.readFileSync Template.render.path, 'utf-8'
 # Temporal path, relative to templates path, we'll replace it in render template.
 Template.render.cont = Template.render.cont.replace '#{template}',
-	Path.join Path.relative(OS.tmpDir(), ﬁ.path.templates), 'master'
-Template.render.path = Path.join OS.tmpDir(), "fi-render.jade"
+	Path.join Path.relative(ﬁ.path.tmp, ﬁ.path.templates), 'master'
+Template.render.path = Path.join ﬁ.path.tmp, "fi-render.jade"
 try
 	FS.writeFileSync Template.render.path, Template.render.cont
 	delete Template.render.cont
@@ -60,7 +59,7 @@ module.exports = (name)->
 	view = null
 
 	# If a controller doesn't exist, simulate a controller that just renders the view.
-	if not Bundle[name].ctrl 
+	if not Bundle[name].ctrl
 		ctrl = (request, response)-> response.render()
 	else
 		ctrl = require Bundle[name].ctrl
@@ -107,7 +106,7 @@ module.exports = (name)->
 
 				locals[k] = v for k,v of ﬁ.locals
 				locals[k] = v for k,v of assetsLocals
-				
+
 				locals.content = content
 				locals.assets  = assetsRoutes
 

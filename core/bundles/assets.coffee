@@ -1,5 +1,4 @@
 # Node modules
-OS   = require 'os'
 FS   = require 'fs'
 Path = require 'path'
 Zlib = require 'zlib'
@@ -15,9 +14,11 @@ Express = require 'express'
 Files = []
 
 # Set a tmp storage dir, and make sure it always starts empty.
-tmpdir = Path.join OS.tmpDir(), 'fi-assets', ﬁ.conf.name
-ﬁ.util.dirRemove tmpdir if FS.existsSync tmpdir
+tmpdir = Path.join ﬁ.path.tmp, 'fi-assets'
+
+ﬁ.util.dirRemove tmpdir
 FS.mkdirSync tmpdir
+
 ﬁ.log.warn "#{tmpdir}"
 
 # Set middleware
@@ -155,7 +156,7 @@ module.exports =
 
 			normal = (file, cont, callback)->
 				FS.writeFile Path.join(tmpdir, file), cont, (error)->
-					throw new ﬁ.error e.message if error
+					throw new ﬁ.error error.message if error
 					callback.call null, file, cont
 
 			# Minification and compression when in production mode.

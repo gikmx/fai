@@ -6,11 +6,11 @@ path     = './core/'
 
 ﬁ.about = require './package'
 
-# All paths used throughout ﬁ
-ﬁ.path  = require "#{path}path"
-
 # Core configuration
 ﬁ.conf  = require "#{path}conf"
+
+# All paths used throughout ﬁ
+ﬁ.path  = require "#{path}path"
 
 # Debugging methods
 ﬁ.debug = require "#{path}debug"

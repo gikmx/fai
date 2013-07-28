@@ -1,11 +1,15 @@
 # Node modules
 Path = require 'path'
 FS   = require 'fs'
+OS   = require 'os'
 
 path = {}
 
-path.self      = FS.realpathSync __dirname + '/..'
-path.root      = Path.dirname path.self
+path.self = ﬁ.conf.core
+path.root = ﬁ.conf.root
+
+delete ﬁ.conf.core
+delete ﬁ.conf.root
 
 path.core      = Path.join path.self , 'core'
 path.defaults  = Path.join path.core , 'defaults'
@@ -13,6 +17,7 @@ path.defaults  = Path.join path.core , 'defaults'
 path.lib       = Path.join path.self , 'lib'
 path.app       = Path.join path.root , 'app'
 path.debug     = Path.join path.root , 'debug'
+path.tmp       = Path.join OS.tmpDir(), ﬁ.conf.name
 
 path.settings  = Path.join path.app , 'settings'
 path.bundles   = Path.join path.app , 'bundles'
