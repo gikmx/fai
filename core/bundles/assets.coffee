@@ -16,7 +16,7 @@ Files = []
 # Set a tmp storage dir, and make sure it always starts empty.
 tmpdir = Path.join ﬁ.path.tmp, 'fi-assets'
 
-ﬁ.util.dirRemove tmpdir
+ﬁ.util.dirRemove tmpdir if FS.existsSync tmpdir
 FS.mkdirSync tmpdir
 
 ﬁ.log.warn "#{tmpdir}"
