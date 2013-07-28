@@ -40,8 +40,8 @@ module.exports = (callback)->
 			secret : ﬁ.settings.app.secret
 			store  : store
 			cookie : maxAge: new Date Date.now() + + (3600 * 1000 * 24 * 365)
-		ﬁ.server.use session
-		ﬁ.server.use middleware
+		ﬁ.middleware.append 'session-express', session
+		ﬁ.middleware.append 'session', middleware
 
 		callback.call this, store, session, instance, server, database
 

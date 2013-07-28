@@ -60,6 +60,18 @@ logger = (method, args)->
 		process.stdout.write "#{head} #{args}\n"
 
 
+ﬁ.middleware.append 'log', (request, response, next)->
+	parts = []
+
+	if ﬁ.conf.live
+		ua = Parser.parse request.headers["user-agent"]
+		ip = request.headers['x-forwarded-for'] or request.connection.remoteAddress
+		parts.push ip
+		parts.push [ua.ua.toString(), ua.os.toString()].join ', '
+	parts.push request.url
+	ﬁ.log.custom (method: 'info', caller:request.method), parts.join ' - '
+	next()
+
 module.exports =
 	trace: -> logger 'trace', arguments
 	debug: -> logger 'debug', arguments
@@ -71,15 +83,3 @@ module.exports =
 		args   = Array::.slice.call arguments
 		method = args.shift()
 		logger method, args
-
-	middleware: (request, response, next)->
-		parts = []
-
-		if ﬁ.conf.live
-			ua = Parser.parse request.headers["user-agent"]
-			ip = request.headers['x-forwarded-for'] or request.connection.remoteAddress
-			parts.push ip
-			parts.push [ua.ua.toString(), ua.os.toString()].join ', '
-		parts.push request.url
-		ﬁ.log.custom (method: 'info', caller:request.method), parts.join ' - '
-		next()

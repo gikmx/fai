@@ -1,7 +1,9 @@
 # I know, this is not recommended, but fuck it.
 GLOBAL.ﬁ = {}
 
+# Temporary error handler
 ﬁ.error  = -> new String "\n" + Array::slice.call(arguments).join('\n') + "\n"
+
 path     = './core/'
 
 ﬁ.about = require './package'
@@ -17,6 +19,9 @@ path     = './core/'
 
 # Underscore, on steroids.
 ﬁ.util  = require "#{path}util"
+
+# A placer were to add middlewares
+ﬁ.middleware = require "#{path}middleware"
 
 # Enable logs
 ﬁ.log = require "#{path}log"
@@ -48,6 +53,9 @@ require "#{path}defaults"
 ﬁ.listen = ->
 
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
+
+	# Enable middlewares
+	ﬁ.server.use middleware for middleware in ﬁ.middleware.stack()
 
 	# Enable master control
 	try

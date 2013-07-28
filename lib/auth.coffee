@@ -9,8 +9,8 @@ throw new ﬁ.error 'Missing Auth settings.' if ﬁ.util.isUndefined ﬁ.setting
 Settings = {}
 URI      = undefined
 
-ﬁ.server.use Passport.initialize()
-ﬁ.server.use Passport.session()
+ﬁ.middleware.append 'auth-passport-init', Passport.initialize()
+ﬁ.middleware.append 'auth-passport-sess', Passport.session()
 
 Passport.serializeUser (user, next)->
 	ﬁ.log.trace 'serializeUser'

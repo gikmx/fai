@@ -37,19 +37,16 @@ server.configure ->
 	# Add methods for requestbody validation
 	@use Validator
 
-	# remove express header and enable debug middleware (if needed)
-	@use (request, response, next)->
-		response.removeHeader 'X-Powered-By'
+# removes express header and enable debug middleware (if needed)
+ﬁ.middleware.prepend 'server', (request, response, next)->
+	response.removeHeader 'X-Powered-By'
 
-		return next() if ﬁ.conf.live
+	return next() if ﬁ.conf.live
 
-		ﬁ.debug if request.url is '/' then 'root' else request.url
-			.replace(/[^a-z0-9]/g,'-')
-			.substr(1)
+	ﬁ.debug if request.url is '/' then 'root' else request.url
+		.replace(/[^a-z0-9]/g,'-')
+		.substr(1)
 
-		next()
-
-	# Enable logs on every request
-	@use ﬁ.log.middleware
+	next()
 
 module.exports = server

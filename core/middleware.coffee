@@ -1,17 +1,42 @@
-Colors = require 'colors'
+stack = []
 
-middleware = ->
+handle = (type, args)->
+	args = Array::slice.call args
+	name       = args.shift()
+	middleware = args.shift()
+	throw new ﬁ.error "Invalid middleware name." if not name
+	throw new ﬁ.error "Invalid middleware." if not ﬁ.util.isFunction middleware
 
-	middleware.all = [] if not middleware.all
+	ware =
+		id: String name
+		fn: middleware
 
-	for ware in Array::slice.call arguments
-		throw ﬁ.error 'Expecting a middleware function.' if not ﬁ.util.isFunction ware
-		middleware.all.push ware
-		f = ware.toString()
-			.replace(/^[^\{]+\{/,'')
-			.replace(/\s+/g,' ')
-			.substring(0, 50)
+	if type is 'append'
+		stack.push ware
+	else if type is 'prepend'
+		stack.unshift ware
 
-		ﬁ.log.trace Colors.grey("\"#{f}… \"")
+	log = if not ﬁ.log then console.log else ﬁ.log.trace
+	log "Middleware '#{name}' was #{type}ed."
 
-module.exports = middleware
+
+module.exports =
+
+	prepend : -> handle.call this, 'prepend', arguments
+	append  : -> handle.call this, 'append' , arguments
+
+	override: (name, middleware)->
+		throw new ﬁ.error "Invalid middleware name." if not name
+		throw new ﬁ.error "Invalid middleware cb." if not ﬁ.util.isFunction middleware
+		name = String name
+		stack.map (stk, index)->
+			if stk.id is name
+				stk.fn = middleware.call(middleware, stk.fn)
+				if not ﬁ.util.isFunction stk.fn
+					throw new ﬁ.error 'Invalid middleware overrider.'
+			return stk
+
+	stack: ->
+		middlewares = []
+		middlewares.push middleware.fn for middleware in stack
+		return middlewares
