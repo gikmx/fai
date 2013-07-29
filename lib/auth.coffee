@@ -9,15 +9,15 @@ throw new ﬁ.error 'Missing Auth settings.' if ﬁ.util.isUndefined ﬁ.setting
 Settings = {}
 URI      = undefined
 
-ﬁ.middleware.append 'auth-passport-init', Passport.initialize()
-ﬁ.middleware.append 'auth-passport-sess', Passport.session()
+ﬁ.middleware.after 'fi-session'   , 'passport-init', Passport.initialize()
+ﬁ.middleware.after 'passport-init', 'passport-sess', Passport.session()
 
 Passport.serializeUser (user, next)->
-	ﬁ.log.trace 'serializeUser'
+	# ﬁ.log.trace 'serializeUser'
 	next null, user
 
 Passport.deserializeUser (user, next)->
-	ﬁ.log.trace 'deserializeUser'
+	# ﬁ.log.trace 'deserializeUser'
 	next null, user
 
 Control =
@@ -33,7 +33,7 @@ Control =
 		ﬁ.log.trace strategy, 'callback'
 
 
-module.exports = (uri, callback)->
+ﬁ.auth = (uri, callback)->
 
 	throw new ﬁ.error 'Invalid base route.' if not ﬁ.util.isString uri
 	throw new ﬁ.error 'Invalid callback.' if not ﬁ.util.isFunction callback

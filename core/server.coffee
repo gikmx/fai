@@ -9,6 +9,18 @@ Validator = require 'express-validator'
 
 server = Express()
 
+# removes express header and enable debug middleware (if needed)
+ﬁ.middleware.prepend 'fi-server', (request, response, next)->
+	response.removeHeader 'X-Powered-By'
+
+	return next() if ﬁ.conf.live
+
+	ﬁ.debug if request.url is '/' then 'root' else request.url
+		.replace(/[^a-z0-9]/g,'-')
+		.substr(1)
+
+	next()
+
 if ﬁ.settings.params
 	Params.extend server
 	for name,param of ﬁ.settings.params
@@ -36,17 +48,5 @@ server.configure ->
 
 	# Add methods for requestbody validation
 	@use Validator
-
-# removes express header and enable debug middleware (if needed)
-ﬁ.middleware.prepend 'server', (request, response, next)->
-	response.removeHeader 'X-Powered-By'
-
-	return next() if ﬁ.conf.live
-
-	ﬁ.debug if request.url is '/' then 'root' else request.url
-		.replace(/[^a-z0-9]/g,'-')
-		.substr(1)
-
-	next()
 
 module.exports = server

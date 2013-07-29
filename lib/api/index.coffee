@@ -15,7 +15,9 @@ Handler = require './handler'
 # enabling routing for existing controls automatically
 methods = ['get','put','post','delete','all']
 
-ﬁ.util.dirwalk ﬁ.path.api, (path)->
+stack   = {}
+
+ﬁ.queueMid.push -> ﬁ.util.dirwalk ﬁ.path.api, (path)->
 	uri = path.replace(ﬁ.path.api, '').substring(1)
 
 	for method in methods
@@ -28,8 +30,9 @@ methods = ['get','put','post','delete','all']
 
 		throw new ﬁ.error "Invalid controller: #{uri}" if not ﬁ.util.isFunction control
 		url = Path.join(ﬁ.conf.api, uri)
-		ﬁ.server[method] url, Handler(control)
+		ﬁ.server[method].call ﬁ.server, url, Handler(control)
 		ﬁ.log.custom (method:'info', caller:"API:#{method.toUpperCase()}"), "#{url}"
+
 
 ﬁ.api =
 	get    :-> Request.apply Request, ['get'].concat Array::slice.call arguments

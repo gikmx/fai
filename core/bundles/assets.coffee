@@ -25,7 +25,7 @@ FS.mkdirSync tmpdir
 Route = '/static/assets'
 Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 
-ﬁ.middleware.append 'assets', (request, response, next)->
+ﬁ.middleware.after 'fi-log', 'fi-assets', (request, response, next)->
 
 	# continue if not a valid url.
 	return next() if not (match = Regex.exec request.url)

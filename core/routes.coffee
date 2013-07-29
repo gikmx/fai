@@ -24,7 +24,7 @@ enable = ->
 	for control in controls
 		if ﬁ.util.isString control
 			bundle  = control
-			control = Bundles(control) 
+			control = Bundles(control)
 		throw new ﬁ.error 'Invalid bundle.' if not ﬁ.util.isFunction control
 		result.push control
 
@@ -35,14 +35,12 @@ enable = ->
 		controls : result
 
 # Enable routing methods for routing file temporarily.
-ﬁ.routes =
+module.exports =
+
 	all    : -> enable.apply enable, ['all'].concat Array::slice.call arguments
 	get    : -> enable.apply enable, ['get'].concat Array::slice.call arguments
 	post   : -> enable.apply enable, ['post'].concat Array::slice.call arguments
 	put    : -> enable.apply enable, ['put'].concat Array::slice.call arguments
 	delete : -> enable.apply enable, ['delete'].concat Array::slice.call arguments
 
-# set routes in file.
-ﬁ.require 'app', 'routes'
-
-module.exports = Routes
+	stack : -> return Routes

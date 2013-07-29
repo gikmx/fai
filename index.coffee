@@ -44,42 +44,60 @@ require "#{path}defaults"
 # Setup server
 ﬁ.server = ﬁ.require 'core', 'server'
 
-# Setup routes
+# Setup routing methods
 ﬁ.routes = ﬁ.require 'core', 'routes'
 
 ﬁ.bundles = {}
+
+# Enable operation pre, mid and post server configuration.
+ﬁ.queuePre  = []
+ﬁ.queueMid  = []
+ﬁ.queuePost = []
 
 # Main
 ﬁ.listen = ->
 
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
-	# Enable middlewares
-	ﬁ.server.use middleware for middleware in ﬁ.middleware.stack()
+	# In case some libraries desire to run code before the server enables routes
+	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queuePre
 
-	# Enable master control
-	try
-		master  = ﬁ.require 'templates','control'
-		ﬁ.server.get '*', master
-	catch e
-		throw new ﬁ.error 'master: ' + e.message
+	ﬁ.server.configure ->
 
-	# Enable all other routes
+		# Enable middlewares
+		for middleware in ﬁ.middleware.stack()
+			ﬁ.log.trace "Using middleware: #{middleware.id}"
+			@use middleware.fn
 
-	for route in ﬁ.routes
+		@use ﬁ.require 'templates','control'
+
+	# In case some libraries desire to run code before the server enables routes
+	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queueMid
+
+	# Enable application routes
+	ﬁ.require 'app', 'routes'
+	for route in ﬁ.routes.stack()
 		bundle = "[function]"
 		if route.bundle
 			bundle = route.bundle
 			ﬁ.bundles[bundle] = route.route
+
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
 		ﬁ.log.custom (method:'info', caller:"ﬁ:#{route.method.toUpperCase()}"),
 			"#{route.route}  →  #{bundle}"
 
+	# In case some libraries desire to run code before the server starts to listen.
+	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queuePost
+
 	ﬁ.server.listen(ﬁ.conf.port)
 
 	ﬁ.isListening = true
-	ﬁ.routes      = undefined
+	delete ﬁ.routes
+	delete ﬁ.middleware
+	delete ﬁ.queuePre
+	delete ﬁ.queueMid
+	delete ﬁ.queuePost
 
 	ﬁ.debug('listen')
 	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"

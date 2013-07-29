@@ -1,5 +1,37 @@
 stack = []
 
+position = (type, args)->
+	args = Array::slice.call args
+
+	subj = args.shift()
+	name = args.shift()
+	middleware = args.shift()
+
+	throw new ﬁ.error "Invalid middleware subject." if not subj
+	throw new ﬁ.error "Invalid middleware name" if not name
+	throw new ﬁ.error "Invalid middleware cb." if not ﬁ.util.isFunction middleware
+
+	name   = String name
+	subj   = String subj
+	found  = false
+	for stk,i in stack
+		continue if stk.id isnt subj
+		found = i
+		break
+	throw new ﬁ.error "Middleware #{subj} doesn't exist on stack." if found is false
+
+	stk =
+		id: name
+		fn: middleware
+
+	i = if type is 'after' then i+1 else i-1
+	i = 0 if i < 0
+
+	stack.splice i, 0,
+		id: name
+		fn: middleware
+
+
 handle = (type, args)->
 	args = Array::slice.call args
 	name       = args.shift()
@@ -15,10 +47,6 @@ handle = (type, args)->
 		stack.push ware
 	else if type is 'prepend'
 		stack.unshift ware
-
-	log = if not ﬁ.log then console.log else ﬁ.log.trace
-	log "Middleware '#{name}' was #{type}ed."
-
 
 module.exports =
 
@@ -36,7 +64,7 @@ module.exports =
 					throw new ﬁ.error 'Invalid middleware overrider.'
 			return stk
 
-	stack: ->
-		middlewares = []
-		middlewares.push middleware.fn for middleware in stack
-		return middlewares
+	after  : -> position.call this, 'after' , arguments
+	before : -> position.call this, 'before', arguments
+
+	stack: -> return stack

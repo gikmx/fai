@@ -60,7 +60,7 @@ logger = (method, args)->
 		process.stdout.write "#{head} #{args}\n"
 
 
-ﬁ.middleware.append 'log', (request, response, next)->
+ﬁ.middleware.append 'fi-log', (request, response, next)->
 	parts = []
 
 	if ﬁ.conf.live
