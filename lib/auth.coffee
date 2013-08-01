@@ -61,11 +61,11 @@ Control =
 		delete setting.clientSecret
 
 		try
-			Strategy = require("passport-#{strategy}").Strategy
+			Strategy = require("passport-#{strategy}")
 		catch e
-			throw new ﬁ.error "Invalid Strategy: #{strategy} (#{e.message})"
+			throw new ﬁ.error "Passport #{strategy} strategy, not found.\n\n\tRun 'npm install passport-#{strategy}' on app root."
 
-		Strategy = new Strategy tokens, (accessToken, refreshToken, user, next)->
+		Strategy = new Strategy.Strategy tokens, (accessToken, refreshToken, user, next)->
 			ﬁ.log.trace "#{strategy}:middleware"
 			next null, user
 
