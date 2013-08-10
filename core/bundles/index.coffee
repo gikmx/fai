@@ -83,6 +83,8 @@ module.exports = (name)->
 			vars = if ﬁ.util.isDictionary args[0] then args.shift() else {}
 			back =  if ﬁ.util.isFunction args[0] then args.shift() else undefined
 
+			path = Path.resolve Path.dirname(view), path
+
 			locals = {}
 			locals[k] = v for k,v of ﬁ.locals
 			locals[k] = v for k,v of Assets.locals(name)
@@ -91,17 +93,24 @@ module.exports = (name)->
 			fnRender.call response, path, locals, back
 
 
-		response.render = (vars)->
+		response.render = ->
 			# Expose assets methods, already defined locals, and custom locals.
 			assetsLocals = Assets.locals(name)
 			assetsRoutes = Assets.tree(name)
+
+			args = Array::slice.call arguments
+
+			path = if ﬁ.util.isString args[0] then args.shift() else view
+			path = Path.resolve Path.dirname(view), path
+
+			vars = args.shift()
 
 			locals    = {}
 			locals[k] = v for k,v of ﬁ.locals
 			locals[k] = v for k,v of assetsLocals
 			locals[k] = v for k,v of (if not ﬁ.util.isDictionary(vars) then {} else vars)
 
-			fnRender.call response, view, locals, (error, content)->
+			fnRender.call response, path, locals, (error, content)->
 				throw new ﬁ.error error.message if error
 
 				locals[k] = v for k,v of ﬁ.locals
