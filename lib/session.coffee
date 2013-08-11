@@ -4,7 +4,7 @@ Express      = require 'express'
 Mongo        = ﬁ.require('mongo')
 
 
- # Enable flash functionality
+# Enable flash functionality
 middleware = (request, response, next)->
 	return next() if not request.session
 
