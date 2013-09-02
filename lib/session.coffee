@@ -39,7 +39,8 @@ module.exports = (callback)->
 			key    : ﬁ.conf.name
 			secret : ﬁ.settings.app.secret
 			store  : store
-			cookie : maxAge: new Date Date.now() + + (3600 * 1000 * 24 * 365)
+			cookie :
+				maxAge: new Date((Date.now()) + (3600 * 1000 * 24 * 365))
 
 		ﬁ.middleware.before 'fi-server' , 'session', session
 		ﬁ.middleware.after  'session', 'fi-session', middleware
