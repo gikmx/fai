@@ -4,6 +4,15 @@ FS   = require 'fs'
 
 help = {}
 
+# make fi modules available on apps
+help.module = (name)->
+	module = null
+	try
+		module = require name
+	catch e
+		throw new ﬁ.error "Could not load module #{name}: #{e.message}"
+	return module	
+
 # Require a ﬁ module
 help.require = (context, name)->
 	args = Array::.slice.call arguments
