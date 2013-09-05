@@ -1,7 +1,5 @@
 # Node modules
 QueryS = require 'querystring'
-Path   = require 'path'
-FS     = require 'fs'
 
 # NPM modules
 Request = require 'request'

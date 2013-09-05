@@ -1,3 +1,4 @@
 ### 1.2
 
-* `FEAT` Ahora se pueden usar módulos de "fi" dentro de "app".
+* `FIX` Trying to render when a bundle doesn't have a view throws untrackable error.
+* `NEW` Fi (npm) modules can now be used within app.

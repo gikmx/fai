@@ -52,6 +52,8 @@ catch e
 
 module.exports = (name)->
 
+	renderview = (render, response)-> return 
+
 	# Does a controller exists with specified name?
 	throw new ﬁ.error "Bundle #{name} was not found." if not Bundle[name]
 
@@ -64,14 +66,10 @@ module.exports = (name)->
 	else
 		ctrl = require Bundle[name].ctrl
 
-	# if not view is defined, return just the controller.
-	return ctrl if not Bundle[name].view
-
 	view = Bundle[name].view
 
-	# a view is found, then we have to customize the render method on response,
-	# so it used our templates.
 	return (request, response, next)->
+
 		# store original render
 		fnRender = response.render
 
@@ -80,6 +78,9 @@ module.exports = (name)->
 			args = Array.prototype.slice.call arguments
 
 			path = if ﬁ.util.isString args[0] then args.shift() else view
+
+			throw new ﬁ.error 'A view is not available.' if not path
+
 			vars = if ﬁ.util.isDictionary args[0] then args.shift() else {}
 			back =  if ﬁ.util.isFunction args[0] then args.shift() else undefined
 
@@ -92,7 +93,6 @@ module.exports = (name)->
 
 			fnRender.call response, path, locals, back
 
-
 		response.render = ->
 			# Expose assets methods, already defined locals, and custom locals.
 			assetsLocals = Assets.locals(name)
@@ -101,6 +101,9 @@ module.exports = (name)->
 			args = Array::slice.call arguments
 
 			path = if ﬁ.util.isString args[0] then args.shift() else view
+
+			throw new ﬁ.error 'A view is not available.' if not path
+
 			path = Path.resolve Path.dirname(view), path
 
 			vars = args.shift()
