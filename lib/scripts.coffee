@@ -12,38 +12,43 @@ defaults =
 	public: Path.join ﬁ.path.static, 'scripts'
 	minify: false
 	coffee:
-		bare: true
+		bare: false
 
 module.exports = ->
 	args = Array.prototype.slice.call arguments
 
 	throw new ﬁ.error 'Arguments missing' if args.length < 1
 
-	options = defaults
-	(options[key] = val for key,val of args.shift()) if ﬁ.util.isDictionary args[0]
+	opts = defaults
+	if ﬁ.util.isDictionary args[0]
+		opts[key] = val for key,val of args.shift()
 
 	callback = args.shift()
 	throw new ﬁ.error 'Missing callback' if not ﬁ.util.isFunction callback
 
-	ﬁ.util.dirRemove(options.public) if FS.existsSync options.public
+	ﬁ.util.dirRemove(opts.public) if FS.existsSync opts.public
 
-	FS.mkdirSync(options.source) if not FS.existsSync options.source
-	FS.mkdirSync(options.public)
+	FS.mkdirSync(opts.source) if not FS.existsSync opts.source
+	FS.mkdirSync(opts.public)
 
-	ﬁ.util.dirwalk options.source, (path)->
+	ﬁ.util.dirwalk opts.source, (path)->
 
 		for file in FS.readdirSync path
 			continue if Path.extname file isnt ﬁ.conf.ext
+
+			co = {}
+			co[k] = v for k,v of opts.coffee
+
 			try
 				js = FS.readFileSync Path.join(path, file)
-				js = Coffee.compile(js.toString(), options.coffee)
+				js = Coffee.compile(js.toString(), co)
 			catch e
 				throw new ﬁ.error "Error reading #{file}\n #{e}"
 
 			dest =
-				Path.join path.replace(options.source, options.public), file.replace(ﬁ.conf.ext, '.js')
+				Path.join path.replace(opts.source, opts.public), file.replace(ﬁ.conf.ext, '.js')
 
-			if options.minify or ﬁ.conf.live
+			if opts.minify or ﬁ.conf.live
 				try
 					js = Uglify.parse js
 					js.figure_out_scope()
