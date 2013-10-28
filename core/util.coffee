@@ -54,7 +54,7 @@ util.dirRemove = (path) ->
 
 # traverse recursively the bundles dir
 util.dirwalk = (path, callback, isRecursive)->
-	throw new ﬁ.error('Expecting callback.') if not ﬁ.util.isFunction callback
+	throw new ﬁ.error('Expecting callback.') if not util.isFunction callback
 	path = String path
 	if not FS.existsSync path or not FS.statSync(path).isDirectory()
 		throw new ﬁ.error 'Invalid directory.'
@@ -79,5 +79,36 @@ util.hmac = (str, type)->
 		throw new ﬁ.error 'Missing app secret setting.'
 	hmac = Crypto.createHmac('sha1', ﬁ.settings.app.secret)
 	return hmac.update(str).digest(type)
+
+# convert a string into an url friendly slug.
+util.toSlug = (str)->
+	from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;"
+	to   = "aaaaaeeeeeiiiiooooouuuunc------"
+
+	str = String(str).replace(/^\s+|\s+$/g, '').toLowerCase()
+	str = str.replace new RegExp(char,'g'), to.charAt(i) for char,i in from
+	str = str
+		.replace(/[^a-z0-9 -]/g, '')
+		.replace(/\s+/g,'-')
+		.replace(/-+/g,'-')
+	return str
+
+# Convert a number into a comma friendly string.
+util.addCommas = (str)->
+	str = String(str).replace /\B(?=(\d{3})+(?!\d))/g, ","
+	return str
+
+# Shuffle an object
+util.shuffle = (o) ->
+	j = undefined
+	x = undefined
+	i = o.length
+
+	while i
+		j = Math.floor(Math.random() * i)
+		x = o[--i]
+		o[i] = o[j]
+		o[j] = x
+	return o
 
 module.exports = util
