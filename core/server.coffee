@@ -6,6 +6,7 @@ Path = require 'path'
 Express   = require 'express'
 Params    = require 'express-params'
 Validator = require 'express-validator'
+Device    = require 'express-device'
 
 server = Express()
 
@@ -46,7 +47,11 @@ server.configure ->
 	# allow PUT and DELETE methods
 	@use Express.methodOverride()
 
+	@use Device.capture()
+
 	# Add methods for requestbody validation
 	@use Validator
+
+	server.enableDeviceHelpers()
 
 module.exports = server

@@ -35,7 +35,8 @@
     "csso": "*",
     "ua-parser": "0.3.x",
     "node-fs": "~0.1.x",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "express-device": "~0.3.7"
   },
   "devDependencies": {
     "memwatch": "~0.2.2"
