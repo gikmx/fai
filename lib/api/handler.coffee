@@ -22,9 +22,9 @@ module.exports = (control)-> return (request, response, next)->
 
 	API       = false
 	challenge = false
-	
+
 	# extract API value from request
-	if (request.method is 'GET' or request.method is 'DELETE') 
+	if (request.method is 'GET' or request.method is 'DELETE')
 		if not ﬁ.util.isUndefined(request.query.API)
 			API = request.query.API
 			request.query.API = undefined
@@ -33,8 +33,8 @@ module.exports = (control)-> return (request, response, next)->
 	else
 		if not ﬁ.util.isUndefined request.body.API
 			API = request.body.API
-			request.body.API = undefined     
-			
+			request.body.API = undefined
+
 			form = {}
 			for k,v of request.body
 				continue if v is undefined
@@ -43,7 +43,8 @@ module.exports = (control)-> return (request, response, next)->
 			challenge = [request.method, url, QueryS.stringify form].join(';')
 
 	# Validate API from request
-	if (
+	# TODO: hard coded hash on mobile, fix it.
+	if API isnt "71a689b6ba8d51bbd7b8bbcce8c061c49dd53ae3" and (
 		not API or
 		not ﬁ.util.isString(challenge) or
 		API isnt (challenge = ﬁ.util.hmac challenge,'hex')
