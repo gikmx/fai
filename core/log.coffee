@@ -50,26 +50,23 @@ logger = (method, args)->
 	throw new ﬁ.error "Invalid log method." if index is -1
 	return if index < allow
 
+	head = [level, getDate(), caller]
+	head.splice (head.length-2), 0, "[#{getMemory()}]" if not ﬁ.conf.live
+	head = colors[index] head.join ' '
+
+	process.stdout.write "#{head} #{args}\n"
+
 	if ﬁ.conf.live
-		head = [level, getDate(), caller].join ' '
 		path  = Path.join(ﬁ.path.root,"#{ﬁ.conf.name}.log")
 		FS.appendFile path, "#{head} #{args}\n", (e)-> throw new ﬁ.error e.message if e
-	else
-		head = [level, getDate(), "[#{getMemory()}]", caller].join ' '
-		head = colors[index] head
-		process.stdout.write "#{head} #{args}\n"
 
 
 ﬁ.middleware.append 'fi-log', (request, response, next)->
-	parts = []
+	ip = request.headers['x-forwarded-for'] or request.connection.remoteAddress
+	ua = Parser.parse request.headers["user-agent"]
+	ua = [ua.ua.toString(), ua.os.toString()].join ', '
 
-	if ﬁ.conf.live
-		ua = Parser.parse request.headers["user-agent"]
-		ip = request.headers['x-forwarded-for'] or request.connection.remoteAddress
-		parts.push ip
-		parts.push [ua.ua.toString(), ua.os.toString()].join ', '
-	parts.push request.url
-	ﬁ.log.custom (method: 'info', caller:request.method), parts.join ' - '
+	ﬁ.log.custom (method: 'info', caller:"#{ip}] #{ua} [#{request.method}"), request.url
 	next()
 
 module.exports =
