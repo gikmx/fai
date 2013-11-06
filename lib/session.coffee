@@ -16,13 +16,13 @@ middleware = (request, response, next)->
 		value = request.session._flash[key]
 		if value
 			delete request.session._flash[key]
-			ﬁ.log.custom (caller:'session:flash:get', method:'debug'), key, ':', value
+			ﬁ.log.custom (caller:'FLASH] [GET', method:'debug'), key, ':', value
 		return value
 
 	response.flash = (key, value)->
 		return -1 if not key or not value
 		key = String key
-		ﬁ.log.custom (caller:'session:flash:set', method:'debug'), key, ':', value
+		ﬁ.log.custom (caller:'FLASH] [SET', method:'debug'), key, ':', value
 		return (request.session._flash[key] = value)
 
 	next()
