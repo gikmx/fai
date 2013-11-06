@@ -1,19 +1,18 @@
 # Node modules
 QueryS = require 'querystring'
+URL    = require 'url'
 
 # NPM modules
 Request = require 'request'
 
-# generate a secure call to own API
+Key = require './key'
+
+methods = ['GET','PUT','POST','DELETE']
+
 module.exports = (method, url, options, callback)->
 
 	args   = Array::slice.call arguments
-
-	caller = (context, error, data)->
-		opts = method:'debug', caller:'API:' + method
-		ﬁ.log.custom opts, JSON.stringify(if error then error else data)
-		opts = undefined
-		callback.call context, error, data
+	method = String(method).toUpperCase()
 
 	# if no options are being sent, the user can ommit them and send the CB instead
 	if args.length is 3 and ﬁ.util.isFunction options
@@ -21,52 +20,50 @@ module.exports = (method, url, options, callback)->
 		options  = {}
 	options = {} if not ﬁ.util.isDictionary options
 
-	throw new ﬁ.error 'Invalid callback.' if not ﬁ.util.isFunction callback
+	throw new ﬁ.error 'Invalid callback.'    if not ﬁ.util.isFunction callback
+	throw new ﬁ.error 'Invalid options.'     if not ﬁ.util.isDictionary options
+	throw new ﬁ.error 'Invalid method.'      if methods.indexOf(method) is -1
 
-	return caller(null, 'Invalid method name.') if not ﬁ.util.isString method
-	return caller(null, 'Invalid url.')         if not ﬁ.util.isString url
-	return caller(null, 'Invalid options.')     if not ﬁ.util.isDictionary options
-	
+	# discard everything but the path (even the leading slash)
+	url = URL.parse(if url[0] is '/' then url.substring(1) else url).path
+	# generate the API key hasg
+	key = new Key([ﬁ.conf.name, method.toLowerCase(), url].join ';').hash
+
+	uri = url
+	url = [ﬁ.conf.url, ﬁ.conf.api.substring(1), url].join '/'
+	qry = false
+
 	# convert options to query string in order to send data, following HTTPS specs.
-	if not ﬁ.util.isEmptyDictionary(options) and (method is 'get' or method is 'delete')
-		url += if url.indexOf('?') is -1 then '?' else '&'
-		url += QueryS.stringify options	
+	if not ﬁ.util.isEmptyDictionary(options) and (method is 'GET' or method is 'DELETE')
+		url += '?' + QueryS.stringify options
+		qry     = options
 		options = {}
 
-	url     = url.substring(1) if url[0] is '/'
-	method  = method.toUpperCase()
-	url     = [ﬁ.conf.url, ﬁ.conf.api.substring(1), url].join('/')
-		
-	onResponse = (error, response, body)->
 
-		return caller(response, [error]) if error
+	ﬁ.log.custom
+		method : 'trace'
+		caller : "API] [REQUEST] [#{method}",
+		uri,
+		JSON.stringify if qry then qry else options
 
-		if not ﬁ.util.isString(body)
-			return caller response, ['Invalid response body']
+	Request
+		url     : url
+		method  : method
+		headers : ('fi-api': key),
+		(error, response)->
+			throw new ﬁ.error error if error
 
-		isJSON = true
+			try
+				body = JSON.parse response.body
+				body = body.response
+			catch e
+				body = [response.body]
 
-		try
-			body = JSON.parse body
-		catch e
-			ﬁ.log.warn "Response body could not be parsed."
-			isJSON = false
+			ﬁ.log.custom
+				method: 'debug'
+				caller: "API] #{uri} [#{method}",
+				response.statusCode,
+				JSON.stringify body
 
-		body = if isJSON then body.response else [body]
-
-		if response.statusCode isnt 200
-			caller(response, body)
-		else
-			caller(response, null, body)
-
-	# validate call, by parsing it against our secret phrase.
-
-	if method is 'GET' or method is 'DELETE'
-		challenge = [method, url].join(';')
-		API       = ﬁ.util.hmac(challenge,'hex')
-		url += (if url.indexOf('?') is -1 then '?' else '&') + "API=#{API}"
-		Request (method: method, uri: url), onResponse 
-	else
-		challenge = [method, url, QueryS.stringify options].join(';')
-		options.API = ﬁ.util.hmac challenge, 'hex'
-		Request (method:method, uri:url, form:options), onResponse 	
+			callback.apply response,
+				if response.statusCode is 200 then [null,body] else [body,null]
