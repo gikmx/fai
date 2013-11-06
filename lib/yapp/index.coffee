@@ -33,7 +33,13 @@ connect = (path, config, callback, method)->
 				catch e
 					ﬁ.log.warn "Response could not be parsed as JSON."
 					res = response: data
-				ﬁ.log.debug "#{config.method} #{config.path} #{response.statusCode}"
+
+				ﬁ.log.custom
+					method: 'trace'
+					caller: "YAPP] #{config.path} [#{config.method}",
+					response.statusCode,
+					JSON.stringify res
+
 				if response.statusCode is 200
 					callback.call null, null, response.statusCode, res
 				else
