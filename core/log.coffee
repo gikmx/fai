@@ -3,8 +3,14 @@ Path   = require 'path'
 
 Parser = require 'ua-parser'
 Colors = require 'colors'
+Args   = require 'named-argv'
 
-LEVEL = if ﬁ.conf.live then 'info' else 'trace'
+levels = ['trace', 'debug', 'info', 'warn', 'error']
+
+if typeof Args.opts.log isnt 'string' or levels.indexOf(Args.opts.log.toLowerCase()) is -1
+	LEVEL = if ﬁ.conf.live then 'info' else 'trace'
+else
+	LEVEL = Args.opts.log
 
 getMemory  = ->
 	mem = []
@@ -40,7 +46,6 @@ logger = (method, args)->
 		caller = method.caller
 		method = method.method
 
-	levels = ['trace', 'debug', 'info', 'warn', 'error']
 	colors = [Colors.cyan, Colors.blue, Colors.green, Colors.yellow, Colors.red]
 	index  = levels.indexOf method
 	allow  = levels.indexOf LEVEL
@@ -66,7 +71,7 @@ logger = (method, args)->
 	ua = Parser.parse request.headers["user-agent"]
 	ua = [ua.ua.toString(), ua.os.toString()].join ', '
 
-	ﬁ.log.custom (method: 'info', caller:"#{ip}] #{ua} [#{request.method}"), request.url
+	ﬁ.log.custom (method: 'info', caller:"REQUEST] [#{ip}] #{ua} [#{request.method}"), request.url
 	next()
 
 module.exports =
