@@ -50,9 +50,8 @@ module.exports = (controls)-> (request, response, next)->
 	request.sanitize(k).xss() for k,v of request.body
 
 	ﬁ.log.custom
-		method: 'debug'
-		caller: "API] [SERVE]#{ua}[#{method.toUpperCase()}",
-		url,
+		method: 'trace'
+		caller: "API]#{ua}[#{method.toUpperCase()}] #{url} [SERVE",
 		JSON.stringify (if method is "get" or "delete" then request.query else request.body)
 
 	control.call control, request, response

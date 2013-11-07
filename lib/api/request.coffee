@@ -42,8 +42,7 @@ module.exports = (method, url, options, callback)->
 
 	ﬁ.log.custom
 		method : 'trace'
-		caller : "API] [REQUEST] [#{method}",
-		uri,
+		caller : "API] [#{method}] #{uri} [REQUEST",
 		JSON.stringify if qry then qry else options
 
 	Request
@@ -65,7 +64,7 @@ module.exports = (method, url, options, callback)->
 
 			ﬁ.log.custom
 				method: if response.statusCode is 200 then 'debug' else 'error'
-				caller: "API] #{uri} [#{method}",
+				caller: "API] [#{method}] #{uri} [RESPONSE",
 				response.statusCode,
 				JSON.stringify body
 
