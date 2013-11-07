@@ -53,6 +53,6 @@ module.exports = (controls)-> (request, response, next)->
 		method: 'debug'
 		caller: "API] [SERVE]#{ua}[#{method.toUpperCase()}",
 		url,
-		JSON.stringify if method is "get" or "delete" then request.query else request.body
+		JSON.stringify (if method is "get" or "delete" then request.query else request.body)
 
 	control.call control, request, response

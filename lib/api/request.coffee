@@ -49,7 +49,11 @@ module.exports = (method, url, options, callback)->
 	Request
 		url     : url
 		method  : method
-		headers : ('fi-api': key),
+		body    : JSON.stringify(options) if not qry
+		headers :
+			'fi-api'          : key
+			'Content-Type'    : 'application/json'
+			'Accept-Encoding' : 'gzip, deflate'
 		(error, response)->
 			throw new ﬁ.error error if error
 
@@ -60,7 +64,7 @@ module.exports = (method, url, options, callback)->
 				body = [response.body]
 
 			ﬁ.log.custom
-				method: 'debug'
+				method: if response.statusCode is 200 then 'debug' else 'error'
 				caller: "API] #{uri} [#{method}",
 				response.statusCode,
 				JSON.stringify body
