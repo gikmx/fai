@@ -1,14 +1,10 @@
 !!!5
-//if lt IE 7
-	html.no-js.lt-ie9.lt-ie8.lt-ie7(lang='en')
-
-//if IE 7
-	html.no-js.lt-ie9.lt-ie8(lang='es')
-
 //if IE 8
 	html.no-js.lt-ie9(lang='es')
 
-html.no-js(lang='es')
+// [if gt IE 8] <!
+html.no-js(lang="es",class=is_desktop?'is_desktop':'')
+	// <![endif]
 
 	head
 		meta(charset='utf-8')
@@ -18,8 +14,8 @@ html.no-js(lang='es')
 
 		block ﬁ.style
 
-body
+	body
 
-	block ﬁ.content
+		block ﬁ.content
 
-	block ﬁ.script
+		block ﬁ.script
