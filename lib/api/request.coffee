@@ -45,14 +45,17 @@ module.exports = (method, url, options, callback)->
 		caller : "API] [#{method}] #{uri} [REQUEST",
 		JSON.stringify if qry then qry else options
 
+	# TODO : enable GZIP support (request.js does not support it)
+	# 'Accept-Encoding' : 'gzip, deflate'
+
 	Request
 		url     : url
 		method  : method
-		body    : JSON.stringify(options) if not qry
+		body    : JSON.stringify options
 		headers :
 			'fi-api'          : key
 			'Content-Type'    : 'application/json'
-			'Accept-Encoding' : 'gzip, deflate'
+			#'Accept-Encoding' : 'gzip, deflate'
 		(error, response)->
 			throw new ﬁ.error error if error
 
