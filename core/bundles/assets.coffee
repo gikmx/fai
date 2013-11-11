@@ -65,7 +65,9 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 Types =
 	css:
 		ext  : ['.styl','.css']
-		run  : (str, path)-> Stylus(str).set('paths', [path]).use(do Nib).render()
+		run  : (str, path)-> Stylus(str)
+			.set('paths', [path, ﬁ.path.templates])
+			.use(do Nib).render()
 		min  : (str)-> CSSo.justDoIt str
 
 	js:
