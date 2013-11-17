@@ -1,12 +1,32 @@
+mixin auto(name, props)
+	each prop in props
+		each val,key in prop
+			- attributes[key] = val
+		case name
+			when 'meta'
+				meta(attributes)
+			when 'link'
+				link(attributes)
+			when 'script'
+				script(attributes)
+
 extends #{template}
 
-block ﬁ.style
+block ﬁ.meta
+	if locals.META && META.length
+		+auto('meta', META)
+
+block ﬁ.link
+	if locals.LINK && LINK.length
+		+auto('link', LINK)
 	link(rel='stylesheet', href='#{css("templates/master")}')
 	each asset in assets.css
 		if asset
 			link(rel='stylesheet', href='#{css(asset)}')
 
 block ﬁ.script
+	if locals.SCRIPT && SCRIPT.length
+		+auto('script', SCRIPT)
 	script(src='#{js("templates/master")}')
 	each asset in assets.js
 		if asset

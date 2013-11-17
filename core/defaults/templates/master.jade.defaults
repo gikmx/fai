@@ -9,10 +9,11 @@ html.no-js(lang="es",class=is_desktop?'is_desktop':'')
 	head
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width')
+		block ﬁ.meta
 
 		title Fi
 
-		block ﬁ.style
+		block ﬁ.link
 
 	body
 
