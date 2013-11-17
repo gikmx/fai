@@ -5,7 +5,7 @@ Parser = require 'ua-parser'
 Colors = require 'colors'
 Args   = require 'named-argv'
 
-levels = ['trace', 'debug', 'info', 'warn', 'error']
+levels = ['trace', 'debug', 'info', 'note', 'warn', 'error']
 
 if typeof Args.opts.log isnt 'string' or levels.indexOf(Args.opts.log.toLowerCase()) is -1
 	LEVEL = if ﬁ.conf.live then 'info' else 'trace'
@@ -46,7 +46,9 @@ logger = (method, args)->
 		caller = method.caller
 		method = method.method
 
-	colors = [Colors.cyan, Colors.blue, Colors.green, Colors.yellow, Colors.red]
+	colors = [
+		Colors.cyan, Colors.blue, Colors.green, Colors.yellow, Colors.magenta, Colors.red
+	]
 	index  = levels.indexOf method
 	allow  = levels.indexOf LEVEL
 	level  = levels[index][0].toUpperCase()
@@ -78,6 +80,7 @@ module.exports =
 	trace: -> logger 'trace', arguments
 	debug: -> logger 'debug', arguments
 	info : -> logger 'info' , arguments
+	note : -> logger 'note' , arugments
 	warn : -> logger 'warn' , arguments
 	error: -> logger 'error', arguments
 

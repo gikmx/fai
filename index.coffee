@@ -84,7 +84,7 @@ require "#{path}defaults"
 
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
-		ﬁ.log.custom (method:'info', caller:"ﬁ:#{route.method.toUpperCase()}"),
+		ﬁ.log.custom (method:'debug', caller:"ﬁ:#{route.method.toUpperCase()}"),
 			"#{route.route}  →  #{bundle}"
 
 	# In case some libraries desire to run code before the server starts to listen.
@@ -100,4 +100,4 @@ require "#{path}defaults"
 	delete ﬁ.queuePost
 
 	ﬁ.debug('listen')
-	ﬁ.log.custom (method:'info', caller:"fi"), "Listening on #{ﬁ.conf.url}"
+	ﬁ.log.custom (method:'note', caller:"fi"), "Listening on #{ﬁ.conf.url}"
