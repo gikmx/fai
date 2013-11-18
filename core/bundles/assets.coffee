@@ -61,6 +61,30 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	stream.pipe(response)
 	return
 
+# Allow client side coffeescript to require another files.
+CoffeeProcess = (str, path, name)->
+	name  = Path.resolve(path, name + ﬁ.conf.ext).replace(ﬁ.path.app,'')
+	paths = [path, ﬁ.path.templates]
+	lines = str.split /[\r\n]/
+	str   = []
+	# split file by lines, and insert required code in between
+	for line,i in lines
+		if not (match = line.match /^(\s*)require\s*\(?["']([^"']+)["']\)?.*$/)
+			str.push line
+			continue
+		indent = match[1]
+		# determine if file exists
+		for file in paths
+			file = Path.resolve file, "#{match[2]}#{ﬁ.conf.ext}"
+			if not FS.existsSync file then file = false else
+				ﬁ.log.trace "[require] '#{file.replace(ﬁ.path.app,'')}' →  #{name}"
+				file = FS.readFileSync file, 'utf-8'
+				str.push(indent + l) for l in file.split(/[\r\n]/)
+				break
+		throw new ﬁ.error "#{name} couldn't require '#{match[2]}'" if not file
+
+	return str.join "\n"
+
 # Set behaviour for asset types
 Types =
 	css:
@@ -72,8 +96,9 @@ Types =
 
 	js:
 		ext  : ['.coffee','.js']
-		run  : (str)-> Coffee.compile(str)
-		min  : (str)->
+		run  : (str, path, name)->
+			return Coffee.compile CoffeeProcess(str, path, name)
+		min  : (str, path, name)->
 			code = Uglify.parse str
 			code.figure_out_scope()
 			str = code.transform Uglify.Compressor(warnings:false)
@@ -124,7 +149,7 @@ module.exports =
 
 			# Get contents and parse them.
 			content = FS.readFileSync filename, 'utf-8'
-			content = type.run content, path
+			content = type.run content, path, name
 
 			filename = filename
 				.replace(context, '')
@@ -164,7 +189,7 @@ module.exports =
 			# Minification and compression when in production mode.
 			if ﬁ.conf.live
 				# minify
-				content  = type.min content
+				content  = type.min content, path, name
 				deflate filename, content, (file, cont)->
 					ﬁ.log.trace '[deflate] ' + file
 					gzip file, cont, (file, cont)->
