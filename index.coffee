@@ -76,7 +76,16 @@ require "#{path}defaults"
 
 	# Enable application routes
 	ﬁ.require 'app', 'routes'
-	for route in ﬁ.routes.stack()
+
+	# Detect if a error catcher has been defined.
+	stack = ﬁ.routes.stack()
+	len   = stack.length - 1
+	error = false
+	if len > 0 and stack[len].method is 'error'
+		stack[len].method = 'get'
+		error = stack[len]
+
+	for route in stack
 		bundle = "[function]"
 		if route.bundle
 			bundle = route.bundle
@@ -86,6 +95,11 @@ require "#{path}defaults"
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
 		ﬁ.log.custom (method:'debug', caller:"ﬁ:#{route.method.toUpperCase()}"),
 			"#{route.route}  →  #{bundle}"
+
+	if error
+		ﬁ.server.use (errors, request, response, next)->
+			request.errors = errors
+			error.controls[1].call ﬁ.server, request, response
 
 	# In case some libraries desire to run code before the server starts to listen.
 	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queuePost
