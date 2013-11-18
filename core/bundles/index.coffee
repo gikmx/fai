@@ -18,11 +18,15 @@ Bundle = {}
 	ctrl = if FS.existsSync(ctrl) then ctrl else false
 	view = Path.join path, 'view.jade'
 	view = if FS.existsSync(view) then view else false
+	styl = Path.join path, 'view.styl'
+	styl = if FS.existsSync(styl) then styl else false
+	jqry = Path.join path, 'view.coffee'
+	jqry = if FS.existsSync(jqry) then jqry else false
+
+	# make assets available if existent
+	Assets.store path, 'view' if styl or jqry
 
 	return if not ctrl and not view
-
-	# make assets available
-	Assets.store path, 'view'
 
 	# Keep a record of what do we have.
 	Bundle[uri] = ctrl: ctrl, view: view
@@ -52,7 +56,7 @@ catch e
 
 module.exports = (name)->
 
-	renderview = (render, response)-> return 
+	renderview = (render, response)-> return
 
 	# Does a controller exists with specified name?
 	throw new ﬁ.error "Bundle #{name} was not found." if not Bundle[name]
