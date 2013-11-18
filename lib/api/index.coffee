@@ -34,7 +34,7 @@ controls =
 		throw new ﬁ.error "#{err}: Invalid controller." if not ﬁ.util.isFunction control
 		url = Path.join(ﬁ.conf.api, uri)
 		controls[method][uri] = control
-		ﬁ.log.custom (method:'info', caller:"API] [#{method.toUpperCase()}"), "#{url}"
+		ﬁ.log.custom (method:'debug', caller:"API] [#{method.toUpperCase()}"), "#{url}"
 
 	ﬁ.util.dirwalk ﬁ.path.api, (path)->
 		# is there a "catch all" file?
