@@ -1,5 +1,6 @@
 mixin auto(name, props)
 	each prop in props
+		- attributes = []
 		each val,key in prop
 			- attributes[key] = val
 		case name
