@@ -111,4 +111,7 @@ util.shuffle = (o) ->
 		o[j] = x
 	return o
 
+# Centralize QueryString sending.
+util.querystring = JSON
+
 module.exports = util
