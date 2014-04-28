@@ -12,6 +12,9 @@ server = Express()
 
 # removes express header and enable debug middleware (if needed)
 ﬁ.middleware.prepend 'fi-server', (request, response, next)->
+
+	request.ﬁ = response.ﬁ = {}
+
 	response.removeHeader 'X-Powered-By'
 
 	return next() if ﬁ.conf.live

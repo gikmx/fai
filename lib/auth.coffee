@@ -13,25 +13,36 @@ URI      = undefined
 ﬁ.middleware.after 'passport-init', 'passport-sess', Passport.session()
 
 Passport.serializeUser (user, next)->
-	# ﬁ.log.trace 'serializeUser'
+	#ﬁ.log.trace 'serializeUser'
 	next null, user
 
 Passport.deserializeUser (user, next)->
-	# ﬁ.log.trace 'deserializeUser'
+	#ﬁ.log.trace 'deserializeUser'
 	next null, user
 
 Control =
 	strategy: (request, response, next)->
 		strategy = request.route.path.split('/').slice(-1)[0]
-		Passport.authenticate(strategy, Settings[strategy]) request, response, next
-		ﬁ.log.trace strategy, 'strategy'
+		settings = Settings[strategy]
+
+		if request.ﬁ.auth
+			settings = ﬁ.util.extend {}, settings, request.ﬁ.auth
+			ﬁ.log.trace "overriden auth settings:", settings
+
+		Passport.authenticate(strategy, settings) request, response, next
+		ﬁ.log.trace strategy, 'strategy', JSON.stringify settings
 
 	callback: (request, response, next)->
 		strategy = request.route.path.split('/').slice(-2)[0]
-		settings = failureRedirect: Path.join(URI, strategy, 'failure')
-		Passport.authenticate(strategy, settings) request, response, next
-		ﬁ.log.trace strategy, 'callback'
+		settings = Settings[strategy]
+		settings.failureRedirect = Path.join(URI, strategy, 'failure')
 
+		if request.ﬁ.auth
+			settings = ﬁ.util.extend {}, settings, request.ﬁ.auth
+			ﬁ.log.trace "overriden auth settings:", settings
+
+		Passport.authenticate(strategy, settings) request, response, next
+		ﬁ.log.trace strategy, 'callback', JSON.stringify settings
 
 ﬁ.auth = (uri, callback)->
 
