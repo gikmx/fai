@@ -1,5 +1,7 @@
 module.exports = ->
 
+	return ﬁ.log.warn("A port was not specified, app won't listen.") if not ﬁ.conf.port
+
 	throw new ﬁ.error 'ﬁ is already listening.' if ﬁ.isListening
 
 	# In case some libraries desire to run code before the server enables routes

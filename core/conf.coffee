@@ -7,7 +7,7 @@ Args = require 'named-argv'
 
 # a port number must be provided
 if typeof Args.opts.port isnt 'string' or not parseInt(Args.opts.port)
-	throw new ﬁ.error 'Expecting a port number.'
+	Args.opts.port = 0
 
 if typeof Args.opts.live isnt 'undefined'
 	process.env.NODE_ENV = 'production'
