@@ -1,3 +1,6 @@
+FS   = require 'fs'
+Path = require 'path'
+
 module.exports = ->
 
 	return ﬁ.log.warn("A port was not specified, app won't listen.") if not ﬁ.conf.port
@@ -60,3 +63,4 @@ module.exports = ->
 
 	ﬁ.debug('listen')
 	ﬁ.log.custom (method:'note', caller:"fi"), "Listening on #{ﬁ.conf.url}"
+	FS.writeFileSync Path.join(ﬁ.path.self, "fi.lastrun"), new Date()
