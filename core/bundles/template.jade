@@ -32,3 +32,5 @@ block ﬁ.script
 block ﬁ.content
 	if locals.content
 		!= locals.content
+	if locals.EXPOSE
+		script!='window.EXPOSE=' + JSON.stringify(locals.EXPOSE, null, '') + ';'
