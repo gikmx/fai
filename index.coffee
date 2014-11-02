@@ -47,8 +47,6 @@ require "#{path}defaults"
 # Setup routing methods
 ﬁ.routes = ﬁ.require 'core', 'routes'
 
-ﬁ.bundles = {}
-
 # Allow fi to be extended.
 ﬁ.extend = ﬁ.require 'core', 'extend'
 

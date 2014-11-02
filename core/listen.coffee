@@ -26,23 +26,32 @@ module.exports = ->
 	ﬁ.require 'app', 'routes'
 
 	# Detect if a error catcher has been defined.
-	stack = ﬁ.routes.stack()
-	len   = stack.length - 1
-	error = false
-	if len > 0 and stack[len].method is 'error'
-		stack[len].method = 'get'
-		error = stack[len]
+	routes = ﬁ.routes.stack()
+	len    = routes.length - 1
+	error  = false
 
-	for route in stack
-		bundle = "[function]"
-		if route.bundle
-			bundle = route.bundle
-			ﬁ.bundles[bundle] = route.route
+	ﬁ.bundles = {}
+	ﬁ.routes  = {}
 
+	if len > 0 and routes[len].method is 'error'
+		routes[len].method = 'get'
+		error = routes[len]
+
+	for route,i in routes
+		# Setup the controller
+		bundle = if route.bundle then route.bundle  else "[function]"
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
 		ﬁ.log.custom (method:'debug', caller:"ﬁ:#{route.method.toUpperCase()}"),
 			"#{route.route}  →  #{bundle}"
+		# Setup the bundles object
+		ﬁ.bundles[route.bundle] = {} if not ﬁ.bundles[route.bundle]
+		ﬁ.bundles[route.bundle][route.method] = route.route
+		# Setup the routes object
+		ﬁ.routes[route.route] = {} if not ﬁ.routes[route.route]
+		ﬁ.routes[route.route][route.method] = route.bundle
+
+	route = i = routes = undefined
 
 	if error
 		ﬁ.server.use (errors, request, response, next)->
@@ -55,11 +64,22 @@ module.exports = ->
 	ﬁ.server.listen(ﬁ.conf.port)
 
 	ﬁ.isListening = true
-	delete ﬁ.routes
 	delete ﬁ.middleware
 	delete ﬁ.queuePre
 	delete ﬁ.queueMid
 	delete ﬁ.queuePost
+
+	ﬁ.route = ->
+		args = Array::slice.call arguments
+		bundle = args.shift()
+		bundle = if bundle[0] is '/' then bundle.substring(1) else bundle
+		method = if typeof args[0] is 'string' then args.shift() else 'get'
+		torepl = args.shift()
+
+		return false if not ﬁ.bundles[bundle] or not ﬁ.bundles[bundle][method]
+		route = ﬁ.bundles[bundle][method]
+		route = route.replace(":#{key}", val) for key,val of torepl
+		return route
 
 	ﬁ.debug('listen')
 	ﬁ.log.custom (method:'note', caller:"fi"), "Listening on #{ﬁ.conf.url}"

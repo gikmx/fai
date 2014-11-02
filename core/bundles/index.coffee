@@ -77,6 +77,11 @@ module.exports = (name)->
 		# store original render
 		fnRender = response.render
 
+		request.bundle = ->
+			method = request.method.toLowerCase()
+			return false if not ﬁ.routes[request.url] or not ﬁ.routes[request.url][method]
+			return ﬁ.routes[request.url][method]
+
 		response.renderview = ->
 
 			args = Array.prototype.slice.call arguments
