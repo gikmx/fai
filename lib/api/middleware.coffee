@@ -46,9 +46,6 @@ module.exports = (controls)-> (request, response, next)->
 		not key.challenge request.headers['fi-api']
 	)
 
-	# Sanitize request body
-	request.sanitize(k).xss() for k,v of request.body
-
 	ﬁ.log.custom
 		method: 'trace'
 		caller: "API]#{ua}[#{method.toUpperCase()}] #{url} [SERVE",
