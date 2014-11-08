@@ -40,9 +40,7 @@ module.exports = (method, url, options, callback)->
 		options = {}
 
 
-	ﬁ.log.custom
-		method : 'trace'
-		caller : "API] [#{method}] #{uri} [REQUEST",
+	ﬁ.log.custom (method : 'trace', caller : "API] [#{method}] #{uri} [REQUEST"),
 		JSON.stringify if qry then qry else options
 
 	# TODO : enable GZIP support (request.js does not support it)
@@ -58,18 +56,14 @@ module.exports = (method, url, options, callback)->
 			#'Accept-Encoding' : 'gzip, deflate'
 		(error, response)->
 			throw new ﬁ.error error if error
+			body = response.body
+			try response.body = JSON.parse response.body catch e
+				response.body = [response.body]
 
-			try
-				body = JSON.parse response.body
-				body = body.response
-			catch e
-				body = [response.body]
-
-			ﬁ.log.custom
-				method: if response.statusCode is 200 then 'debug' else 'error'
-				caller: "API] [#{method}] #{uri} [RESPONSE",
-				response.statusCode,
-				JSON.stringify body
+			status = response.statusCode
+			method = if status is 200 then 'debug' else 'error'
+			caller = "API] [#{method}] #{uri} [RESPONSE] [#{status}"
+			ﬁ.log.custom (method: method, caller:caller), body
 
 			callback.apply response,
-				if response.statusCode is 200 then [null,body] else [body,null]
+				if status is 200 then [null,response.body] else [response.body]

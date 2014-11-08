@@ -1,7 +1,10 @@
 HTTPS = require 'https'
 
-connect = (path, config, callback, method)->
+onData = (response, isException)-> (res)->
+	return (status:500, response: (message:res.message, error: res)) if isException
+	return status: response.statusCode, response:res or response.responseJSON
 
+connect = (path, config, callback, method)->
 	config = {} if not ﬁ.util.isDictionary config
 
 	throw new ﬁ.error 'Expecting callback.' if not ﬁ.util.isFunction callback
@@ -19,37 +22,35 @@ connect = (path, config, callback, method)->
 	config.method  = method
 	config.agent   = new HTTPS.Agent config
 
-	request = HTTPS.request config,
-		(response)->
-			response.setEncoding 'utf-8'
-			data = ''
+	request = HTTPS.request config, (response)->
+		response.setEncoding 'utf-8'
+		data = ''
 
-			response.on 'data', (chunk)-> data += chunk
+		response.on 'data', (chunk)-> data += chunk
 
-			response.on 'end', ()->
-				res = null
-				try
-					res = JSON.parse data
-				catch e
-					ﬁ.log.warn "Response could not be parsed as JSON."
-					res = response: data
+		response.on 'end', ()->
+			response.responseText = data or ''
+			response.responseJSON = null
+			try
+				response.responseJSON = JSON.parse response.responseText
+			catch e
+				ﬁ.log.warn "Response could not be parsed as JSON."
+				response.responseJSON = response: message: response.responseText
 
-				config.path = config.path.replace "#{yConf.path}/", ''
+			config.path = config.path.replace "#{yConf.path}/", ''
 
-				ﬁ.log.custom
-					method: 'trace'
-					caller: "YAPP] [#{config.method}] #{config.path} [RESPONSE",
-					response.statusCode,
-					JSON.stringify res
+			ﬁ.log.custom
+				method: 'trace'
+				caller: "YAPP] [#{config.method}] #{config.path} [RESPONSE",
+				response.statusCode, response.responseText
 
-				if response.statusCode is 200
-					callback.call null, null, response.statusCode, res
-				else
-					callback.call null, res, response.statusCode
+			if response.statusCode is 200
+				callback.call response, null, onData(response), response.responseJSON
+			else
+				callback.call response, onData(response), null, response.responseJSON
 
 	request.on 'error', (error)->
-		ﬁ.log.error error, config
-		callback.call request, error, 500
+		callback.call request, onData(error, true), null, error
 
 	# send content if available
 	if (method is 'PUT' or method is 'POST') and not ﬁ.util.isUndefined(config.body)

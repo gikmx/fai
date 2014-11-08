@@ -26,13 +26,12 @@ module.exports = (controls)-> (request, response, next)->
 		return errors
 
 	# override default render so all responses are consistent
-	response.render = (status, body)->
-		status = 0 if not status
-		status = parseInt(status, 10)
-		response.writeHead status, 'Content-Type': 'application/json'
-		response.end JSON.stringify
-			success  : status is 200
-			response : body
+	response.render = (res={})->
+		location = "#{request.method.toUpperCase()}: #{request.url}"
+		throw new ﬁ.error "Invalid status in #{location}" if not res.status
+		throw new ﬂ.error "Invalid response in #{location}" if not res.response
+		response.writeHead res.status, 'Content-Type': 'application/json'
+		response.end JSON.stringify res.response
 
 	key = new Key [ﬁ.conf.name, method, url].join(';')
 	ip  = request.headers['x-forwarded-for'] or request.connection.remoteAddress
