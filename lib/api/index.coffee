@@ -47,6 +47,7 @@ controls =
 ﬁ.middleware.prepend 'fi-api', Middle(controls)
 
 ﬁ.api =
+	client : require './client'
 	get    :-> Request.apply Request, ['get'].concat Array::slice.call arguments
 	put    :-> Request.apply Request, ['put'].concat Array::slice.call arguments
 	post   :-> Request.apply Request, ['post'].concat Array::slice.call arguments
