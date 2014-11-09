@@ -41,12 +41,16 @@ module.exports = class
 				ﬁ.log.custom
 					method: 'trace'
 					caller: "API] [#{@settings.method}] #{@settings.path} [RESPONSE",
-					response.statusCode, response.responseText
+					response.statusCode, JSON.stringify response.responseText
 				try
 					response.responseJSON = JSON.parse response.responseText
 				catch
-					ﬁ.log.warn 'Invalid JSON'
-					response.responseJSON = message: 'Invalid JSON'
+					response.responseJSON =
+						message: 'Invalid JSON'
+						body   : response.responseText
+					response.statusCode = 500
+					callback.call response, onData(response), null, response.responseJSON
+					return
 
 				if response.statusCode is 200
 					callback.call response, null, onData(response), response.responseJSON

@@ -65,5 +65,5 @@ module.exports = (method, url, options, callback)->
 			caller = "API] [#{method}] #{uri} [RESPONSE] [#{status}"
 			ﬁ.log.custom (method: method, caller:caller), body
 
-			callback.apply response,
-				if status is 200 then [null,response.body] else [response.body]
+			args = if status isnt 200 then [response.body, null] else [null,response.body]
+			callback.apply response, args

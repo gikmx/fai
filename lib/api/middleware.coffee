@@ -22,7 +22,7 @@ module.exports = (controls)-> (request, response, next)->
 	request.hasErrors = (skip)->
 		return false if not (errors = request.validationErrors.call request)
 		errors = ﬁ.util.array.unique errors.map (error)-> error.msg
-		response.render(400, errors) if ﬁ.util.isUndefined skip
+		return response.render (status:400, response:errors) if not skip
 		return errors
 
 	# override default render so all responses are consistent
@@ -39,11 +39,11 @@ module.exports = (controls)-> (request, response, next)->
 	ua  = if ip is '127.0.0.1' then ' ' else " [#{ip}] #{ua.ua}, #{ua.os} "
 
 	# do authentication unless the control explicitly disables it.
-	return response.render(403, ['Sin autorización.']) if not control.public and (
+	if not control.public and (
 		not request.headers or
 		not request.headers['fi-api'] or
-		not key.challenge request.headers['fi-api']
-	)
+		not key.challenge request.headers['fi-api'])
+		return response.render( status:403,  response:['Sin autorización.'])
 
 	ﬁ.log.custom
 		method: 'trace'
