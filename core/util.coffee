@@ -11,6 +11,13 @@ UUID       = require 'node-uuid'
 util = {}
 
 util.extend = Underscore.extend
+util.clone  = (target)->
+	try
+		target = JSON.parse JSON.stringify target
+	catch e
+		throw new ﬁ.error "Cannot clone given element. #{e.message}"
+	return target
+
 
 util.isObject    = Underscore.isObject
 util.isArray     = Underscore.isArray
