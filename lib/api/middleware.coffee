@@ -29,7 +29,7 @@ module.exports = (controls)-> (request, response, next)->
 	response.render = (res={})->
 		location = "#{request.method.toUpperCase()}: #{request.url}"
 		throw new ﬁ.error "Invalid status in #{location}" if not res.status
-		throw new ﬂ.error "Invalid response in #{location}" if not res.response
+		throw new ﬁ.error "Invalid response in #{location}" if not res.response
 		response.writeHead res.status, 'Content-Type': 'application/json'
 		response.end JSON.stringify res.response
 

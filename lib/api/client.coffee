@@ -15,22 +15,24 @@ module.exports = class
 		method = do args.shift
 		path   = [String(do args.shift).trim().replace(rxSlash, '')]
 		body   = do args.shift
+		conf   = ﬁ.util.extend {}, @settings
+
 		if ﬁ.util.isFunction body
 			callback = body
 			body     = do args.shift
 		else
 			callback = do args.shift
 
-		path.unshift @settings.path.trim().replace(rxSlash,'') if @settings.path
+		path.unshift conf.path.trim().replace(rxSlash,'') if conf.path
 
-		@settings.path   = [''].concat(path.filter Boolean).join '/'
-		@settings.method = method.toUpperCase()
+		conf.path   = [''].concat(path.filter Boolean).join '/'
+		conf.method = method.toUpperCase()
 
 		if @isSecure
-			@settings.agent = new HTTPS.Agent @settings
+			conf.agent = new HTTPS.Agent conf
 			client = HTTPS
 
-		request = client.request @settings, (response)=>
+		request = client.request conf, (response)=>
 
 			response.setEncoding 'utf-8'
 			response.responseText = ''
@@ -40,7 +42,7 @@ module.exports = class
 			response.on 'end', =>
 				ﬁ.log.custom
 					method: 'trace'
-					caller: "API] [#{@settings.method}] #{@settings.path} [RESPONSE",
+					caller: "API] [#{conf.method}] #{conf.path} [RESPONSE",
 					response.statusCode, JSON.stringify response.responseText
 				try
 					response.responseJSON = JSON.parse response.responseText
@@ -61,7 +63,7 @@ module.exports = class
 			callback.call request, onData(error, true), null, error
 
 		# send content if available
-		if (@settings.method is 'PUT' or @settings.method is 'POST') and body
+		if (conf.method is 'PUT' or conf.method is 'POST') and body
 			throw new ﬁ.error 'Expecting JSON body.' if not ﬁ.util.isDictionary body
 			request.write JSON.stringify body
 
