@@ -12,16 +12,26 @@ methods = ['GET','PUT','POST','DELETE']
 module.exports = (method, url, options, callback)->
 
 	args   = Array::slice.call arguments
-	method = String(method).toUpperCase()
 
-	# if no options are being sent, the user can ommit them and send the CB instead
-	if args.length is 3 and ﬁ.util.isFunction options
+	method = String(do args.shift).toUpperCase()
+	url    = String do args.shift
+
+	options = do args.shift
+	if typeof options is 'function'
 		callback = options
+		headers  = {}
 		options  = {}
-	options = {} if not ﬁ.util.isDictionary options
+	else
+		headers = do args.shift
+		if typeof headers is 'function'
+			callback = headers
+			headers  = {}
+		else
+			callback = do args.shift
 
 	throw new ﬁ.error 'Invalid callback.'    if not ﬁ.util.isFunction callback
 	throw new ﬁ.error 'Invalid options.'     if not ﬁ.util.isDictionary options
+	throw new ﬁ.error 'Invalid headers.'     if not ﬁ.util.isDictionary headers
 	throw new ﬁ.error 'Invalid method.'      if methods.indexOf(method) is -1
 
 	# discard everything but the path (even the leading slash)
@@ -46,14 +56,15 @@ module.exports = (method, url, options, callback)->
 	# TODO : enable GZIP support (request.js does not support it)
 	# 'Accept-Encoding' : 'gzip, deflate'
 
+	headers['fi-api']       = key
+	headers['Content-Type'] = 'application/json'
+
 	Request
 		url     : url
 		method  : method
 		body    : JSON.stringify options
-		headers :
-			'fi-api'          : key
-			'Content-Type'    : 'application/json'
-			#'Accept-Encoding' : 'gzip, deflate'
+		headers : headers
+
 		(error, response)->
 			throw new ﬁ.error error if error
 			body = response.body
