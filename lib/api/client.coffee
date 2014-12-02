@@ -54,7 +54,7 @@ module.exports = class
 					callback.call response, onData(response), null, response.responseJSON
 					return
 
-				if response.statusCode is 200
+				if response.statusCode < 300
 					callback.call response, null, onData(response), response.responseJSON
 				else
 					callback.call response, onData(response), null, response.responseJSON

@@ -72,7 +72,7 @@ module.exports = (method, url, options, callback)->
 				response.body = [response.body]
 
 			status = response.statusCode
-			method = if status is 200 then 'debug' else 'error'
+			method = if status < 300 then 'debug' else 'error'
 			caller = "API] [#{method}] #{uri} [RESPONSE] [#{status}"
 			ﬁ.log.custom (method: method, caller:caller), body
 
