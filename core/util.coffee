@@ -118,6 +118,15 @@ util.shuffle = (o) ->
 		o[j] = x
 	return o
 
+util.makeid = ->
+	text = ""
+	possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	i = 0
+	while i < 8
+		text += possible.charAt(Math.floor(Math.random() * possible.length))
+		i++
+	return text
+
 # Centralize QueryString sending.
 util.querystring = JSON
 
