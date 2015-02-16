@@ -21,7 +21,7 @@ path.tmp       = Path.join OS.tmpDir(), ﬁ.conf.name
 
 path.settings  = Path.join path.app , 'settings'
 path.bundles   = Path.join path.app , 'bundles'
-path.templates = Path.join path.app , 'templates'
+path.templates = Path.join path.app , 'master'
 path.static    = Path.join path.app , 'static'
 
 # make sure every path defined here exists
