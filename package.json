@@ -34,7 +34,7 @@
     "node-uuid": "1.4.0",
     "passport": "0.1.x",
     "request": "2.21.x",
-    "stylus": "0.48.x",
+    "stylus": "0.50.x",
     "ua-parser": "0.3.x",
     "uglify-js": "2.3.x",
     "underscore": "1.4.x"
