@@ -16,6 +16,7 @@
     "node": ">= 0.12.x"
   },
   "dependencies": {
+    "autoprefixer-stylus": "^0.5.0",
     "axis": "*",
     "bcrypt-nodejs": "0.0.3",
     "coffee-script": "^1.9.1",

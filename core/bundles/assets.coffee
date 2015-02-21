@@ -11,6 +11,7 @@ Jeet    = require 'jeet'
 Rupture = require 'rupture'
 Nib     = require 'nib'
 Uglify  = require 'uglify-js'
+Prefixr = require 'autoprefixer-stylus'
 CSSo    = require 'csso'
 Express = require 'express'
 
@@ -99,6 +100,7 @@ Types =
 				.use do Rupture
 				.use do Jeet
 				.use do Nib # Overwrite Axis' Nib.
+				.use do Prefixr
 				.render()
 		min  : (str)-> CSSo.justDoIt str
 
