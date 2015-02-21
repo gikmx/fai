@@ -8,6 +8,8 @@ Coffee  = require 'coffee-script'
 Stylus  = require 'stylus'
 Axis    = require 'axis'
 Jeet    = require 'jeet'
+Rupture = require 'rupture'
+Nib     = require 'nib'
 Uglify  = require 'uglify-js'
 CSSo    = require 'csso'
 Express = require 'express'
@@ -93,8 +95,10 @@ Types =
 		run  : (str, path)->
 			Stylus(str)
 				.set('paths', [path, ﬁ.path.templates])
-				.use(do Axis)
-				.use(do Jeet)
+				.use do Axis
+				.use do Rupture
+				.use do Jeet
+				.use do Nib # Overwrite Axis' Nib.
 				.render()
 		min  : (str)-> CSSo.justDoIt str
 
