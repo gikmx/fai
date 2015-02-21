@@ -40,7 +40,8 @@ module.exports = (method, url, options, callback)->
 	key = new Key([ﬁ.conf.name, method.toLowerCase(), url].join ';').hash
 
 	uri = url
-	url = ["#{ﬁ.conf.proto}://#{ﬁ.conf.host}:#{ﬁ.conf.port}", ﬁ.conf.api.substring(1), url].join '/'
+	url = ["#{ﬁ.conf.proto}://#{ﬁ.conf.host}:#{ﬁ.conf.port}", ﬁ.conf.api.substring(1), url]
+	uri = uri.join '/'
 	qry = false
 
 	# convert options to query string in order to send data, following HTTPS specs.

@@ -58,7 +58,7 @@ Err.super_.prepareStackTrace = (error, frames)->
 			else if this::fi
 				prop = prop.red
 			result += prop + tab
-		result += "\n"
+		result += '\n'
 
 	return result
 

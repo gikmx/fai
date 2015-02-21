@@ -9,7 +9,7 @@ module.exports = class
 		return (status:500, response: (message:res.message, error: res)) if isException
 		return status: response.statusCode, response:res or response.responseJSON
 
-	Client = ()->
+	Client = ->
 		args   = Array::slice.call arguments
 		client = HTTP
 		method = do args.shift
@@ -32,14 +32,14 @@ module.exports = class
 			conf.agent = new HTTPS.Agent conf
 			client = HTTPS
 
-		request = client.request conf, (response)=>
+		request = client.request conf, (response)->
 
 			response.setEncoding 'utf-8'
 			response.responseText = ''
 
 			response.on 'data', (chunk)-> response.responseText += chunk
 
-			response.on 'end', =>
+			response.on 'end', ->
 				ﬁ.log.custom
 					method: 'trace'
 					caller: "API] [#{conf.method}] #{conf.path} [RESPONSE",
@@ -78,10 +78,10 @@ module.exports = class
 		@settings.path = '/' if not ﬁ.util.isString @settings.path
 
 	get : (path, body, callback)->
-		Client.apply @, ['get'].concat Array::slice.call(arguments)
+		Client.apply this, ['get'].concat Array::slice.call(arguments)
 	put : (path, body, callback)->
-		Client.apply @, ['put'].concat Array::slice.call(arguments)
+		Client.apply this, ['put'].concat Array::slice.call(arguments)
 	post : (path, body, callback)->
-		Client.apply @, ['post'].concat Array::slice.call(arguments)
+		Client.apply this, ['post'].concat Array::slice.call(arguments)
 	delete : (path, body, callback)->
-		Client.apply @, ['delete'].concat Array::slice.call(arguments)
+		Client.apply this, ['delete'].concat Array::slice.call(arguments)

@@ -44,9 +44,9 @@ Template.render.path = Path.join ﬁ.path.core, 'bundles', 'template.jade'
 throw new ﬁ.error 'Missing rendering template.' if not FS.existsSync Template.render.path
 Template.render.cont = FS.readFileSync Template.render.path, 'utf-8'
 # Temporal path, relative to templates path, we'll replace it in render template.
-Template.render.cont = Template.render.cont.replace '#{template}',
+Template.render.cont = Template.render.cont.replace '#' + '{template}',
 	Path.join Path.relative(ﬁ.path.tmp, ﬁ.path.templates), 'view'
-Template.render.path = Path.join ﬁ.path.tmp, "fi-render.jade"
+Template.render.path = Path.join ﬁ.path.tmp, 'fi-render.jade'
 try
 	FS.writeFileSync Template.render.path, Template.render.cont
 	delete Template.render.cont

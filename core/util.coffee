@@ -51,7 +51,7 @@ util.dirRemove = (path) ->
 	if files.length > 0
 		i = 0
 		while i < files.length
-			file = path + "/" + files[i]
+			file = path + '/' + files[i]
 			if FS.statSync(file).isFile()
 				FS.unlinkSync file
 			else
@@ -89,11 +89,11 @@ util.hmac = (str, type)->
 
 # convert a string into an url friendly slug.
 util.toSlug = (str)->
-	from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;"
-	to   = "aaaaaeeeeeiiiiooooouuuunc------"
+	from = 'ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;'
+	to   = 'aaaaaeeeeeiiiiooooouuuunc------'
 
 	str = String(str).replace(/^\s+|\s+$/g, '').toLowerCase()
-	str = str.replace new RegExp(char,'g'), to.charAt(i) for char,i in from
+	str = str.replace new RegExp(char,'g'), (to.charAt(i) for char,i in from)
 	str = str
 		.replace(/[^a-z0-9 -]/g, '')
 		.replace(/\s+/g,'-')
@@ -102,7 +102,7 @@ util.toSlug = (str)->
 
 # Convert a number into a comma friendly string.
 util.addCommas = (str)->
-	str = String(str).replace /\B(?=(\d{3})+(?!\d))/g, ","
+	str = String(str).replace /\B(?=(\d{3})+(?!\d))/g, ','
 	return str
 
 # Shuffle an object
@@ -119,8 +119,8 @@ util.shuffle = (o) ->
 	return o
 
 util.makeid = ->
-	text = ""
-	possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	text = ''
+	possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 	i = 0
 	while i < 8
 		text += possible.charAt(Math.floor(Math.random() * possible.length))

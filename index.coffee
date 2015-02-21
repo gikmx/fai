@@ -2,7 +2,7 @@
 GLOBAL.ﬁ = {}
 
 # Temporary error handler
-ﬁ.error  = -> new String "\n" + Array::slice.call(arguments).join('\n') + "\n"
+ﬁ.error  = -> new String '\n' + Array::slice.call(arguments).join('\n') + '\n'
 
 path     = './core/'
 

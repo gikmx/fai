@@ -23,7 +23,7 @@ catch e
 memer.on 'leak', (info)->
 	infos = []
 	infos.push "#{k}:\t#{v}" for k,v of info
-	ﬁ.log.custom (method:'error', caller:'LEAK'), "\n\t" + infos.join '\n\t'
+	ﬁ.log.custom (method:'error', caller:'LEAK'), '\n\t' + infos.join '\n\t'
 
 memer.on 'stats', (info)->
 	infos = []
@@ -41,7 +41,7 @@ pad = (num, pos) ->
 debug = (name)->
 	return if ﬁ.conf.live
 	times++
-	name = if typeof name is 'string' then pad(times, 5) + "-" + name else pad(times, 5)
+	name = if typeof name is 'string' then pad(times, 5) + '-' + name else pad(times, 5)
 	write ﬁ.path.debug, name
 	return undefined
 

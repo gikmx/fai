@@ -7,9 +7,9 @@ position = (type, args)->
 	name = args.shift()
 	middleware = args.shift()
 
-	throw new ﬁ.error "Invalid middleware subject." if not subj
-	throw new ﬁ.error "Invalid middleware name" if not name
-	throw new ﬁ.error "Invalid middleware cb." if not ﬁ.util.isFunction middleware
+	throw new ﬁ.error 'Invalid middleware subject.' if not subj
+	throw new ﬁ.error 'Invalid middleware name' if not name
+	throw new ﬁ.error 'Invalid middleware cb.' if not ﬁ.util.isFunction middleware
 
 	name   = String name
 	subj   = String subj
@@ -36,8 +36,8 @@ handle = (type, args)->
 	args = Array::slice.call args
 	name       = args.shift()
 	middleware = args.shift()
-	throw new ﬁ.error "Invalid middleware name." if not name
-	throw new ﬁ.error "Invalid middleware." if not ﬁ.util.isFunction middleware
+	throw new ﬁ.error 'Invalid middleware name.' if not name
+	throw new ﬁ.error 'Invalid middleware.' if not ﬁ.util.isFunction middleware
 
 	ware =
 		id: String name
@@ -54,8 +54,8 @@ module.exports =
 	append  : -> handle.call this, 'append' , arguments
 
 	override: (name, middleware)->
-		throw new ﬁ.error "Invalid middleware name." if not name
-		throw new ﬁ.error "Invalid middleware cb." if not ﬁ.util.isFunction middleware
+		throw new ﬁ.error 'Invalid middleware name.' if not name
+		throw new ﬁ.error 'Invalid middleware cb.' if not ﬁ.util.isFunction middleware
 		name = String name
 		stack.map (stk, index)->
 			if stk.id is name

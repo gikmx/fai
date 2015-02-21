@@ -35,7 +35,7 @@ module.exports = (controls)-> (request, response, next)->
 
 	key = new Key [ﬁ.conf.name, method, url].join(';')
 	ip  = request.headers['x-forwarded-for'] or request.connection.remoteAddress
-	ua  = Parser.parse request.headers["user-agent"]
+	ua  = Parser.parse request.headers['user-agent']
 	ua  = if ip is '127.0.0.1' then ' ' else " [#{ip}] #{ua.ua}, #{ua.os} "
 
 	# do authentication unless the control explicitly disables it.
@@ -48,6 +48,6 @@ module.exports = (controls)-> (request, response, next)->
 	ﬁ.log.custom
 		method: 'trace'
 		caller: "API]#{ua}[#{method.toUpperCase()}] #{url} [SERVE",
-		JSON.stringify (if method is "get" or "delete" then request.query else request.body)
+		JSON.stringify (if method is 'get' or 'delete' then request.query else request.body)
 
 	control.call control, request, response

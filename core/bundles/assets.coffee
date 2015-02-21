@@ -84,7 +84,7 @@ CoffeeProcess = (str, path, name)->
 				break
 		throw new ﬁ.error "#{name} couldn't require '#{match[2]}'" if not file
 
-	return str.join "\n"
+	return str.join '\n'
 
 # Set behaviour for asset types
 Types =

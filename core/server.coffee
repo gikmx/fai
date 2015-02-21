@@ -19,9 +19,10 @@ server = Express()
 
 	return next() if ﬁ.conf.live
 
-	ﬁ.debug if request.url is '/' then 'root' else request.url
-		.replace(/[^a-z0-9]/g,'-')
-		.substr(1)
+	if request.url is '/'
+		ﬁ.debug 'root'
+	else
+		ﬁ.debug request.url.replace(/[^a-z0-9]/g,'-').substr(1)
 
 	next()
 

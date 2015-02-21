@@ -39,7 +39,7 @@ module.exports = ->
 
 	for route,i in routes
 		# Setup the controller
-		bundle = if route.bundle then route.bundle  else "[function]"
+		bundle = if route.bundle then route.bundle  else '[function]'
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
 		ﬁ.log.custom (method:'debug', caller:"ﬁ:#{route.method.toUpperCase()}"),
@@ -82,5 +82,5 @@ module.exports = ->
 		return route
 
 	ﬁ.debug('listen')
-	ﬁ.log.custom (method:'note', caller:"fi"), "Listening on #{ﬁ.conf.url}"
-	FS.writeFileSync Path.join(ﬁ.path.self, "fi.lastrun"), new Date()
+	ﬁ.log.custom (method:'note', caller:'fi'), "Listening on #{ﬁ.conf.url}"
+	FS.writeFileSync Path.join(ﬁ.path.self, 'fi.lastrun'), new Date()

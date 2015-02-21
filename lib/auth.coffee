@@ -27,7 +27,7 @@ Control =
 
 		if request.ﬁ.auth
 			settings = ﬁ.util.extend {}, settings, request.ﬁ.auth
-			ﬁ.log.trace "overriden auth settings:", settings
+			ﬁ.log.trace 'overriden auth settings:', settings
 
 		Passport.authenticate(strategy, settings) request, response, next
 		ﬁ.log.trace strategy, 'strategy', JSON.stringify settings
@@ -39,7 +39,7 @@ Control =
 
 		if request.ﬁ.auth
 			settings = ﬁ.util.extend {}, settings, request.ﬁ.auth
-			ﬁ.log.trace "overriden auth settings:", settings
+			ﬁ.log.trace 'overriden auth settings:', settings
 
 		Passport.authenticate(strategy, settings) request, response, next
 		ﬁ.log.trace strategy, 'callback', JSON.stringify settings
@@ -74,7 +74,11 @@ Control =
 		try
 			Strategy = require("passport-#{strategy}")
 		catch e
-			throw new ﬁ.error "Passport #{strategy} strategy, not found.\n\n\tRun 'npm install passport-#{strategy}' on app root."
+			err = """
+			Passport #{strategy} strategy, not found.
+			\n\n\tRun 'npm install passport-#{strategy}' on app root."
+			"""
+			throw new ﬁ.error err
 
 		Strategy = new Strategy.Strategy tokens, (accessToken, refreshToken, user, next)->
 			ﬁ.log.trace "#{strategy}:middleware"

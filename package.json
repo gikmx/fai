@@ -16,9 +16,9 @@
     "node": ">= 0.12.x"
   },
   "dependencies": {
-    "axis":"^0.3.0",
-    "bcrypt-nodejs":"0.0.3",
-    "coffee-script": "1.6.x",
+    "axis": "^0.3.0",
+    "bcrypt-nodejs": "0.0.3",
+    "coffee-script": "^1.9.1",
     "colors": "0.6.x",
     "connect-assets": "2.4.x",
     "connect-mongo": "0.3.x",
@@ -36,7 +36,7 @@
     "node-uuid": "1.4.0",
     "passport": "0.1.x",
     "request": "2.21.x",
-    "stylus": "0.50.x",
+    "stylus": "^0.50.0",
     "ua-parser": "0.3.x",
     "uglify-js": "2.3.x",
     "underscore": "1.4.x"

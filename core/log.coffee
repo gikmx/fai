@@ -54,7 +54,7 @@ logger = (method, args)->
 	level  = levels[index][0].toUpperCase()
 	caller = (getCaller() or '') if not ﬁ.util.isString caller
 	caller = if caller.length > 0 then "[#{caller}]" else ''
-	throw new ﬁ.error "Invalid log method." if index is -1
+	throw new ﬁ.error 'Invalid log method.' if index is -1
 	return if index < allow
 
 	head = [level, getDate(), caller]
@@ -70,10 +70,12 @@ logger = (method, args)->
 
 ﬁ.middleware.append 'fi-log', (request, response, next)->
 	ip = request.headers['x-forwarded-for'] or request.connection.remoteAddress
-	ua = Parser.parse request.headers["user-agent"]
+	ua = Parser.parse request.headers['user-agent']
 	ua = [ua.ua.toString(), ua.os.toString()].join ', '
 
-	ﬁ.log.custom (method: 'info', caller:"REQUEST] [#{ip}] #{ua} [#{request.method}"), request.url
+	log = method:'info', caller:"REQUEST] [#{ip}] #{ua} [#{request.method}"
+	ﬁ.log.custom log, request.url
+
 	next()
 
 module.exports =
