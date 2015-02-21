@@ -6,7 +6,8 @@ Zlib = require 'zlib'
 # NPM modules
 Coffee  = require 'coffee-script'
 Stylus  = require 'stylus'
-Nib     = require 'nib'
+Axis    = require 'axis'
+Jeet    = require 'jeet'
 Uglify  = require 'uglify-js'
 CSSo    = require 'csso'
 Express = require 'express'
@@ -89,9 +90,12 @@ CoffeeProcess = (str, path, name)->
 Types =
 	css:
 		ext  : ['.styl','.css']
-		run  : (str, path)-> Stylus(str)
-			.set('paths', [path, ﬁ.path.templates])
-			.use(do Nib).render()
+		run  : (str, path)->
+			Stylus(str)
+				.set('paths', [path, ﬁ.path.templates])
+				.use(do Axis)
+				.use(do Jeet)
+				.render()
 		min  : (str)-> CSSo.justDoIt str
 
 	js:
