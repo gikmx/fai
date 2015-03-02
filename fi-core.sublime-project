@@ -1,0 +1,29 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".git",
+				".gitignore",
+				"coffeelint.json",
+				"fi-core.sublime-project"
+			],
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
+			"path": "."
+		},
+		{
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
+			"path": "/Users/etor/Source/Local/test"
+		},
+		{
+			"path": "/Users/etor/Source/github.gikmx/generator-fi/app"
+		}
+	]
+}

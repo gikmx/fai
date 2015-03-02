@@ -1,51 +1,26 @@
 # I know, this is not recommended, but fuck it.
-GLOBAL.ﬁ = {}
+GLOBAL.ﬁ  = {}
+path      = './src/'
 
-# Temporary error handler
-ﬁ.error  = -> new String '\n' + Array::slice.call(arguments).join('\n') + '\n'
+# The most basic functionality and settings.
+ﬁ.package = require './package'
+ﬁ.conf    = require "#{path}conf"
+ﬁ.path    = require "#{path}path"
+ﬁ.error   = require "#{path}error"
+ﬁ.require = require "#{path}require"
 
-path     = './core/'
+ﬁ.util       = ﬁ.require 'core.root', 'util'
+ﬁ.middleware = ﬁ.require 'core.root', 'middleware'
+ﬁ.log        = ﬁ.require 'core.root', 'log'
+ﬁ.app        = ﬁ.require 'core.root', 'app'
 
-ﬁ.about = require './package'
-
-# Core configuration
-ﬁ.conf  = require "#{path}conf"
-
-# All paths used throughout ﬁ
-ﬁ.path  = require "#{path}path"
-
-# Debugging methods
-ﬁ.debug = require "#{path}debug"
-
-# Underscore, on steroids.
-ﬁ.util  = require "#{path}util"
-
-# A placer were to add middlewares
-ﬁ.middleware = require "#{path}middleware"
-
-# Enable logs
-ﬁ.log = require "#{path}log"
-
-# Helper methods
-ﬁ[name] = helper for name,helper of require "#{path}help"
-
-# Enable custom error with traceback
-ﬁ.error = ﬁ.require 'core', 'error'
-
-# Make sure default files exist
-require "#{path}defaults"
-
-# Populate settings
-ﬁ.settings = ﬁ.require 'core', 'settings'
-
-# Populate locals
-ﬁ.locals = ﬁ.require 'core', 'locals'
+process.exit 1
 
 # Setup server
-ﬁ.server = ﬁ.require 'core', 'server'
+ﬁ.server = ﬁ.require 'core.root', 'server'
 
 # Setup routing methods
-ﬁ.routes = ﬁ.require 'core', 'routes'
+ﬁ.routes = ﬁ.require 'core.root', 'routes'
 
 # Allow fi to be extended.
 ﬁ.extend = ﬁ.require 'core', 'extend'
