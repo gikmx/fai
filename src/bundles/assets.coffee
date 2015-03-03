@@ -20,10 +20,9 @@ Files = []
 # Set a tmp storage dir, and make sure it always starts empty.
 tmpdir = Path.join ﬁ.path.tmp, 'fi-assets'
 
-ﬁ.util.dirRemove tmpdir if FS.existsSync tmpdir
+ﬁ.util.fs.dirRemove tmpdir if FS.existsSync tmpdir
 FS.mkdirSync tmpdir
-
-ﬁ.log.warn "#{tmpdir}"
+ﬁ.log.debug "#{tmpdir}"
 
 # Set middleware
 Route = '/static/assets'
@@ -44,7 +43,7 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	accepts  = '' if not ﬁ.util.isString(accepts = request.headers['accept-encoding'])
 
 	response.setHeader 'Vary'        , 'Accept-Encoding'
-	response.setHeader 'Content-Type', Express.mime.lookup(request.url)+ '; charset=utf-8'
+	response.setHeader 'Content-Type', "#{Express.mime.lookup(request.url)}; charset=#{ﬁ.conf.charset}"
 
 	if ﬁ.conf.live
 		# serve content according to what browser expects
@@ -68,7 +67,7 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 # Allow client side coffeescript to require another files.
 CoffeeProcess = (str, path, name)->
 	name  = Path.resolve(path, name + ﬁ.path.script.ext).replace(ﬁ.path.app,'')
-	paths = [path, ﬁ.path.templates]
+	paths = [path, ﬁ.path.app.master]
 	lines = str.split /[\r\n]/
 	str   = []
 	# split file by lines, and insert required code in between
@@ -82,7 +81,7 @@ CoffeeProcess = (str, path, name)->
 			file = Path.resolve file, "#{match[2]}#{ﬁ.path.script.ext}"
 			if not FS.existsSync file then file = false else
 				ﬁ.log.trace "[require] '#{file.replace(ﬁ.path.app,'')}' →  #{name}"
-				file = FS.readFileSync file, 'utf-8'
+				file = FS.readFileSync file, ﬁ.conf.charset
 				str.push(indent + l) for l in file.split(/[\r\n]/)
 				break
 		throw new ﬁ.error "#{name} couldn't require '#{match[2]}'" if not file
@@ -95,7 +94,7 @@ Types =
 		ext  : ['.styl','.css']
 		run  : (str, path)->
 			Stylus(str)
-				.set('paths', [path, ﬁ.path.templates])
+				.set('paths', [path, ﬁ.path.app.master])
 				.use do Axis
 				.use do Rupture
 				.use do Jeet
@@ -149,8 +148,9 @@ module.exports =
 
 	# Check if given path contains assets with given name and stores them on tmpdir.
 	store: (path, name, context)->
-		context = ﬁ.path[context]
-		context = if context then Path.dirname(context) else ﬁ.path.bundles
+		tmp = ﬁ.path
+		tmp = tmp[c] for c in String(context).split '.' when tmp
+		context = if context then Path.dirname(tmp) else ﬁ.path.app.bundles
 
 		for typename, type of Types
 
@@ -158,7 +158,7 @@ module.exports =
 			continue if not FS.existsSync filename
 
 			# Get contents and parse them.
-			content = FS.readFileSync filename, 'utf-8'
+			content = FS.readFileSync filename, ﬁ.conf.charset
 			content = type.run content, path, name
 
 			filename = filename
@@ -167,9 +167,8 @@ module.exports =
 				.slice(0,type.ext[0].length * -1)
 
 			# the name is just an identifier, get rid of it, also replace diagonals with
-			filename = filename.slice(0,(name.length+1)*-1) if context is ﬁ.path.bundles
+			filename = filename.slice(0,(name.length+1)*-1) if context is ﬁ.path.app.bundles
 			filename = filename.replace(new RegExp(Path.sep,'g'), '_') + type.ext[1]
-
 			# store the filename in an array so we can identify when in request.
 			Files[filename] = true
 

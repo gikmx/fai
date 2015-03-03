@@ -39,7 +39,7 @@ logger = (method, args)->
 		method = method.method
 
 	colors = [
-		Colors.cyan, Colors.blue, Colors.green, Colors.yellow, Colors.magenta, Colors.red
+		Colors.cyan, Colors.blue, Colors.green, Colors.gray, Colors.yellow, Colors.red
 	]
 	index  = levels.indexOf method
 	allow  = levels.indexOf LEVEL
@@ -71,7 +71,7 @@ module.exports =
 	trace: -> logger 'trace', arguments
 	debug: -> logger 'debug', arguments
 	info : -> logger 'info' , arguments
-	note : -> logger 'note' , arugments
+	note : -> logger 'note' , arguments
 	warn : -> logger 'warn' , arguments
 	error: -> logger 'error', arguments
 

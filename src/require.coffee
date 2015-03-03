@@ -1,6 +1,7 @@
 # Node modules
 Path = require 'path'
 FS   = require 'fs'
+Util = require 'util'
 
 Require = (context, name)->
 	args = Array::.slice.call arguments
@@ -9,12 +10,13 @@ Require = (context, name)->
 		name    = args[0]
 	path = ﬁ.path
 	path = path[c] for c in context.split '.' when path
-	throw new ﬁ.error "The context '#{context}' was not found in path." if not path
+	if not path
+		throw new ﬁ.error 'FiRequireError', "The context '#{context}' was not found in path."
 	path = Path.join path, name
 	try
 		require.resolve path
 	catch e
-		throw new ﬁ.error "Module #{name} does not exist."
+		throw new ﬁ.error 'FiRequireError', "Module #{name} does not exist."
 
 	return require path
 
@@ -24,7 +26,7 @@ Require.module = (name)->
 	try
 		module = require name
 	catch e
-		throw new ﬁ.error "Could not load module #{name}: #{e.message}"
+		throw new ﬁ.error 'FiRequireError', "Could not load module #{name}: #{e.message}"
 	return module
 
 # Require a whole directory, converting dirnames into objects and files into properties.

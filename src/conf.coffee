@@ -11,7 +11,7 @@ conf.host    = 'localhost'
 conf.port    = 9000
 conf.url     = "#{conf.proto}://#{conf.host}:#{conf.port}"
 conf.charset = 'utf-8'
-conf.error   = true   # Should native errors use fi's errors?
+conf.error   = false   # Should native errors use fi's errors?
 conf.log     = 'trace'
 
 # Set arguments from command line.

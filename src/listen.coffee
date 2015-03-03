@@ -1,6 +1,13 @@
 FS   = require 'fs'
 Path = require 'path'
 
+try
+	MasterControl = ﬁ.require 'app.master','control'
+	throw new ﬁ.error 'Master controller is invalid.' if not ﬁ.util.isFunction MasterControl
+catch e
+	throw new ﬁ.error 'Master controller is missing.' if e.name is 'FiRequireError'
+	throw new ﬁ.error e
+
 module.exports = ->
 
 	return ﬁ.log.warn("A port was not specified, app won't listen.") if not ﬁ.conf.port
@@ -17,13 +24,17 @@ module.exports = ->
 			ﬁ.log.trace "Using middleware: #{middleware.id}"
 			@use middleware.fn
 
-		@use ﬁ.require 'templates','control'
+		@use MasterControl
 
 	# In case some libraries desire to run code before the server enables routes
 	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queueMid
 
 	# Enable application routes
-	ﬁ.require 'app', 'routes'
+	try
+		ﬁ.require 'app.root', 'routes'
+	catch e
+		throw e if e.name isnt 'FiRequireError'
+		throw new ﬁ.error "The route file is invalid or missing."
 
 	# Detect if a error catcher has been defined.
 	routes = ﬁ.routes.stack()
@@ -42,7 +53,9 @@ module.exports = ->
 		bundle = if route.bundle then route.bundle  else '[function]'
 		route.controls.unshift route.route
 		ﬁ.server[route.method].apply ﬁ.server, route.controls
-		ﬁ.log.custom (method:'debug', caller:"ﬁ:#{route.method.toUpperCase()}"),
+		ﬁ.log.custom
+			method :'debug',
+			caller :"ﬁ:#{route.method.toUpperCase()}",
 			"#{route.route}  →  #{bundle}"
 		# Setup the bundles object
 		ﬁ.bundles[route.bundle] = {} if not ﬁ.bundles[route.bundle]
@@ -81,6 +94,5 @@ module.exports = ->
 		route = route.replace(":#{key}", val) for key,val of torepl
 		return route
 
-	ﬁ.debug('listen')
-	ﬁ.log.custom (method:'note', caller:'fi'), "Listening on #{ﬁ.conf.url}"
-	FS.writeFileSync Path.join(ﬁ.path.self, 'fi.lastrun'), new Date()
+	ﬁ.log.custom (method:'info', caller:'fi'), "Listening on #{ﬁ.conf.url}"
+	FS.writeFileSync Path.join(ﬁ.path.root, 'fi.lastrun'), new Date()

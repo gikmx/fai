@@ -18,7 +18,4 @@ util.isDictionary = (o)->
 	util.isString(o)    and not
 	util.isNumber(o)
 
-# Load all utilities in directory
-util[k] = v for k,v of ﬁ.require.fs ﬁ.path.core.util
-
 module.exports = util

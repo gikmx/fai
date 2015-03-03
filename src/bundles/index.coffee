@@ -1,7 +1,7 @@
 Path = require 'path'
 FS   = require 'fs'
 
-Assets = ﬁ.require 'core', Path.join 'bundles','assets'
+Assets = ﬁ.require 'core.bundles', 'assets'
 
 Template =
 	master : {}
@@ -10,66 +10,65 @@ Template =
 Bundle = {}
 
 # walk in every directory inside bundles
-ﬁ.util.dirwalk ﬁ.path.bundles, (path)->
+ﬁ.util.fs.dirwalk ﬁ.path.app.bundles, (path)->
 
 	# determine if there are controls and views available
-	uri  = path.replace(ﬁ.path.bundles, '').substring(1)
-	ctrl = Path.join path, 'control' + ﬁ.path.script.ext
-	ctrl = if FS.existsSync(ctrl) then ctrl else false
-	view = Path.join path, 'view.jade'
-	view = if FS.existsSync(view) then view else false
-	styl = Path.join path, 'view.styl'
-	styl = if FS.existsSync(styl) then styl else false
-	jqry = Path.join path, 'view.coffee'
-	jqry = if FS.existsSync(jqry) then jqry else false
+	ext   = ﬁ.path.script.ext
+	files = ["control#{ext}", 'view.jade', 'view.styl', "view#{ext}"]
+	for file,i in files
+		file     = Path.join path, file
+		files[i] = if FS.existsSync file then file else false
+	[ctrl, view, styl, script] = files
 
 	# make assets available if existent
-	Assets.store path, 'view' if styl or jqry
+	Assets.store path, 'view' if styl or script
 
 	return if not ctrl and not view
 
 	# Keep a record of what do we have.
+	uri         = path.replace(ﬁ.path.app.bundles, '').substring(1)
 	Bundle[uri] = ctrl: ctrl, view: view
 
 
 # Ready assets in templates to be consumed
-for node in FS.readdirSync ﬁ.path.templates
+for node in FS.readdirSync ﬁ.path.app.master
 	continue if Path.extname(node) isnt '.jade'
-	Assets.store ﬁ.path.templates, Path.basename(node, '.jade'), 'templates'
+	Assets.store ﬁ.path.app.master, Path.basename(node, '.jade'), 'app.master'
 
 # Jade does not support dynamic includes, so we have to create a
 # hidden template that'll establish the format of every view with their assets.
 # The template will be read from core, dynamically modified and stored in a temp dir.
-Template.render.path = Path.join ﬁ.path.core, 'bundles', 'template.jade'
+Template.render.path = Path.join ﬁ.path.core.bundles, 'template.jade'
 throw new ﬁ.error 'Missing rendering template.' if not FS.existsSync Template.render.path
-Template.render.cont = FS.readFileSync Template.render.path, 'utf-8'
+Template.render.cont = FS.readFileSync Template.render.path, ﬁ.conf.charset
 # Temporal path, relative to templates path, we'll replace it in render template.
+if not FS.existsSync Path.join(ﬁ.path.app.master, 'view.jade')
+	throw new ﬁ.error 'The master view is missing or invalid.'
 Template.render.cont = Template.render.cont.replace '#' + '{template}',
-	Path.join Path.relative(ﬁ.path.tmp, ﬁ.path.templates), 'view'
+	Path.join Path.relative(ﬁ.path.tmp, ﬁ.path.app.master), 'view'
 Template.render.path = Path.join ﬁ.path.tmp, 'fi-render.jade'
 try
 	FS.writeFileSync Template.render.path, Template.render.cont
 	delete Template.render.cont
 catch e
 	throw new ﬁ.error "Couldn't write render template: #{e.message}"
-ﬁ.log.warn Template.render.path
+ﬁ.log.debug Template.render.path
 
 module.exports = (name)->
 
 	renderview = (render, response)-> return
 
 	# Does a controller exists with specified name?
-	throw new ﬁ.error "Bundle #{name} was not found." if not Bundle[name]
+	throw new ﬁ.error "Bundle '#{name}' was not found." if not Bundle[name]
 
 	ctrl = null
 	view = null
-
 	# If a controller doesn't exist, simulate a controller that just renders the view.
 	if not Bundle[name].ctrl
 		ctrl = (request, response)-> response.render()
 	else
 		ctrl = require Bundle[name].ctrl
-
+		throw new ﬂ.error "Bundle '#{name}' is invalid." if not ﬁ.util.isFunction ctrl
 	view = Bundle[name].view
 
 	return (request, response, next)->
@@ -122,8 +121,8 @@ module.exports = (name)->
 			locals[k] = v for k,v of assetsLocals
 			locals[k] = v for k,v of (if not ﬁ.util.isDictionary(vars) then {} else vars)
 
-			fnRender.call response, path, locals, (error, content)->
-				throw new ﬁ.error error.message if error
+			onFnRender = (error, content)->
+				throw error if error
 
 				locals[k] = v for k,v of ﬁ.locals
 				locals[k] = v for k,v of assetsLocals
@@ -135,4 +134,7 @@ module.exports = (name)->
 
 				locals = assetsLocals = assetsRoutes = errro = content = undefined
 
+			fnRender.call response, path, locals, onFnRender
+
 		ctrl.call ﬁ.server, request, response, next
+

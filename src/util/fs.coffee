@@ -1,3 +1,6 @@
+FS   = require 'fs'
+Path = require 'path'
+
 module.exports =
 
 	dirRemove: (path) ->
@@ -18,7 +21,7 @@ module.exports =
 
 	# traverse recursively
 	dirwalk: (path, callback, isRecursive)->
-		throw new ﬁ.error('Expecting callback.') if not util.isFunction callback
+		throw new ﬁ.error('Expecting callback.') if not ﬁ.util.isFunction callback
 		path = String path
 		if not FS.existsSync path or not FS.statSync(path).isDirectory()
 			throw new ﬁ.error 'Invalid directory.'
@@ -27,4 +30,4 @@ module.exports =
 			node = Path.join path, node
 			continue if not FS.statSync(node).isDirectory()
 			callback.call null, node
-			util.dirwalk node, callback, true
+			arguments.callee node, callback, true

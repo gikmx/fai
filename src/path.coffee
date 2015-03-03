@@ -26,12 +26,13 @@ path.app.master  = Path.join path.app.root    , 'master'
 path.app.static  = Path.join path.app.root    , 'static'
 
 # make sure every path defined here exists
-for name,dir of path.app
-	continue if FS.existsSync dir
-	try
+try
+	FS.mkdirSync(path.tmp) if not FS.existsSync path.tmp
+	for name,dir of path.app
+		continue if FS.existsSync dir
 		FS.mkdirSync(dir, '0755') if not FS.existsSync dir
-	catch e
-		process.stdout.write "\n#{e.message}\n"
-		process.exit 1
+catch e
+	process.stdout.write "\n#{e.message}\n"
+	process.exit 1
 
 module.exports = path
