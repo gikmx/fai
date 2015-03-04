@@ -39,6 +39,7 @@ for node in FS.readdirSync ﬁ.path.app.master
 # hidden template that'll establish the format of every view with their assets.
 # The template will be read from core, dynamically modified and stored in a temp dir.
 Template.render.path = Path.join ﬁ.path.core.bundles, 'template.jade'
+console.info Template.render.path
 throw new ﬁ.error 'Missing rendering template.' if not FS.existsSync Template.render.path
 Template.render.cont = FS.readFileSync Template.render.path, ﬁ.conf.charset
 # Temporal path, relative to templates path, we'll replace it in render template.

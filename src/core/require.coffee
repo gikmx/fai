@@ -32,13 +32,14 @@ Require.module = (name)->
 # Require a whole directory, converting dirnames into objects and files into properties.
 Require.fs = (root)->
 	result = {}
+	ext    = if root.indexOf(ﬁ.path.root) is 0 then ﬁ.path.core.ext else ﬁ.path.script.ext
 	for file in FS.readdirSync root, file
 		path = Path.join root, file
 		stat = FS.statSync path
 		if not stat.isDirectory()
-			continue if Path.extname(file) isnt ﬁ.path.script.ext
-			base = Path.basename file, ﬁ.path.script.ext
-			result[base] = require path.replace ﬁ.path.script.ext, ''
+			continue if Path.extname(file) isnt ext
+			base = Path.basename file, ext
+			result[base] = require path.replace ext, ''
 		else result[file] = arguments.callee path
 	return result
 

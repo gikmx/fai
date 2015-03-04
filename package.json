@@ -1,11 +1,13 @@
 {
   "name": "fi-core",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "NodeJS Framework for agile web development.",
-  "main": "index.coffee",
-  "author": "GiK <gik@gik.mx>",
+  "main": "lib",
   "license": "MIT",
-  "os": ["darwin","linux"],
+  "os": [
+    "darwin",
+    "linux"
+  ],
   "engines": {
     "node": ">= 0.12.x"
   },
@@ -32,10 +34,27 @@
     "uglify-js": "2.3.x",
     "underscore": "^1.8.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-clean": "^0.3.1",
+    "gulp-coffee": "^2.3.1",
+    "gulp-util": "^3.0.4"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/gikmx/fi-core.git"
   },
-  "scripts": {}
+  "keywords": [
+    "fi",
+    "gik",
+    "gikmx"
+  ],
+  "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
+  "scripts": {
+    "prepublish": "gulp build"
+  },
+  "bugs": {
+    "url": "https://github.com/gikmx/fi-core/issues"
+  },
+  "homepage": "https://github.com/gikmx/fi-core"
 }

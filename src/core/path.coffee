@@ -9,6 +9,7 @@ path.core         = {}
 path.core.root    = __dirname
 path.core.util    = Path.join path.core.root, 'util'
 path.core.bundles = Path.join path.core.root, 'bundles'
+path.core.ext     = Path.extname __filename
 
 path.root = FS.realpathSync "#{path.core.root}/.."
 path.tmp  = Path.join do OS.tmpDir, "fi.#{ﬁ.conf.name}"

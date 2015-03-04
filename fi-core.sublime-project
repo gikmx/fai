@@ -6,17 +6,18 @@
 			[
 				".git",
 				".gitignore",
+				"fi.lastrun",
 				"coffeelint.json",
-				"fi-core.sublime-project"
+				"fi-core.sublime-project",
+				"*.log",
+				"gulpfile.js"
 			],
 			"folder_exclude_patterns":
 			[
-				"node_modules"
+				"node_modules",
+				"lib"
 			],
 			"path": "."
-		},
-		{
-			"path": "/Users/etor/Source/github.gikmx/generator-fi/app"
 		}
 	]
 }

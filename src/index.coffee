@@ -1,9 +1,9 @@
 # I know, this is not recommended, but fuck it.
 GLOBAL.ﬁ  = {}
-path      = './src/'
+path      = './core/'
 
 # The most basic functionality and settings.
-ﬁ.package = require './package'
+ﬁ.package = require '../package'
 ﬁ.conf    = require "#{path}conf"
 ﬁ.path    = require "#{path}path"
 ﬁ.error   = require "#{path}error"

@@ -18,8 +18,8 @@ getCaller = ->
 		path = frame.getFileName()
 		continue if not path or path is __filename
 		path = path
-			.replace(ﬁ.path.root, '')
-			.replace(ﬁ.path.script.ext,'')
+			.replace ﬁ.path.root    , ''
+			.replace ﬁ.path.core.ext, ''
 		break
 	return if not path then 'unknown' else path
 
