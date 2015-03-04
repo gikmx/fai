@@ -95,7 +95,7 @@ module.exports = (name)->
 			path = Path.resolve Path.dirname(view), path
 
 			locals = {}
-			locals[k] = v for k,v of ﬁ.locals
+			locals[k] = v for k,v of ﬁ.app.locals
 			locals[k] = v for k,v of Assets.locals(name)
 			locals[k] = v for k,v of vars
 
@@ -117,7 +117,7 @@ module.exports = (name)->
 			vars = args.shift()
 
 			locals    = {}
-			locals[k] = v for k,v of ﬁ.locals
+			locals[k] = v for k,v of ﬁ.app.locals
 			locals[k] = v for k,v of assetsLocals
 			locals[k] = v for k,v of (if not ﬁ.util.isDictionary(vars) then {} else vars)
 
@@ -132,7 +132,7 @@ module.exports = (name)->
 
 				fnRender.call response, Template.render.path, locals
 
-				locals = assetsLocals = assetsRoutes = errro = content = undefined
+				locals = assetsLocals = assetsRoutes = error = content = undefined
 
 			fnRender.call response, path, locals, onFnRender
 

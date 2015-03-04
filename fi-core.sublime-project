@@ -16,13 +16,6 @@
 			"path": "."
 		},
 		{
-			"folder_exclude_patterns":
-			[
-				"node_modules"
-			],
-			"path": "/Users/etor/Source/Local/test"
-		},
-		{
 			"path": "/Users/etor/Source/github.gikmx/generator-fi/app"
 		}
 	]

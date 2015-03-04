@@ -71,4 +71,4 @@ FiError = ->
 Util.inherits FiError, Error
 
 module.exports          = FiError
-Error.prepareStackTrace = _prepareStackTrace
+# Error.prepareStackTrace = _prepareStackTrace

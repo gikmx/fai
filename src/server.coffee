@@ -6,7 +6,6 @@ Path = require 'path'
 Express   = require 'express'
 Params    = require 'express-params'
 Validator = require 'express-validator'
-Device    = require 'express-device'
 
 server = Express()
 
@@ -16,9 +15,9 @@ server = Express()
 	response.removeHeader 'X-Powered-By'
 	next()
 
-if ﬁ.app.conf.params
+if ﬁ.app.params
 	Params.extend server
-	for name,param of ﬁ.app.conf.params
+	for name,param of ﬁ.app.params
 		ﬁ.log.trace "Param #{name}: #{param}"
 		server.param name, param
 
@@ -40,11 +39,9 @@ server.configure ->
 	# allow PUT and DELETE methods
 	@use Express.methodOverride()
 
-	@use Device.capture()
-
 	# Add methods for requestbody validation
 	@use Validator
 
-	server.enableDeviceHelpers()
+server.locals = ﬁ.app.locals
 
 module.exports = server

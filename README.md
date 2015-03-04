@@ -21,7 +21,6 @@ desarrollo web ágil, consistente, fácil de usar, fácil de leer y sumamente fl
 
 ### [Node](http://http://nodejs.org/) v0.10+
 _**Nota**: Sin importar la versión que los manejadores de paquetes instalen, en las
-[utilerías](#util) se detalla el procedimiento para usar una versión específica._
 
 * **Mac**: Instalación vía [HomeBrew](http://brew.sh)
 * **Linux**: Instalación vía `apt-get`, `yum`, `pacman`, o equivalente.
@@ -30,30 +29,12 @@ _**Nota**: Sin importar la versión que los manejadores de paquetes instalen, en
   arrojado comportamientos inesperados, por lo que recomendamos usar un SO basado en
   [POSIX](http://en.wikipedia.org/wiki/POSIX).
 
-### [CoffeeScript](http://coffeescript.org) v1.6+
-
-	npm install -g coffee-script
-
-## <a id="util"></a> Utilerías recomendas
-
-### [N](https://github.com/visionmedia/n)
-
-Manejo de versiones para Node, imprescindible cuando se desea trabajar con una versión
-específica de la plataforma.
+### [CoffeeScript](http://coffeescript.org) v1.9+
 
 	# Instalar como módulo global
-	npm install -g n
+	npm install -g coffee-script
 
-	# Descargar/cambiar-a versión estable
-	n stable
-
-	# Descargar/cambiar-a versión especifica
-	n 0.8.22
-
-	# Verificar cambio
-	node -v
-
-### [Nodemon](https://github.com/remy/nodemon)
+### [Nodemon](https://github.com/remy/nodemon) (opcional)
 
 Esta herramienta permite el monitoreo del código fuente, permitiendo reiniciar el servidor
 automáticamente cada vez que se detecte un cambio en los archivos especificados
@@ -61,38 +42,36 @@ automáticamente cada vez que se detecte un cambio en los archivos especificados
 	# Instalar como módulo global
 	npm install -g nodemon
 
-	# Uso recomendado en una terminal por separado
-	nodemon app.coffee --port=8080 --ext ".coffee|.styl|.jade"
+### [BrowserSync](https://github.com/BrowserSync/browser-sync) (opcional)
 
-### [Codo](https://github.com/netzpirat/codo)
-
-Generador de documentación para CoffeeScript.
+Esta herramienta permite el monitoreo del código fuente, permitiendo reiniciar el servidor
+automáticamente cada vez que se detecte un cambio en los archivos especificados
 
 	# Instalar como módulo global
-	npm install -g codo
+	npm install -g browser-sync
 
-	# Generar documentación para la aplicación (se creará una carpeta llamada "docs")
-	codo --title "Título Aquí" --name "Nombre Aquí"
 
 ## Instalación
 
-_**Nota:** Estos pasos asumen que se ha generado una configuración personalizada en SSH
-para el acceso al repositiorio privado que contiene este framework._
+A menos que hayas usado antes Fi, es recomendado que inicialices tu proyecto usando nuestro
+**[generador](https://github.com/gikmx/generator-fi)** de **[Yeoman](http://yeoman.io)**
 
-	# Inicializar un repositorio vacío
-	mkdir project && cd project && git init
+	# Instalar yeoman y generator-fi globalmente
+	npm install -g yo generator-fi
 
-	# Clonar fi como submódulo en el directorio "fi"
-	git submodule add ssh://bitbucket.yapp/yapp/web.fi.git fi
+	# Crear la carpeta en donde deseas resida tu proyecto
+	mkdir FiApp && cd $_
 
-	# Instalar las dependencias de fi
-	cd fi && npm install && cd ..
+	# Recuéstate y deja que yeoman haga la magia por ti.
+	yo fi
 
-	# Crear archivo principal e incluir fi, para que se genere estructura base
-	echo "require './fi'\nfi.listen()" > app.coffee
-	nodemon app.coffee --port=8080 --ext ".coffee|.styl|.jade"
+	# Una vez finalizado, simplemente ejecuta nodemon
+	npm run watch
 
+	# Y si deseas evitar recargar tu navegador, en otra ventana de terminal puedes
+	# ejecutar browser-sync
+	npm run sync
 
-## Autor
+## Documentación
 
-* [Héctor Menéndez](http://hectormenendez.com) ([@hectormenendez](http://twitter.com/#!/hectormenendez))
+Pendiente por generar

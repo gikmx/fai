@@ -6,9 +6,8 @@ module.exports =
 
 	hmac: (str, type)->
 		type = 'base64' if not util.isString(type)
-		if not util.isDictionary(ﬁ.app.conf.app) or not util.isString(ﬁ.app.conf.app.secret)
-			throw new ﬁ.error 'Missing app secret setting.'
-		hmac = Crypto.createHmac('sha1', ﬁ.app.conf.app.secret)
+		throw new ﬁ.error 'Missing app secret setting.' if not util.isString(ﬁ.app.secret)
+		hmac = Crypto.createHmac('sha1', ﬁ.app.secret)
 		return hmac.update(str).digest(type)
 
 	# convert a string into an url friendly slug.

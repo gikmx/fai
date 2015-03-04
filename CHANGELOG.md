@@ -1,5 +1,5 @@
-### 0.1
-
-* `NEW` Added lib "scripts", it allows compiling of coffeescripts to js on runtime.
-* `FIX` Trying to render when a bundle doesn't have a view throws untrackable error.
-* `NEW` Fi (npm) modules can now be used within app.
+### 0.2.1
+* `FIX` Jeet module was not being loaded correctly on styles.
+* `DEL` Removed express-device module.
+* `FIX` Application locals are now rendered correctly.
+* `FIX` hmac utility now looks for app.secret correctly.

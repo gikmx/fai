@@ -94,10 +94,11 @@ Types =
 		ext  : ['.styl','.css']
 		run  : (str, path)->
 			Stylus(str)
-				.set('paths', [path, ﬁ.path.app.master])
-				.use do Axis
+				.set('paths', [ﬁ.path.app.master, path])
 				.use do Rupture
+				.use do Axis
 				.use do Jeet
+				.import 'jeet'
 				.use do Nib # Overwrite Axis' Nib.
 				.use do Prefixr
 				.render()
