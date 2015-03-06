@@ -1,5 +1,5 @@
 {
-  "name": "fi-core",
+  "name": "fai",
   "version": "0.2.2",
   "description": "NodeJS Framework for agile web development.",
   "main": "lib",
@@ -42,19 +42,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/gikmx/fi-core.git"
+    "url": "http://github.com/gikmx/fai.git"
   },
   "keywords": [
-    "fi",
+    "fai",
     "gik",
-    "gikmx"
+    "gikmx",
+    "fi",
+    "fi-core",
+    "etor",
+    "et0r"
   ],
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
   "scripts": {
     "prepublish": "gulp build"
   },
   "bugs": {
-    "url": "https://github.com/gikmx/fi-core/issues"
+    "url": "https://github.com/gikmx/fai/issues"
   },
-  "homepage": "https://github.com/gikmx/fi-core"
+  "homepage": "https://github.com/gikmx/fai"
 }
