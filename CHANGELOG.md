@@ -1,3 +1,7 @@
+### 0.2.3
+* `FIX` Improved gulp workflow.
+* `FIX` Corrected typo on README.
+
 ### 0.2.2
 * `NEW` Renamed fi-core to fai.
 * `NEW` Project now compiles to JS to when publishing to NPM.

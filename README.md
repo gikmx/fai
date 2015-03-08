@@ -9,25 +9,29 @@ It's main purpose is to be readable, as consistent as possible (in web developme
 
 #### [Node](http://http://nodejs.org/) v0.9+
 
-__currently ﬁ has only been tested in Mac and linux, any help testing and/or fixing bugs for windows will be greatly appreciated.
+Currently ﬁ has only been tested in Mac and linux, any help testing and/or fixing bugs for windows will be greatly appreciated.
 
 #### [CoffeeScript](http://coffeescript.org) v1.9+
+
 Installed as a global module:
 
 	npm install -g coffee-script
 
 #### [Nodemon](https://github.com/remy/nodemon) (optional)
+
 Installed as a global module:
 
 	npm install -g nodemon
 
 #### [BrowserSync](https://github.com/BrowserSync/browser-sync) (optional)
+
 Installed as a global module:
 
 	npm install -g browser-sync
 
 
 ## Installation
+
 Unless you're an experienced Fai developer, is strongly recommended that your rely on our **[Yeoman generator](https://github.com/gikmx/fai.generator)** for building your fist project, it really takes care of everything! just follow these simple instructions.
 
 	# globally install yeoman and fai's generator
@@ -47,4 +51,4 @@ Unless you're an experienced Fai developer, is strongly recommended that your re
 
 
 ## Documentation
-At the moment is being generated.
+__TODO__

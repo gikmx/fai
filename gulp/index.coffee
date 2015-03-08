@@ -2,21 +2,31 @@
 
 Gulp   = require 'gulp'
 Util   = require 'gulp-util'
-Clean  = require 'gulp-clean'
 Coffee = require 'gulp-coffee'
+Watch  = require 'gulp-watch'
+
+Del    = require 'del'
+Pipe   = require 'lazypipe'
+
+path =
+	src:'./src'
+	lib:'./lib'
+
+filesAll    = "#{path.src}/**/*.*"
+filesCoffee = "#{path.src}/**/*.coffee"
+filesOthers = "!#{filesCoffee}"
+
+pipeDest    = Pipe().pipe(Gulp.dest, path.lib)
+pipeCoffee  = Pipe().pipe(Coffee, bare:true).pipe(Gulp.dest, path.lib)
 
 Gulp.task 'clean', ->
-	Gulp.src './lib', read:false
-		.pipe do Clean
+	Del.sync ['./lib'], force:true
 
+Gulp.task 'misc' , ->
+	Gulp.src([filesOthers, filesAll]).pipe do pipeDest
 
-Gulp.task 'build', ['clean'], ->
+Gulp.task 'build', ['clean','misc'], ->
+	Gulp.src([filesCoffee]).pipe do pipeCoffee
 
-	Gulp.src ['!./src/**/*.coffee','./src/**/*.*']
-		.pipe Gulp.dest './lib'
-
-	Gulp.src ['./src/**/*.coffee']
-		.pipe Coffee bare:true
-			.on 'error', Util.log
-		.pipe Gulp.dest './lib'
-
+Gulp.task 'watch', ['build'], ->
+	Gulp.src([filesCoffee]).pipe(Watch filesCoffee).pipe do pipeCoffee
