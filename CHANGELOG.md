@@ -1,3 +1,6 @@
+### 0.2.4
+* `NEW` Added Stylus setting to enable raw CSS files.
+
 ### 0.2.3
 * `FIX` Improved gulp workflow.
 * `FIX` Corrected typo on README.
