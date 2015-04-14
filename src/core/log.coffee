@@ -34,7 +34,7 @@ logger = (method, args)->
 	args = Array::slice.call(args).join ' '
 
 	if not ﬁ.util.isString method
-		throw new ﬁ.error 'Invalid method.' if not ﬁ.util.isDictionary method
+		throw new ﬁ.error 'Invalid method.' if not ﬁ.util.object.isDict method
 		caller = method.caller
 		method = method.method
 

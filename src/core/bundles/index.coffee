@@ -90,8 +90,8 @@ module.exports = (name)->
 
 			throw new ﬁ.error 'A view is not available.' if not path
 
-			vars = if ﬁ.util.isDictionary args[0] then args.shift() else {}
-			back =  if ﬁ.util.isFunction args[0] then args.shift() else undefined
+			vars = if ﬁ.util.object.isDict args[0] then args.shift() else {}
+			back = if ﬁ.util.isFunction args[0] then args.shift() else undefined
 
 			path = Path.resolve Path.dirname(view), path
 
@@ -120,7 +120,7 @@ module.exports = (name)->
 			locals    = {}
 			locals[k] = v for k,v of ﬁ.app.locals
 			locals[k] = v for k,v of assetsLocals
-			locals[k] = v for k,v of (if not ﬁ.util.isDictionary(vars) then {} else vars)
+			locals[k] = v for k,v of (if not ﬁ.util.object.isDict(vars) then {} else vars)
 
 			onFnRender = (error, content)->
 				throw error if error
