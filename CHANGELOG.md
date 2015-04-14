@@ -1,3 +1,8 @@
+### 0.2.5
+* `NEW` ﬁ.listen now accepts a callback.
+* `FIX` Re-enabled ﬁ.extend
+* `FIX` Moved ﬁ.util.isDictionary to ﬁ.util.object.isDictionary
+
 ### 0.2.4
 * `NEW` Added Stylus setting to enable raw CSS files.
 

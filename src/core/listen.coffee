@@ -1,5 +1,6 @@
-FS   = require 'fs'
-Path = require 'path'
+FS    = require 'fs'
+Path  = require 'path'
+HTTP  = require 'http'
 
 try
 	MasterControl = ﬁ.require 'app.master','control'
@@ -8,7 +9,7 @@ catch e
 	throw new ﬁ.error 'Master controller is missing.' if e.name is 'FiRequireError'
 	throw new ﬁ.error e
 
-module.exports = ->
+module.exports = (callback)->
 
 	return ﬁ.log.warn("A port was not specified, app won't listen.") if not ﬁ.conf.port
 
@@ -74,25 +75,29 @@ module.exports = ->
 	# In case some libraries desire to run code before the server starts to listen.
 	(queue() if ﬁ.util.isFunction queue) for queue in ﬁ.queuePost
 
-	ﬁ.server.listen(ﬁ.conf.port)
+	http = ﬁ.server.listen ﬁ.conf.port, ->
 
-	ﬁ.isListening = true
-	delete ﬁ.middleware
-	delete ﬁ.queuePre
-	delete ﬁ.queueMid
-	delete ﬁ.queuePost
+		ﬁ.isListening = true
+		delete ﬁ.middleware
+		delete ﬁ.queuePre
+		delete ﬁ.queueMid
+		delete ﬁ.queuePost
 
-	ﬁ.route = ->
-		args = Array::slice.call arguments
-		bundle = args.shift()
-		bundle = if bundle[0] is '/' then bundle.substring(1) else bundle
-		method = if typeof args[0] is 'string' then args.shift() else 'get'
-		torepl = args.shift()
+		ﬁ.log.custom (method:'info', caller:'fi'), "Listening on #{ﬁ.conf.url}"
+		FS.writeFileSync Path.join(ﬁ.path.root, 'fi.lastrun'), new Date()
 
-		return false if not ﬁ.bundles[bundle] or not ﬁ.bundles[bundle][method]
-		route = ﬁ.bundles[bundle][method]
-		route = route.replace(":#{key}", val) for key,val of torepl
-		return route
+		ﬁ.route = ->
+			args = Array::slice.call arguments
+			bundle = args.shift()
+			bundle = if bundle[0] is '/' then bundle.substring(1) else bundle
+			method = if typeof args[0] is 'string' then args.shift() else 'get'
+			torepl = args.shift()
 
-	ﬁ.log.custom (method:'info', caller:'fi'), "Listening on #{ﬁ.conf.url}"
-	FS.writeFileSync Path.join(ﬁ.path.root, 'fi.lastrun'), new Date()
+			return false if not ﬁ.bundles[bundle] or not ﬁ.bundles[bundle][method]
+			route = ﬁ.bundles[bundle][method]
+			route = route.replace(":#{key}", val) for key,val of torepl
+			return route
+
+		callback.apply this, arguments
+
+	return http

@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "NodeJS Framework for agile web development.",
   "main": "lib",
   "license": "MIT",
@@ -48,16 +48,17 @@
   },
   "keywords": [
     "fai",
-    "gik",
-    "gikmx",
-    "gik.mx",
-    "fi",
-    "etor",
-    "et0r"
+    "framework",
+    "agile",
+    "stylus",
+    "jade",
+    "express"
   ],
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
   "scripts": {
-    "prepublish": "gulp build"
+    "prepublish": "gulp build",
+    "watch": "gulp watch",
+    "build": "gulp build"
   },
   "bugs": {
     "url": "https://github.com/gikmx/fai/issues"
