@@ -1,14 +1,14 @@
 Path = require 'path'
 
-ﬁ.path['fi-extend'] = Path.join ﬁ.path.root, 'fi-extend'
+ﬁ.path.script.extend = Path.join(ﬁ.path.script.root, 'extend')
 
-module.exports = (library, context='fi-extend')->
+module.exports = (library, context='script.extend')->
 	throw new ﬁ.error 'Invalid library.' if not ﬁ.util.isString library
 
 	Library = ﬁ.require context, library
 
 	# If library does not exist, or is anything but a dictionary, create/overwrite it.
-	if not ﬁ[library] or not ﬁ.util.isDictionary ﬁ[library]
+	if not ﬁ[library] or not ﬁ.util.object.isDict ﬁ[library]
 		ﬁ.log.trace "Enabled '#{library}' extend."
 		return ﬁ[library] = Library
 

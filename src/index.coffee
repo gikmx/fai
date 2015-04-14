@@ -16,6 +16,7 @@ path      = './core/'
 ﬁ.middleware = ﬁ.require 'core.root', 'middleware'
 ﬁ.log        = ﬁ.require 'core.root', 'log'
 ﬁ.app        = ﬁ.require 'core.root', 'app'
+ﬁ.extend     = ﬁ.require 'core.root', 'extend'
 
 # Setup server
 ﬁ.server = ﬁ.require 'core.root', 'server'
