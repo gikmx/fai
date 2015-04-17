@@ -1,3 +1,7 @@
+### 0.2.6
+* `FIX` pseudo require on client-side javascript now emulates a module.exports.
+		(minimal implementation, don't expect compatibility with CommonJS)
+
 ### 0.2.5
 * `NEW` ﬁ.listen now accepts a callback.
 * `FIX` Re-enabled ﬁ.extend

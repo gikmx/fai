@@ -65,28 +65,22 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	return
 
 # Allow client side coffeescript to require another files.
-CoffeeProcess = (str, path, name)->
-	name  = Path.resolve(path, name + ﬁ.path.script.ext).replace(ﬁ.path.app,'')
-	paths = [path, ﬁ.path.app.master]
-	lines = str.split /[\r\n]/
-	str   = []
-	# split file by lines, and insert required code in between
-	for line,i in lines
-		if not (match = line.match /^(\s*)require\s*\(?["']([^"']+)["']\)?.*$/)
-			str.push line
-			continue
-		indent = match[1]
-		# determine if file exists
-		for file in paths
-			file = Path.resolve file, "#{match[2]}#{ﬁ.path.script.ext}"
-			if not FS.existsSync file then file = false else
-				ﬁ.log.trace "[require] '#{file.replace(ﬁ.path.app,'')}' →  #{name}"
-				file = FS.readFileSync file, ﬁ.conf.charset
-				str.push(indent + l) for l in file.split(/[\r\n]/)
-				break
-		throw new ﬁ.error "#{name} couldn't require '#{match[2]}'" if not file
-
-	return str.join '\n'
+CoffeeProcess = (str, pth)->
+	str   = Coffee.compile(str, bare:true)
+	scr   = '(function(){var module={exports:{}}; %s return module.exports; }).call(this)'
+	regex = /\s*require\s*\(?\s*[\"\']([^\"\']+)[\"\']\s*\)?\s*/g
+	while (match = regex.exec str) isnt null
+		file = "#{match[1]}#{ﬁ.path.script.ext}"
+		path = ﬁ.util.array.unique([pth, ﬁ.path.app.master]).filter (p)->
+			FS.existsSync Path.resolve(p, file)
+		throw new ﬁ.error "Invalid require: #{match[1]}" if not path.length
+		file = FS.readFileSync Path.join(path[0], file), ﬁ.conf.charset
+		str  = [
+			str.slice(0, match.index),
+			scr.replace('%s', Coffee.compile(file, bare:true)),
+			str.slice(match.index + match[0].length)
+		].join('')
+	return str
 
 # Set behaviour for asset types
 Types =
@@ -108,7 +102,7 @@ Types =
 	js:
 		ext  : ['.coffee','.js']
 		run  : (str, path, name)->
-			return Coffee.compile CoffeeProcess(str, path, name)
+			return CoffeeProcess(str, path, name)
 		min  : (str, path, name)->
 			code = Uglify.parse str
 			code.figure_out_scope()
