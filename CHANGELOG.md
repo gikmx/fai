@@ -1,3 +1,6 @@
+### 0.2.7
+* `FIX` ﬁ.listen should't require a callback.
+
 ### 0.2.6
 * `FIX` pseudo require on client-side javascript now emulates a module.exports.
 		(minimal implementation, don't expect compatibility with CommonJS)

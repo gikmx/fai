@@ -98,6 +98,6 @@ module.exports = (callback)->
 			route = route.replace(":#{key}", val) for key,val of torepl
 			return route
 
-		callback.apply this, arguments
+		callback.apply(this, arguments) if ﬁ.util.isFunction(callback)
 
 	return http
