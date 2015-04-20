@@ -1,3 +1,8 @@
+### 0.2.8
+* `NEW` you can now pseudo-require javascript libraries directly (as long as they use
+		CommonJS to expose themselves).
+* `FIX` pseudo require on client-side javascript was not being returned correctly.
+
 ### 0.2.7
 * `FIX` ﬁ.listen should't require a callback.
 

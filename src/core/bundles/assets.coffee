@@ -17,6 +17,9 @@ Express = require 'express'
 
 Files = []
 
+TmplJS = Path.join(ﬁ.path.core.bundles, "template#{ﬁ.path.core.ext}")
+TmplJS = FS.readFileSync TmplJS, ﬁ.conf.charset
+
 # Set a tmp storage dir, and make sure it always starts empty.
 tmpdir = Path.join ﬁ.path.tmp, 'fi-assets'
 
@@ -65,21 +68,27 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	return
 
 # Allow client side coffeescript to require another files.
-CoffeeProcess = (str, pth)->
-	str   = Coffee.compile(str, bare:true)
-	scr   = '(function(){var module={exports:{}}; %s return module.exports; }).call(this)'
-	regex = /\s*require\s*\(?\s*[\"\']([^\"\']+)[\"\']\s*\)?\s*/g
-	while (match = regex.exec str) isnt null
-		file = "#{match[1]}#{ﬁ.path.script.ext}"
+CoffeeProcess = (orig, pth)->
+	str   = Coffee.compile(orig, bare:true)
+	regex = /\s*require\s*\(?\s*[\"\']([^\"\']+)[\"\']\s*\)?\s*/
+	while (match = str.match(regex)) isnt null
+		file = match[1]
+		ext  = Path.extname(file)
+		file += ﬁ.path.script.ext if not ext.length
 		path = ﬁ.util.array.unique([pth, ﬁ.path.app.master]).filter (p)->
-			FS.existsSync Path.resolve(p, file)
-		throw new ﬁ.error "Invalid require: #{match[1]}" if not path.length
+			p = Path.resolve Path.join(p, file)
+			ﬁ.log.trace 'trying to require: ', p
+			return FS.existsSync p
+		throw new ﬁ.error "required file could not be found: #{file}" if not path.length
 		file = FS.readFileSync Path.join(path[0], file), ﬁ.conf.charset
-		str  = [
-			str.slice(0, match.index),
-			scr.replace('%s', Coffee.compile(file, bare:true)),
-			str.slice(match.index + match[0].length)
-		].join('')
+		try
+			file = Coffee.compile(file, bare:true) if not ext.length or ext is '.coffee'
+		catch e
+			throw new ﬁ.error e
+		index = TmplJS.indexOf('{{}};')
+		file  = TmplJS.slice(0, index) + file + TmplJS.slice(index + 5)
+		str   = str.slice(0, match.index) + file + str.slice(match.index + match[0].length)
+
 	return str
 
 # Set behaviour for asset types
