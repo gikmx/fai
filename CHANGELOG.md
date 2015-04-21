@@ -1,3 +1,8 @@
+### 0.2.10
+* `FIX` request.bundle method was not working when a route had a querystring.
+* `FIX` Rewritten some parts of the readme.
+* `DEL` Removed watch task and coffee version of gulp.
+
 ### 0.2.9
 * `FIX` Fixed a bug that prevented html templates to ever be valid, since the link tags
 		were never auto-closed.
