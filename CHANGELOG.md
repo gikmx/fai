@@ -1,3 +1,8 @@
+### 0.2.9
+* `FIX` Fixed a bug that prevented html templates to ever be valid, since the link tags
+		were never auto-closed.
+* `FIX` EXPOSE functionality on templatewas being put in the wrong order.
+
 ### 0.2.8
 * `NEW` you can now pseudo-require javascript libraries directly (as long as they use
 		CommonJS to expose themselves).

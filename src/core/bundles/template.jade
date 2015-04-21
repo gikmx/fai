@@ -3,7 +3,10 @@ mixin auto(name, props)
 		- attributes = []
 		each val,key in prop
 			- attributes[key] = val
-		#{name}&attributes(attributes)
+		if name != 'link'
+			#{name}&attributes(attributes)
+		else
+			link/&attributes(attributes)
 
 extends #{template}
 
@@ -14,23 +17,25 @@ block ﬁ.meta
 block ﬁ.link
 	if locals.LINK && LINK.length
 		+auto('link', LINK)
-	link(rel='stylesheet', href='#{css("master/view")}')
+	link(rel='stylesheet', href=css('master/view'))
 	each asset in assets.css
 		if asset
-			link(rel='stylesheet', href='#{css(asset)}')
+			link(rel='stylesheet', href=css(asset))
 
 block ﬁ.script
 
 	if locals.SCRIPT && SCRIPT.length
 		+auto('script', SCRIPT)
 
-	script(src='#{js("master/view")}')
+	if locals.EXPOSE
+		- var __expose = JSON.stringify(locals.EXPOSE, null)
+		script!= 'window.EXPOSE=' + __expose
+
+	script(src=js('master/view'))
 	each asset in assets.js
 		if asset
-			script(src='#{js(asset)}')
+			script(src=js(asset))
 
 block ﬁ.content
 	if locals.content
 		!= locals.content
-	if locals.EXPOSE
-		script!='window.EXPOSE=' + JSON.stringify(locals.EXPOSE, null, '') + ';'
