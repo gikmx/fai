@@ -7,10 +7,8 @@
 				".git",
 				".gitignore",
 				"fi.lastrun",
-				"coffeelint.json",
 				"fi-core.sublime-project",
-				"*.log",
-				"gulpfile.js"
+				"*.log"
 			],
 			"folder_exclude_patterns":
 			[
