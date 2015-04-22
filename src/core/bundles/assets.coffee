@@ -18,7 +18,7 @@ Express = require 'express'
 Files = []
 
 TmplJS = Path.join(ﬁ.path.core.bundles, "template#{ﬁ.path.core.ext}")
-TmplJS = FS.readFileSync TmplJS, ﬁ.conf.charset
+TmplJS = FS.readFileSync(TmplJS, ﬁ.conf.charset)
 
 # Set a tmp storage dir, and make sure it always starts empty.
 tmpdir = Path.join ﬁ.path.tmp, 'fi-assets'
@@ -76,8 +76,9 @@ CoffeeProcess = (orig, pth)->
 		ext  = Path.extname(file)
 		file += ﬁ.path.script.ext if not ext.length
 		path = ﬁ.util.array.unique([pth, ﬁ.path.app.master]).filter (p)->
-			p = Path.resolve Path.join(p, file)
-			ﬁ.log.trace 'trying to require: ', p
+			p = Path.resolve(Path.join(p, file))
+			t = p.replace(ﬁ.path.app.root, '').slice(1)
+			ﬁ.log.custom (method:'trace', caller:'ASSETS:JS-REQUIRE'), t
 			return FS.existsSync p
 		throw new ﬁ.error "required file could not be found: #{file}" if not path.length
 		file = FS.readFileSync Path.join(path[0], file), ﬁ.conf.charset
@@ -87,6 +88,7 @@ CoffeeProcess = (orig, pth)->
 			throw new ﬁ.error e
 		index = TmplJS.indexOf('{{}};')
 		file  = TmplJS.slice(0, index) + file + TmplJS.slice(index + 5)
+		file  = file.slice(0, file.lastIndexOf ';')
 		str   = str.slice(0, match.index) + file + str.slice(match.index + match[0].length)
 
 	return str

@@ -1,3 +1,9 @@
+### 0.2.11
+* `FIX` Removed a traling `;` from compiled code in pseudo-require, since it was
+		preventing it to be used as an expression.
+* `FIX` Improved logging in pseudo-require on assets.
+* `FIX`	Removed console output in jade compilation process.
+
 ### 0.2.10
 * `FIX` request.bundle method was not working when a route had a querystring.
 * `FIX` Rewritten some parts of the readme.
