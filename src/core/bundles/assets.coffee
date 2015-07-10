@@ -15,6 +15,8 @@ Prefixr = require 'autoprefixer-stylus'
 CSSo    = require 'csso'
 Express = require 'express'
 
+Scramble = require './scramble'
+
 Files = []
 
 TmplJS = Path.join(ﬁ.path.core.bundles, "template#{ﬁ.path.core.ext}")
@@ -112,8 +114,10 @@ Types =
 
 	js:
 		ext  : ['.coffee','.js']
+
 		run  : (str, path, name)->
 			return CoffeeProcess(str, path, name)
+
 		min  : (str, path, name)->
 			code = Uglify.parse str
 			code.figure_out_scope()
@@ -124,6 +128,7 @@ Types =
 			code = undefined
 			return str.print_to_string()
 
+		scramble: (str)-> Scramble str
 
 module.exports =
 
@@ -202,10 +207,17 @@ module.exports =
 					throw new ﬁ.error error.message if error
 					callback.call null, file, cont
 
+
+			if type.scramble and ﬁ.conf.scramble
+				ﬁ.log.custom
+					method :'trace'
+					caller :'scramble:file', path.replace(ﬁ.path.app.bundles,'')
+				content = type.scramble content
+
 			# Minification and compression when in production mode.
 			if ﬁ.conf.live
 				# minify
-				content  = type.min content, path, name
+				content = type.min content, path, name
 				deflate filename, content, (file, cont)->
 					ﬁ.log.trace '[deflate] ' + file
 					gzip file, cont, (file, cont)->

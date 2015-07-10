@@ -1,3 +1,6 @@
+### 0.2.12
+* `NEW` Added a basic scrambler for generated javascript files.
+
 ### 0.2.11
 * `FIX` Removed a traling `;` from compiled code in pseudo-require, since it was
 		preventing it to be used as an expression.

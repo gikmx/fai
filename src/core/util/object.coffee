@@ -4,6 +4,8 @@ module.exports =
 
 	extend:  Underscore.extend
 
+	isEqual: Underscore.isEqual
+
 	isDict: (o)->
 		ﬁ.util.isObject(o)    and not
 		ﬁ.util.isArray(o)     and not

@@ -8,12 +8,14 @@
 				".gitignore",
 				"fi.lastrun",
 				"fi-core.sublime-project",
-				"*.log"
+				"*.log",
+				"fai.sublime-project"
 			],
 			"folder_exclude_patterns":
 			[
 				"node_modules",
-				"lib"
+				"lib",
+				"build"
 			],
 			"path": "."
 		}
