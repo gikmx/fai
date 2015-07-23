@@ -1,56 +1,58 @@
 {
-  "name"        : "fai",
-  "version"     : "0.3.1-alpha-04",
-  "description" : "Framework for agile web development.",
-  "main"        : "build",
-  "author"      : "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
-  "license"     : "MIT",
-  "homepage"    : "https://github.com/gikmx/fai",
-  "keywords"    : ["framework","jade","stylus","es7"],
-  "os"          : ["darwin", "linux"],
-
-  "repository" : {
-    "type" : "git",
-    "url"  : "http://github.com/gikmx/fai.git"
+  "name": "fai",
+  "version": "0.3.1-alpha-04",
+  "description": "Framework for agile web development.",
+  "main": "build",
+  "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
+  "license": "MIT",
+  "homepage": "https://github.com/gikmx/fai",
+  "keywords": [
+    "framework",
+    "jade",
+    "stylus",
+    "es7"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/gikmx/fai.git"
   },
-
-  "bugs" : {
-    "url" : "https://github.com/gikmx/fai/issues"
+  "bugs": {
+    "url": "https://github.com/gikmx/fai/issues"
   },
-
-  "engines" : {
-    "node" : ">= 0.12.x"
+  "engines": {
+    "node": ">= 0.12.x"
   },
-
   "scripts": {
-    "prepublish" : "gulp build",
-    "test"       : "gulp test",
-    "build"      : "gulp build",
-    "watch"      : "gulp watch",
-    "gulp"       : "gulp"
+    "prepublish": "gulp build",
+    "test": "gulp test",
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "gulp": "gulp"
   },
-
   "devDependencies": {
-    "babel"                   : "^5.0.x",
-    "babel-eslint"            : "^2.0.x",
-    "chai"                    : "^2.2.x",
-    "chalk"                   : "^1.0.x",
-    "coveralls"               : "^2.11.x",
-    "del"                     : "^1.1.x",
-    "gulp"                    : "^3.8.x",
-    "gulp-sourcemaps-support" : "*",
-    "gulp-fai-doc"            : "*",
-    "gulp-babel"              : "^5.0.x",
-    "gulp-eslint"             : "^0.8.x",
-    "gulp-sourcemaps"         : "^1.5.x",
-    "gulp-spawn-mocha"        : "^2.0.x",
-    "gulp-watch"              : "^4.2.x",
-    "lazypipe"                : "^0.2.x",
-    "mocha"                   : "^2.2.x",
-    "mocha-unfunk-reporter"   : "^0.4.x"
+    "babel": "^5.0.x",
+    "babel-eslint": "^3.1.26",
+    "chai": "^3.2.0",
+    "chalk": "^1.0.x",
+    "coveralls": "^2.11.x",
+    "del": "^1.1.x",
+    "gulp": "^3.8.x",
+    "gulp-babel": "^5.0.x",
+    "gulp-eslint": "^0.15.0",
+    "gulp-fai-doc": "*",
+    "gulp-sourcemaps": "^1.5.x",
+    "gulp-sourcemaps-support": "*",
+    "gulp-spawn-mocha": "^2.0.x",
+    "gulp-watch": "^4.2.x",
+    "lazypipe": "^1.0.1",
+    "mocha": "^2.2.x",
+    "mocha-unfunk-reporter": "^0.4.x"
   },
-
-  "dependencies" : {
-    "babel-runtime" : "^5.0.8"
+  "dependencies": {
+    "babel-runtime": "^5.0.8"
   }
 }

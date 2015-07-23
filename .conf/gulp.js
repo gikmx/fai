@@ -68,7 +68,7 @@ Config.mocha = {
 	require   : Path.join(Dir['.conf'], 'chai'),
 	reporter  : 'mocha-unfunk-reporter',
 	compilers : 'js:babel/register',
-	istanbul  : process.env.NODE_ENV !== 'production'? false : {
+	istanbul  : process.env.NODE_ENV !== 'production' ? false : {
 		dir: Path.join(Dir.toString(), 'coverage')
 	}
 };
