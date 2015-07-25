@@ -1,2 +1,37 @@
 'use strict';
 
+/*»	# Fai.Path
+	*Path variables.*
+«*/
+
+const PATH = require('path');
+const FS   = require('fs');
+const OS   = require('os');
+
+const Path = {};
+
+Path.fai = __dirname;
+Path.app = PATH.dirname(process.argv[1]);
+Path.tmp = PATH.join(OS.tmpDir(), 'fai', PATH.basename(Path.app));
+
+module.exports = function(){
+
+	let path = this;
+
+	for (let key in this){
+
+		path[key] = new String(this[key]);
+		let dir   = String(path[key]);
+
+		if (!FS.existsSync(dir)) continue;
+
+		for (let item of FS.readdirSync(dir)){
+			let full = PATH.join(dir, item);
+			if (!FS.lstatSync(full).isDirectory() || !item.match(/(^[a-z][a-z0-9_]+$)/g))
+				continue;
+			path[key][item] = full;
+		}
+	}
+	return path;
+
+}.call(Path);
