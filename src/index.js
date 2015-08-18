@@ -66,5 +66,10 @@ if (process.env.FAI_GLOBAL) GLOBAL.ﬁ = ﬁ; //«
 «*/
 
 //»	- `ﬁ.path` Centralises path variables //«
-ﬁ.path = require('./core/path');
+ﬁ.path  = require('./core/path');
 
+console.info(ﬁ.path.get('base', 'app'));
+process.exit(0);
+
+// console.info(ﬁ.path);
+// require(ﬁ.path.get(ﬁ.path.app));

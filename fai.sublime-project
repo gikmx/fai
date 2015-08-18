@@ -5,19 +5,17 @@
 			"file_exclude_patterns":
 			[
 				"*.sublime-*",
-				"gulpfile.js",
-				".gitignore",
-				".npmignore",
-				".travis.yml",
-				"npm-debug.log",
-				".git"
+				".git",
+				".eslintrc",
+				".travis.yml"
 			],
 			"folder_exclude_patterns":
 			[
-				"build",
-				"node_modules",
-				"coverage",
-				"docs"
+				"fai/build",
+				"fai/lib",
+				"fai/coverage",
+				"fai/docs",
+				"node_modules"
 			],
 			"path": "."
 		}

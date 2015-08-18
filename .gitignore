@@ -1,5 +1,6 @@
-node_modules
+/build
+/docs
+*.DS*
 *.sublime-workspace
-build/
 *.log
-docs/
+node_modules

@@ -8,11 +8,21 @@ const PATH = require('path');
 const FS   = require('fs');
 const OS   = require('os');
 
-const Path = {};
+const Props   = {};
+const Methods = {};
 
-Path.fai = __dirname;
-Path.app = PATH.dirname(process.argv[1]);
-Path.tmp = PATH.join(OS.tmpDir(), 'fai', PATH.basename(Path.app));
+Props.core = __dirname;
+Props.base = PATH.dirname(process.argv[1]);
+Props.temp = PATH.join(OS.tmpDir(), 'fai', PATH.basename(Props.base));
+
+Methods.get = function(){
+	let args = Array.prototype.slice.call(arguments);
+	let base = args.shift() || 'core';
+	if (!args.length) return this[base] ? String(this[base]) : null;
+	// console.info(this[base], PATH.join.apply(PATH, args));
+	// if (typeof this[base][dir]) return null;
+	// return this[base][dir];
+};
 
 module.exports = function(){
 
@@ -21,7 +31,7 @@ module.exports = function(){
 	for (let key in this){
 
 		path[key] = new String(this[key]);
-		let dir   = String(path[key]);
+		let dir = String(path[key]);
 
 		if (!FS.existsSync(dir)) continue;
 
@@ -32,6 +42,9 @@ module.exports = function(){
 			path[key][item] = full;
 		}
 	}
+
+	for (let key in Methods) this[key] = Methods[key];
+
 	return path;
 
-}.call(Path);
+}.call(Props);

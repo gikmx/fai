@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.3.1-alpha-04",
+  "version": "0.3.0-b06",
   "description": "Framework for agile web development.",
   "main": "build",
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
@@ -24,7 +24,7 @@
     "url": "https://github.com/gikmx/fai/issues"
   },
   "engines": {
-    "node": ">= 0.12.x"
+    "node": ">= 0.12.7"
   },
   "scripts": {
     "prepublish": "gulp build",
