@@ -101,7 +101,7 @@ Types =
 		ext  : ['.styl','.css']
 		run  : (str, path)->
 			Stylus(str)
-				.set('paths', [ﬁ.path.app.master, path])
+				.set('paths', [ﬁ.path.app, ﬁ.path.app.master, path])
 				.set('include css', true)
 				.use do Rupture
 				.use do Axis

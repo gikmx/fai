@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "NodeJS Framework for agile web development.",
   "main": "lib",
   "license": "MIT",
