@@ -100,9 +100,13 @@ Types =
 	css:
 		ext  : ['.styl','.css']
 		run  : (str, path)->
+			$fai =
+				path: ﬁ.path
+				conf: ﬁ.conf
 			Stylus(str)
 				.set('paths', [ﬁ.path.app.root, ﬁ.path.app.master, path])
 				.set('include css', true)
+				.define('$fai',$fai, true) # last argument is 'raw'
 				.use do Rupture
 				.use do Axis
 				.use do Jeet
