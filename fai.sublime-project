@@ -6,15 +6,14 @@
 			[
 				"*.sublime-*",
 				".git",
-				".eslintrc",
-				".travis.yml"
+				".travis.yml",
+				"gulpfile.js"
 			],
 			"folder_exclude_patterns":
 			[
 				"fai/build",
-				"fai/lib",
-				"fai/coverage",
 				"fai/docs",
+				"fai/coverage",
 				"node_modules"
 			],
 			"path": "."

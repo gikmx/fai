@@ -1,3 +1,1 @@
-# fai
-
-Framework for agile development
+docs/index.md

@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.3.0-b07",
+  "version": "0.3.0-b08",
   "description": "Framework for agile web development.",
   "main": "build",
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
@@ -37,7 +37,6 @@
     "babel": "^5.0.x",
     "babel-eslint": "^3.1.26",
     "chai": "^3.3.0",
-    "chalk": "^1.1.1",
     "coveralls": "^2.11.x",
     "del": "^1.1.x",
     "gulp": "^3.8.x",
@@ -47,12 +46,12 @@
     "gulp-sourcemaps": "^1.5.x",
     "gulp-sourcemaps-support": "*",
     "gulp-spawn-mocha": "^2.0.x",
-    "gulp-watch": "^4.3.5",
     "lazypipe": "^1.0.1",
     "mocha": "^2.3.3",
     "mocha-unfunk-reporter": "^0.4.x"
   },
   "dependencies": {
-    "babel-runtime": "^5.8.24"
+    "babel-runtime": "^5.8.24",
+    "chalk": "^1.1.1"
   }
 }

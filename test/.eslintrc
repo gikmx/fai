@@ -8,7 +8,10 @@
 		"xit"      : true,
 		"it"       : true,
 		"describe" : true,
-		"expect"   : true
+		"expect"   : true,
+		"FAI_PATH" : true,
+		"fai"      : true,
+		"ﬁ"        : true
 	},
 	"rules":{
 		"quotes"               : [2, "single"],
