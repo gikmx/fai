@@ -1,16 +1,17 @@
 {
   "name": "fai",
-  "version": "0.3.0-b08",
-  "description": "Framework for agile web development.",
+  "version": "0.3.0-b09",
+  "description": "Framework for agile development.",
   "main": "build",
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
   "license": "MIT",
   "homepage": "https://github.com/gikmx/fai",
   "keywords": [
     "framework",
-    "jade",
-    "stylus",
-    "es7"
+    "es6",
+    "es7",
+    "util",
+    "utility"
   ],
   "os": [
     "darwin",

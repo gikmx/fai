@@ -1,5 +1,7 @@
-### [0.3.0-b08] Preparing the house for a new core.
-- `FIX` moved and updated gulpfile, with a better gulp watch script.
+### [0.3.0-b09] Preparing the house for a new core.
+- `NEW` Added unit-test for the new core API.
+- `NEW` Rewritten main file and core to reflect a brand new core API.
+- `FIX` Moved and updated gulpfile, with a better gulp watch script.
 - `FIX` Updated again dependencies to support node v4.1
 - `NEW` Added this changelog.
 - `FIX` Improved ignoring for git and NPM

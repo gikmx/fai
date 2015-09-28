@@ -1,0 +1,14 @@
+{
+	"use": [],
+	"attr":{
+		"default": {
+			"writable"     : false,
+			"configurable" : false,
+			"enumerable"   : true
+		},
+
+		"modules": {
+			"__test_valid": { "writable": true }
+		}
+	}
+}
