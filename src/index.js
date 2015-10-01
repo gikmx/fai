@@ -5,12 +5,12 @@
 «*/
 
 const ﬁ    = require('./core');
-const conf = require('./conf');
-const pack = require('../package');
-const attr = { visible:false, configurable: false, writable:false, enumerable:false };
+const CONF = require('./conf');
+const PACK = require('../package');
+const ATTR = { configurable: false, writable:false, enumerable:false };
 
 // Allowed Errors:
-conf.errors = [
+CONF.errors = [
 	Error,           // A generic error
 	RangeError,      // value is not in the set of indicated values
 	ReferenceError,  // a non-existent variable is referenced
@@ -20,16 +20,16 @@ conf.errors = [
 
 module.exports = function fai(){
 	// if fai has been already instantiated there's no need of doing this again.
-	if (ﬁ.init) return ﬁ.get();
+	if (ﬁ.init) return ﬁ.get(arguments[0]);
 	// set internal unmutable properties.
-	ﬁ.set('conf', conf, attr);
-	ﬁ.set('init', true, attr);
-	ﬁ.set('info', pack, attr);
+	ﬁ.set('conf', CONF, ATTR);
+	ﬁ.set('info', PACK, ATTR);
+	ﬁ.set('init', true, ATTR);
 	// if a custom conf is sent, merge it with the default one.
 	if (arguments[0] && arguments[0].constructor === Object)
-		Object.assign(conf, arguments[0]);
+		Object.assign(CONF, arguments[0]);
 	// iterate core modules and «use» them in order.
-	for (let name of conf.use) ﬁ.use(name, conf[name]);
+	for (let name of CONF.use) ﬁ.use(name, CONF[name]);
 	// return the instance
 	return ﬁ.get();
 };
