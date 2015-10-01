@@ -1,5 +1,5 @@
 {
-	"use": [],
+	"use": ["log"],
 	"attr":{
 		"default": {
 			"writable"     : false,
@@ -9,6 +9,13 @@
 
 		"modules": {
 			"__test_valid": { "writable": true }
+		}
+	},
+	"log":{
+		"attr": {
+			"enumerable"   : true,
+			"writable"     : false,
+			"configurable" : false
 		}
 	}
 }

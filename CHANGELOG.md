@@ -1,4 +1,5 @@
-### [0.3.0-b10] Preparing the house for a new core.
+### [0.3.0-b11] Preparing the house for a new core.
+. `NEW` Added a minimalistic logger.
 - `NEW` Added unresolved test to make sure enumerable properties are really enumerable.
 - `FIX` Converted constants on main instantiator to upper case.
 - `NEW` Added optional parameters on main instance's default methods.
