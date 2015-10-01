@@ -26,6 +26,8 @@ describe('ﬁ.set', function(){
 		expect(ﬁ.test_configurable).to.equal(undefined);
 	});
 
+	xit('allows a property to be shown, as long as it\'s enumerable.', function(){});
+
 	it('throws an error if a read only property tries to be modified.', function(){
 		ﬁ.set('test_read_only_property', {writable:false, configurable:false});
 		let test1 = ()=> delete ﬁ.test_read_only_property;

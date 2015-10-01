@@ -1,4 +1,8 @@
-### [0.3.0-b09] Preparing the house for a new core.
+### [0.3.0-b10] Preparing the house for a new core.
+- `NEW` Added unresolved test to make sure enumerable properties are really enumerable.
+- `FIX` Converted constants on main instantiator to upper case.
+- `NEW` Added optional parameters on main instance's default methods.
+- `FIX` Updated supported version of Node from 0.12.7 to 4.1 on package.json.
 - `NEW` Added unit-test for the new core API.
 - `NEW` Rewritten main file and core to reflect a brand new core API.
 - `FIX` Moved and updated gulpfile, with a better gulp watch script.
