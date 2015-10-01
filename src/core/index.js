@@ -30,7 +30,7 @@ module.exports = {
 	},
 
 	// register a variable/module on ﬁ instance.
-	set: function(key, value, attr){
+	set: function(key, value, attr={}){
 		if (!attr || attr.constructor !== Object) attr = {};
 		if (this.conf && this.conf.attr){
 			// if the key is defined in conf attributes, use it as base;
@@ -45,7 +45,7 @@ module.exports = {
 	},
 
 	// enable a fai-module.
-	use: function(callee, conf, attr){
+	use: function(callee, conf={}, attr={}){
 		let mod = null;
 		let msg = `Invalid module «${callee}».`;
 		if (!conf || conf.constructor !== Object) conf = {};
