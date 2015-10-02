@@ -12,7 +12,9 @@
 		}
 	},
 	"log":{
-		"attr": {
+		"colors" : true,
+		"use"    : ".*",
+		"attr"   : {
 			"enumerable"   : true,
 			"writable"     : false,
 			"configurable" : false
