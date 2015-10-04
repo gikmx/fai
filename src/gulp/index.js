@@ -77,7 +77,7 @@ Config.mocha = {
 	require   : Path.join(__dirname, 'chai'),
 	reporter  : 'mocha-unfunk-reporter',
 	compilers : 'js:babel/register',
-	istanbul  : process.env.NODE_ENV !== 'production' ? false : {
+	istanbul  : {
 		dir: Path.join(path.toString(), 'coverage')
 	}
 };
@@ -135,14 +135,14 @@ Gulp.task('build', ['clean', 'lint'], function(){
 		.pipe(Gulp.dest(path.build));
 });
 
-Gulp.task('watch', function(done){
+Gulp.task('watch', function(){
 	let cmd;
 	// keep every argument after the gulp command.
 	let arg = process.argv.slice(process.argv.indexOf('watch') + 1);
 	// but use this command instead.
 	arg.unshift('test');
 	// this will be run when changes are found
-	function onChange(e){
+	function onChange(){
 		// if there's a current process, kill it, so it can be restarted.
 		if (cmd) cmd.kill();
 		// spawn the new process, but keep its stdio in this process instead.

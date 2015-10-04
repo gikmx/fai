@@ -1,4 +1,8 @@
-### [0.3.0-b11] Preparing the house for a new core.
+### [0.3.0-b12] Preparing the house for a new core.
+- `NEW` Added tests for ﬁ.set enumerable attributes.
+- `FIX` Added coverage dir to gitignore.
+- `FIX` Coverage script now runs even on development.
+- `FIX` Removed arguments from src/core/test/module-valid to avoid warnings on linter.
 - `FIX` Improved the logger with a timestamp, caller name, and filters.
 - `NEW` Added a minimalistic logger.
 - `NEW` Added unresolved test to make sure enumerable properties are really enumerable.

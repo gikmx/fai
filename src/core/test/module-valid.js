@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function __test_valid(conf, callee){
+module.exports = function __test_valid(){
 	return {};
 };
