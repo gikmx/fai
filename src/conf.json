@@ -13,7 +13,14 @@
 	},
 	"log":{
 		"colors" : true,
-		"use"    : ".*",
+		"show"   : ".*",
+		"levels" : {
+			"trace" : { "enabled": true, "type":"stdout", "color": "cyan"   },
+			"debug" : { "enabled": true, "type":"stdout", "color": "blue"   },
+			"info"  : { "enabled": true, "type":"stdout", "color": "green"  },
+			"warn"  : { "enabled": true, "type":"stderr", "color": "yellow" },
+			"error" : { "enabled": true, "type":"stderr", "color": "red"    }
+		},
 		"attr"   : {
 			"enumerable"   : true,
 			"writable"     : false,

@@ -1,30 +1,21 @@
 'use strict';
 
-// Node modules
-
 // NPM modules
 const Chalk  = require('chalk');
 
-// TODO: Define allowed levels.
+// Local;
+let CONF;
 
-// Local variables
-// TODO: Levels should be defined from the configuration file.
-const LEVELS = {
-	trace : { type:'stdout', color: Chalk.cyan  },
-	debug : { type:'stdout', color: Chalk.blue  },
-	info  : { type:'stdout', color: Chalk.green },
-	warn  : { type:'stderr', color: Chalk.yellow },
-	error : { type:'stderr', color: Chalk.red    }
-};
-
-let Conf;
 const logger = function(name, ...messages){
 
-	let level = LEVELS[name];
+	let level = CONF.levels[name];
 	let date  = new Date();
-	let sep   = '»';
+	let sep   = ['[', ']'];
 
-	name = name[0].toUpperCase();
+	if (!level.enabled) return;
+
+	if (!process[level.type] || process[level.type].constructor.name !== 'WriteStream')
+		this.error('Invalid «log» write stream: ' + level.type);
 
 	// find the caller name.
 	let fname;
@@ -33,49 +24,68 @@ const logger = function(name, ...messages){
 	let error = new Error();
 	error.stack.shift(); // the first one is this function.
 	for (let i in error.stack) if ((fname = error.stack[i].getFunctionName())) break;
-	if (!fname) fname = 'Unknown';
+	if (!fname) fname = 'unknown';
+	else fname = fname.toLowerCase();
 	Error.prepareStackTrace = prepareStackTrace;
 
 	// only show those logs that are actually allowed;
-	if (!fname.match(Conf.use)) return;
+	if (!fname.match(CONF.show)) return;
+
+	// we'll only show the first uppercased letter of the method.
+	name = name[0].toUpperCase();
 
 	// Show a human readable version of the time.
-	// TODO: Simplify and optimise these lines.
-	let to = date.getTimezoneOffset();
-	let hr = Math.floor(Math.abs(to) / 60);
-	let tz = date.getTime() + (hr * (to < 0 ? 1 : -1) * 3600000);
-	date = new Date(tz).toISOString().replace(/[TZ]/g, ' ').trim();
+	// get the difference timezoneoffset, convert it to ms and invert it.
+	date = new Date(date.getTime() + (date.getTimezoneOffset() * 60000 * -1)).toISOString()
+		// faster than a regex
+		.replace('T', ' ')
+		.replace('Z', ' ')
+		// make there are no spaces on both ends of string.
+		.trim()
+		// we don't need the full year, remove "20" from "20xx"
+		.slice(2);
 
 	// show a string representation of any non-string value.
 	for (let i in messages)
 		if (messages[i].constructor !== String)
 			messages[i] = JSON.stringify(messages[i], null, ' ');
 
-	// Colors should only be used on development.
-	if (process.env.NODE_ENV !== 'production' && Conf.colors){
-		name  = level.color(name);
-		date  = level.color(date);
-		fname = level.color(fname);
-		sep   = level.color(sep);
+	// Colors should only be used when enabled, on TTYs and in non-productions envs
+	if (CONF.colors && process[level.type].isTTY && process.env.NODE_ENV !== 'production'){
+		if (!Chalk[level.color] || Chalk[level.color].constructor !== Function)
+			this.error(`Invalid logger color «${level.color}»`);
+		name  = Chalk[level.color](name);
+		date  = Chalk[level.color](date);
+		fname = Chalk[level.color](fname);
+		for (let i in sep) sep[i] = Chalk[level.color](sep[i]);
 	}
 
 	// write to STDOUT ot STDERR accordingly
 	messages = messages.join(' ');
-	process[level.type].write(`${name} ${date} ${fname} ${sep} ${messages}\n`);
+	process[level.type].write(`${name} ${date} ${sep[0]}${fname}${sep[1]} ${messages}\n`);
 };
 
 module.exports = function Log(conf){
 
-	let levels = Object.keys(LEVELS);
-	let log    = Object.create({});
+	// Validation & normalisation
+	if (!conf        || conf.constructor        !== Object) conf = {};
+	if (!conf.show   || conf.show.constructor   !== String) conf.show = '.*';
+	if (!conf.levels || conf.levels.constructor !== Object) conf.levels = {};
 
-	Conf     = conf;
-	Conf.use = new RegExp(Conf.use, 'i');
+	CONF = conf;
 
-	for (let i in levels){
-		let level = levels[i];
-		let attr  = Object.assign({ value: logger.bind(log, level)}, Conf.attr);
+	try {
+		CONF.show = new RegExp(CONF.show, 'i');
+	} catch (e){
+		this.error('Invalid «show» expression.', e);
+	}
+
+	let level, attr, log = Object.create({});
+
+	for (level of Object.keys(CONF.levels)){
+		attr  = Object.assign({ value: logger.bind(this, level)}, CONF.attr);
 		Object.defineProperty(log, level, attr);
 	}
+
 	return log;
 };
