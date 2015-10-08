@@ -1,4 +1,5 @@
 ### [0.3.0-b13] Preparing the house for a new core.
+- `FIX` ﬁ.log» Added missing validations.
 - `NEW` ﬁ.log» Added pending test for module.
 - `FIX` ﬁ.log» logger function was not receiving the ﬁ instance.
 - `FIX` ﬁ.log» Changed «use» property with «show».
