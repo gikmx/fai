@@ -1,5 +1,5 @@
 {
-	"use": ["log"],
+	"use": ["log", "throw"],
 	"attr":{
 		"default": {
 			"writable"     : false,
@@ -11,18 +11,37 @@
 			"__test_valid": { "writable": true }
 		}
 	},
+
 	"log":{
 		"colors" : true,
 		"show"   : ".*",
 		"levels" : {
-			"trace" : { "enabled": true, "type":"stdout", "color": "cyan"   },
-			"debug" : { "enabled": true, "type":"stdout", "color": "blue"   },
-			"info"  : { "enabled": true, "type":"stdout", "color": "green"  },
-			"warn"  : { "enabled": true, "type":"stderr", "color": "yellow" },
-			"error" : { "enabled": true, "type":"stderr", "color": "red"    }
+			"trace" : { "enabled":true, "type":"stdout", "color": "cyan"   },
+			"debug" : { "enabled":true, "type":"stdout", "color": "blue"   },
+			"info"  : { "enabled":true, "type":"stdout", "color": "green"  },
+			"warn"  : { "enabled":true, "type":"stderr", "color": "yellow" },
+			"error" : { "enabled":true, "type":"stderr", "color": "red"    }
 		},
 		"attr"   : {
 			"enumerable"   : true,
+			"writable"     : false,
+			"configurable" : false
+		}
+	},
+
+	"throw":{
+		"stack":{
+			"enabled" : true,
+			"limit"   : 9999
+		},
+		"levels": {
+			"node": { "enabled":true, "color":"gray"   },
+			"npm" : { "enabled":true, "color":"yellow" },
+			"fai" : { "enabled":true, "color":"red"    },
+			"user": { "enabled":true, "color":"white"  }
+		},
+		"attr": {
+			"enumerable"   : false,
 			"writable"     : false,
 			"configurable" : false
 		}

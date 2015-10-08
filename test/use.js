@@ -48,8 +48,8 @@ describe('ﬁ.use', function(){
 	it('throws an error when module does not return an object.', function(){
 		let test1 = ()=> ﬁ.use('test/module-noreturn');
 		let test2 = ()=> ﬁ.use(function Test2(){ return true; });
-		expect(test1).to.throw(TypeError, 'Expected module to return an object');
-		expect(test2).to.throw(TypeError, 'Expected module to return an object');
+		expect(test1).to.throw(Error);
+		expect(test2).to.throw(Error);
 	});
 
 	it('throws an error when module\'s property tries to be modified.', function(){
