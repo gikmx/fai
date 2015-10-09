@@ -1,4 +1,6 @@
 # Fai (ﬁ)
+
+[![Join the chat at https://gitter.im/gikmx/fai](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gikmx/fai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A NodeJS's framework for practical web development. It provides a lot of shortcuts and
 eases the life of those involved in development on any kind of web content (even newbies).
 
