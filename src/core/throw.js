@@ -3,6 +3,8 @@
 // Node modules
 const Path = require('path');
 
+// NPM modules
+const Chalk = require('chalk');
 
 // Locals
 let CONF;
@@ -22,28 +24,70 @@ const prepareStackTrace = function(error, frames){
 		let filename = frame.getFileName();
 		if (filename === __filename) continue;
 
-		let rules = {
+		let type = {
 			node : filename[0] !== Path.sep,
 			npm  : filename.indexOf('node_modules') !== -1,
 			fai  : filename.indexOf(ﬁ.root) === 0
 		};
-		rules.user = !rules.node && !rules.npm && !rules.fai;
+		type.user = !type.node && !type.npm && !type.fai;
 
-		let tname = frame.getTypeName();
-		let fname = frame.getFunctionName();
-		let mname = frame.getMethodName();
+		let prefix  = [];
 
-		if (fname && fname.indexOf('.') !== -1){
-			fname = fname.split('.');
-			mname = fname.pop();
-			fname = fname.join('');
+		if (type.fai) {
+			if (!CONF.levels.fai.enabled) continue;
+			prefix.push('fai');
+			filename = filename.replace(ﬁ.root + Path.sep, '');
+		}
+		if (type.npm) {
+			if (!CONF.levels.npm.enabled) continue;
+			prefix.push('npm');
+			let modname = 'node_modules';
+			filename = filename.slice(filename.lastIndexOf(modname) + modname.length + 1);
+			modname = filename.substring(0, filename.indexOf(Path.sep));
+			prefix.push(modname);
+			filename = filename.slice(modname.length + 1);
+		}
+		if (type.node) {
+			if (!CONF.levels.node.enabled) continue;
+			prefix.push('node');
+		}
+		// TODO: Add validation for type.user
+		// TODO: Find out the route the user used to call the script.
+
+		let typename = frame.getTypeName();
+		let funcname = frame.getFunctionName();
+		let methname = frame.getMethodName();
+
+		if (funcname && funcname.indexOf('.') !== -1){
+			funcname = funcname.split('.');
+			methname = funcname.pop();
+			funcname = funcname.join('');
 		}
 
-		if (tname && tname !== fname) fname = [tname, fname].join(' ');
-		if (mname) fname = [fname, mname].join('.').replace('..','.').replace('.(',' (');
-		if (!fname) fname = '<anon>';
+		if (typename && typename !== funcname) funcname = [typename, funcname].join(' ');
+		if (methname) funcname = [funcname, methname]
+			.join('.')
+			.replace('..','.')
+			.replace('.(',' (');
+
+		if (!funcname) funcname = 'anonymous';
 		let ctext = [filename, frame.getLineNumber(), frame.getColumnNumber()].join(':');
-		ctext = `${fname} ${ctext}`;
+		funcname = funcname
+			.trim()
+			.replace('(anonymous function)', 'anonymous')
+			.replace(' ', ':');
+		funcname = `«${funcname}»`;
+
+		prefix = prefix.join(':');
+		if (prefix.length) {
+			prefix = `[${prefix}]`;
+			if (type.node) prefix = Chalk[CONF.levels.node.color](prefix);
+			if (type.fai) prefix = Chalk[CONF.levels.fai.color](prefix);
+			if (type.npm) prefix = Chalk[CONF.levels.npm.color](prefix);
+		}
+
+		ctext = `${prefix} ${funcname} ${ctext}`;
+
 		console.info(ctext);
 	}
 	process.exit(0);
@@ -53,7 +97,7 @@ const prepareStackTrace = function(error, frames){
 class Exception extends Error {
 	constructor(message){
 		super(message);
-		// TODO: Add validations to stack && stack.limit
+		// TODO: Add validations to stack && stack.limit && stack.levels
 		Error.stackTraceLimit   = CONF.stack.limit;
 		Error.prepareStackTrace = prepareStackTrace;
 

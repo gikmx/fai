@@ -1,4 +1,5 @@
-### [0.3.0-b13] Preparing the house for a new core.
+### [0.3.0-b14] Preparing the house for a new core.
+- `NEW` ﬁ.throw» Improved readabiluty and added color coding for known StackTrace types.
 - `NEW` ﬁ.throw» Basic behaviour emulating normal StackTraces.
 - `NEW` ﬁ.throw» Added module to create a custom StackTrace.
 - `FIX` ﬁ.throw» Renamed ﬁ.error with ﬁ.throw
