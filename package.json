@@ -1,10 +1,10 @@
 {
   "name": "fai",
-  "version": "0.3.0-b14",
+  "version": "0.3.0-b15",
   "description": "Framework for agile development.",
   "main": "build",
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
-  "license": "MIT",
+  "license": "ISC",
   "homepage": "https://github.com/gikmx/fai",
   "keywords": [
     "framework",
@@ -35,21 +35,9 @@
     "gulp": "gulp"
   },
   "devDependencies": {
-    "babel": "^5.0.x",
-    "babel-eslint": "^3.1.26",
+    "gik": "*",
     "chai": "^3.3.0",
-    "coveralls": "^2.11.x",
-    "del": "^1.1.x",
-    "gulp": "^3.8.x",
-    "gulp-babel": "^5.2.1",
-    "gulp-eslint": "^0.15.0",
-    "gulp-fai-doc": "*",
-    "gulp-sourcemaps": "^1.5.x",
-    "gulp-sourcemaps-support": "*",
-    "gulp-spawn-mocha": "^2.0.x",
-    "lazypipe": "^1.0.1",
-    "mocha": "^2.3.3",
-    "mocha-unfunk-reporter": "^0.4.x"
+    "gulp": "^3.9.0"
   },
   "dependencies": {
     "babel-runtime": "^5.8.24",

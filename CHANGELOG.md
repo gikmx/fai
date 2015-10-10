@@ -1,23 +1,24 @@
-### [0.3.0-b14] Preparing the house for a new core.
-- `NEW` ﬁ.throw» Improved readabiluty and added color coding for known StackTrace types.
-- `NEW` ﬁ.throw» Basic behaviour emulating normal StackTraces.
-- `NEW` ﬁ.throw» Added module to create a custom StackTrace.
-- `FIX` ﬁ.throw» Renamed ﬁ.error with ﬁ.throw
-- `FIX` ﬁ.log»	Added missing validations.
-- `NEW` ﬁ.log» Added pending test for module.
-- `FIX` ﬁ.log» logger function was not receiving the ﬁ instance.
-- `FIX` ﬁ.log» Changed «use» property with «show».
-- `FIX` ﬁ.log» Added validations for properties on configuration files.
-- `FIX` ﬁ.log» Change the separator used for function names.
-- `FIX` ﬁ.log» Improved the date output.
-- `FIX` ﬁ.log» Moved levels setup to configuration.
-- `NEW` ﬁ.set» Added tests for enumerable attributes.
-- `FIX` ﬁ» Added coverage dir to gitignore.
-- `FIX` ﬁ» Coverage script now runs even on development.
-- `FIX` ﬁ» Removed arguments from src/core/test/module-valid to avoid warnings on linter.
-- `FIX` ﬁ.log» Improved the logger with a timestamp, caller name, and filters.
-- `NEW` ﬁ.log» Added a minimalistic logger.
-- `NEW` ﬁ.set» Added unresolved test to make sure enumerable properties are really enumerable.
+### [0.3.0-b15] Preparing the house for a new core.
+- `FIX` gulpfile workflow is now a separate project: [GIK](http://github.com/gikmx/gik.git)
+- `NEW` **ﬁ.throw** Improved readabiluty and added color coding for known StackTrace types.
+- `NEW` **ﬁ.throw** Basic behaviour emulating normal StackTraces.
+- `NEW` **ﬁ.throw** Added module to create a custom StackTrace.
+- `FIX` **ﬁ.throw** Renamed ﬁ.error with ﬁ.throw
+- `FIX` **ﬁ.log**	Added missing validations.
+- `NEW` **ﬁ.log** Added pending test for module.
+- `FIX` **ﬁ.log** logger function was not receiving the ﬁ instance.
+- `FIX` **ﬁ.log** Changed «use» property with «show».
+- `FIX` **ﬁ.log** Added validations for properties on configuration files.
+- `FIX` **ﬁ.log** Change the separator used for function names.
+- `FIX` **ﬁ.log** Improved the date output.
+- `FIX` **ﬁ.log** Moved levels setup to configuration.
+- `NEW` **ﬁ.set** Added tests for enumerable attributes.
+- `FIX` **ﬁ** Added coverage dir to gitignore.
+- `FIX` **ﬁ** Coverage script now runs even on development.
+- `FIX` **ﬁ** Removed arguments from src/core/test/module-valid to avoid warnings on linter.
+- `FIX` **ﬁ.log** Improved the logger with a timestamp, caller name, and filters.
+- `NEW` **ﬁ.log** Added a minimalistic logger.
+- `NEW` **ﬁ.set** Added unresolved test to make sure enumerable properties are really enumerable.
 - `FIX` Converted constants on main instantiator to upper case.
 - `NEW` Added optional parameters on main instance's default methods.
 - `FIX` Updated supported version of Node from 0.12.7 to 4.1 on package.json.
