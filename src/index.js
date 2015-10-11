@@ -1,3 +1,7 @@
+/*»
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gikmx/fai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
+«*/
+
 'use strict';
 
 const Path = require('path');
@@ -5,10 +9,10 @@ const Path = require('path');
 /*»	# Fai
 	*A simple framework for agile web development.*
 «*/
-const ﬁ    = require('./core');
-const CONF = require('./conf');
 const ROOT = Path.resolve(Path.join(__dirname, '..'));
+const ﬁ    = require(Path.join(__dirname, 'core'));
 const PACK = require(Path.join(ROOT, 'package'));
+const CONF = require(Path.join(ROOT, 'fai'));
 const ATTR = { configurable: false, writable:false, enumerable:false };
 
 // Allowed Errors:

@@ -35,7 +35,7 @@
 			"limit"   : 9999
 		},
 		"levels": {
-			"node": { "enabled":false, "color":"gray"   },
+			"node": { "enabled":true, "color":"gray"   },
 			"npm" : { "enabled":true, "color":"yellow" },
 			"fai" : { "enabled":true, "color":"red"    },
 			"user": { "enabled":true, "color":"white"  }

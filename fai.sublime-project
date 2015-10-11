@@ -6,12 +6,12 @@
 			[
 				"*.sublime-*",
 				".git",
+				"*.log",
 				".travis.yml",
 			],
 			"folder_exclude_patterns":
 			[
 				"fai/build",
-				"fai/docs",
 				"fai/coverage",
 				"node_modules"
 			],

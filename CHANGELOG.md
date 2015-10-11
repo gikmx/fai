@@ -1,4 +1,5 @@
-### [0.3.0-b15] Preparing the house for a new core.
+### [0.3.0-b16] Preparing the house for a new core.
+- `FIX` **ﬁ** Configuration now resides in project root as `fai.json`
 - `FIX` gulpfile workflow is now a separate project: [GIK](http://github.com/gikmx/gik.git)
 - `NEW` **ﬁ.throw** Improved readabiluty and added color coding for known StackTrace types.
 - `NEW` **ﬁ.throw** Basic behaviour emulating normal StackTraces.
