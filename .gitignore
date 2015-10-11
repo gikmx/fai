@@ -1,5 +1,4 @@
 /build
-/docs
 /coverage
 *.DS*
 *.sublime-workspace

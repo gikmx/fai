@@ -1,0 +1,2 @@
+# Fai.Path
+*Path variables.*
