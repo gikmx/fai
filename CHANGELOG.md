@@ -1,4 +1,5 @@
-### [0.3.0-b18] Preparing the house for a new core.
+### [0.3.0-b19] Preparing the house for a new core.
+- `DEL` **ﬁ.path** This module will be named routes from now on, so, deleted it.
 - `FIX **ﬁ.throw** Improved flow for better performance.
 - `FIX` **ﬁ** Generated documentation was being ignored, fixed it.
 - `FIX` **ﬁ** Configuration now resides in project root as `fai.json`
