@@ -36,7 +36,6 @@ module.exports = function fai(){
 		Object.assign(CONF, arguments[0]);
 	// iterate core modules and «use» them in order.
 	for (let name of CONF.use) ﬁ.use(name, CONF[name]);
-	ﬁ.throw('soy una prueba de error');
 	// return the instance
 	return ﬁ.get();
 };

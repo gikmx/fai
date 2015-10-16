@@ -1,4 +1,5 @@
-### [0.3.0-b17] Preparing the house for a new core.
+### [0.3.0-b18] Preparing the house for a new core.
+- `FIX **ﬁ.throw** Improved flow for better performance.
 - `FIX` **ﬁ** Generated documentation was being ignored, fixed it.
 - `FIX` **ﬁ** Configuration now resides in project root as `fai.json`
 - `FIX` gulpfile workflow is now a separate project: [GIK](http://github.com/gikmx/gik.git)
