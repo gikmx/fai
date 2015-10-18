@@ -1,5 +1,5 @@
 {
-	"use": ["log", "throw"],
+	"use": ["log", "throw", "route"],
 	"attr":{
 		"default": {
 			"writable"     : false,
@@ -43,6 +43,19 @@
 		"attr": {
 			"enumerable"   : false,
 			"writable"     : false,
+			"configurable" : false
+		}
+	},
+
+	"route":{
+		"routes":{
+			"test": "hola",
+			"core": "{fai}/core",
+			"log" : "{core}/log"
+		},
+		"attr":{
+			"enumerable"   : true,
+			"writable"     : true,
 			"configurable" : false
 		}
 	}

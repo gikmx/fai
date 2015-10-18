@@ -71,8 +71,13 @@ module.exports = {
 		callee = mod.name.toLowerCase();
 		mod    = mod.call(this, conf, callee);
 		// validate result
-		if (!mod || (mod.constructor !== Object &&  mod.constructor !== Function)){
-			let err = `Expected a a returned function or an object, got «${typeof mod}».`;
+		// TODO: Find a way to correctly validate an object.
+		let isOK = mod && (
+			typeof mod === 'function' ||
+			(typeof mod === 'object' && mod.constructor !== Array)
+		);
+		if (!isOK){
+			let err = `Expected a returned function or an object, got «${typeof mod}».`;
 			this.throw(msg, new TypeError(err));
 		}
 		// set it on ﬁ and return it.
