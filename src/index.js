@@ -26,11 +26,11 @@ CONF.errors = [
 
 module.exports = function fai(){
 	// if fai has been already instantiated there's no need of doing this again.
-	if (ﬁ.root) return ﬁ.get(arguments[0]);
+	if (ﬁ.pwd) return ﬁ.get(arguments[0]);
 	// set internal unmutable properties.
 	ﬁ.set('conf', CONF, ATTR);
 	ﬁ.set('info', PACK, ATTR);
-	ﬁ.set('root', ROOT, ATTR);
+	ﬁ.set('pwd', ROOT, ATTR);
 	// if a custom conf is sent, merge it with the default one.
 	if (arguments[0] && arguments[0].constructor === Object)
 		Object.assign(CONF, arguments[0]);

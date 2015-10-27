@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.3.0-b21",
+  "version": "0.3.0-b22",
   "description": "Framework for agile development.",
   "main": "build",
   "author": "Héctor Menéndez <etor@gik.mx> (http://gik.mx)",
@@ -35,8 +35,8 @@
     "gulp": "gulp"
   },
   "devDependencies": {
-    "chai": "^3.3.0",
     "gik": "*",
+    "chai": "^3.3.0",
     "gulp": "^3.9.0"
   },
   "dependencies": {

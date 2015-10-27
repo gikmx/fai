@@ -1,4 +1,9 @@
-### [0.3.0-b21] Preparing the house for a new core.
+### [0.3.0-b22] Preparing the house for a new core.
+- `FIX` **ﬁ** the `root` property became `pwd`
+- `FIX` **ﬁ.route** `route.fai` is now a public property.
+- `FIX` **ﬁ.route** The instance return now has the process.env.PWD variable as base.
+- `FIX` **ﬁ.route** Deprecated BASE global, in favor of a WeakMap for each instance.
+- `FIX` **ﬁ.route** Added validations for conf and conf.route
 - `FIX` Updated `gik` to latest, to allow better worflow in development.
 - `NEW` **ﬁ.route** A simple handler for routes on fai was added.
 - `FIX` **ﬁ** Module validation about returns was being too strict about objects. fixed it.
