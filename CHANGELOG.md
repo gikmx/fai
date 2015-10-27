@@ -1,4 +1,6 @@
-### [0.3.0-b22] Preparing the house for a new core.
+### v0.3.0-b23 A brand new fai.
+- `NEW` **ﬁ.route** Added a `set` method so routes can be added after instantiation.
+- `FIX` **ﬁ.route** Reorganized module to improve readability.
 - `FIX` **ﬁ** the `root` property became `pwd`
 - `FIX` **ﬁ.route** `route.fai` is now a public property.
 - `FIX` **ﬁ.route** The instance return now has the process.env.PWD variable as base.
