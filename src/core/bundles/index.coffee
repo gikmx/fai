@@ -59,6 +59,9 @@ module.exports = (name)->
 
 	renderview = (render, response)-> return
 
+	# Make sure we always use OS's separator
+	name = name.replace(/[\\\/]/g, Path.sep)
+
 	# Does a controller exists with specified name?
 	throw new ﬁ.error "Bundle '#{name}' was not found." if not Bundle[name]
 
@@ -135,4 +138,3 @@ module.exports = (name)->
 			fnRender.call response, path, locals, onFnRender
 
 		ctrl.call ﬁ.server, request, response, next
-

@@ -39,7 +39,7 @@ Regex = new RegExp ///^#{Route}/(js|css)/(\S+\.\1)$///
 	return next() if not (match = Regex.exec request.url)
 
 	# houston we have a match, but, does the file exist?
-	filename = match[2].replace(new RegExp(Path.sep,'g'), '_')
+	filename = match[2].replace(/[\\\/]/g, '_')
 
 	return next() if ﬁ.util.isUndefined(Files[filename])
 
@@ -74,7 +74,7 @@ CoffeeProcess = (orig, pth)->
 	str   = Coffee.compile(orig, bare:true)
 	regex = /\s*require\s*\(?\s*[\"\']([^\"\']+)[\"\']\s*\)?\s*/
 	while (match = str.match(regex)) isnt null
-		file = match[1]
+		file = match[1].replace(/[\\\/]/g, Path.sep)
 		ext  = Path.extname(file)
 		file += ﬁ.path.script.ext if not ext.length
 		path = ﬁ.util.array.unique([pth, ﬁ.path.app.master]).filter (p)->
@@ -156,7 +156,7 @@ module.exports =
 		return result
 
 	locals: ->
-		uri = (type, name)-> Path.join(Route, type, name + '.' + type)
+		uri = (type, name)-> [Route, type, name + '.' + type].join('/')
 		return (
 			css: (name)-> uri('css',name)
 			js : (name)-> uri('js', name)
@@ -184,7 +184,8 @@ module.exports =
 
 			# the name is just an identifier, get rid of it, also replace diagonals with
 			filename = filename.slice(0,(name.length+1)*-1) if context is ﬁ.path.app.bundles
-			filename = filename.replace(new RegExp(Path.sep,'g'), '_') + type.ext[1]
+			# This originally had Path.sep, but it's not behaving correctly on windows
+			filename = filename.replace(/[\\\/]/g, '_') + type.ext[1]
 			# store the filename in an array so we can identify when in request.
 			Files[filename] = true
 

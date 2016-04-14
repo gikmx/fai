@@ -36,7 +36,9 @@ prepareStackTrace  = (error, frames)->
 			base = if base.length then file.replace(base, '') else Path.basename file
 			base = base.slice(0, Path.extname(base).length * -1) if base.indexOf('.') isnt -1
 		pos  = [do frame.getLineNumber, do frame.getColumnNumber]
-		cont = frame.getFunction().toString(ﬁ.conf.charset).split(/[\n\r]/)[pos[0]-1]
+		cont = frame.getFunction()
+		continue if not cont
+		cont = cont.toString(ﬁ.conf.charset).split(/[\n\r]/)[pos[0]-1]
 		if not cont
 			continue if not FS.existsSync file
 			cont = FS.readFileSync file, ﬁ.conf.charset
