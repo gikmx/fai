@@ -1,6 +1,6 @@
 {
   "name": "fai",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "NodeJS Framework for agile web development.",
   "main": "lib",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "express-params": "0.0.x",
     "express-validator": "0.3.x",
     "jade": "^1.9.2",
-    "jeet": "^6.1.2",
+    "jeet": "6.1.2",
     "nib": "^1.1.0",
     "node-fs": "0.1.x",
     "node-uuid": "1.4.0",
